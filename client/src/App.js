@@ -1,14 +1,20 @@
 
 //import Container from 'react-bootstrap/Container';
-import Login from './Login';
+//import Login from './Login';
 //import Navbar from 'react-bootstrap/Navbar';
+import Foradmin  from './Foradmin';
+import Tabletest from './Tabletest';
 
-function OffcanvasExample() {
+
+function App() {
   return (
     <>
     
     <div>
-      <Login/>
+    <Foradmin/>
+      <Tabletest/>
+      
+      
       
       </div>
       {/*
@@ -27,4 +33,4 @@ function OffcanvasExample() {
   );
 }
 
-export default OffcanvasExample;
+export default App;
