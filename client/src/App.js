@@ -2,8 +2,9 @@
 //import Container from 'react-bootstrap/Container';
 //import Login from './Login';
 //import Navbar from 'react-bootstrap/Navbar';
-import Foradmin  from './Foradmin';
-import Tabletest from './Tabletest';
+import Tabletest from './Tabletest';import Foradmin  from './Foradmin';
+
+import Problem from './Problem';
 
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
     <div>
     <Foradmin/>
       <Tabletest/>
-      
+      <Problem/>
       
       
       </div>
