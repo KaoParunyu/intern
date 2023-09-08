@@ -1,5 +1,5 @@
 import Sidebar from './Sidebar';
-import Container from 'react-bootstrap/Container';
+//import Container from 'react-bootstrap/Container';
 import Navbar from 'react-bootstrap/Navbar';
 
 
@@ -8,8 +8,8 @@ function OffcanvasExample() {
     <>
     
   
-<Navbar bg="white" data-bs-theme="white" >
-      <Container>
+<Navbar bg="danger" data-bs-theme="white" >
+
       <Navbar.Collapse className="justify-content-start">
           <Navbar.Text>
             <Sidebar/>
@@ -22,7 +22,8 @@ function OffcanvasExample() {
             Signed in as: <a href="#login">Mark Otto</a>
           </Navbar.Text>
         </Navbar.Collapse>
-      </Container>
+  
+      
     </Navbar>
 
     

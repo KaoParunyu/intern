@@ -23,7 +23,8 @@ const columns = [
   { field: 'tel', headerName: 'tel', width: 180 },
   { field: 'floor', headerName: 'floor', width: 180 },
   { field: 'probleam', headerName: 'probleam', width: 250 },
-  { field: 'date', headerName: 'date', width: 100 }
+  { field: 'date', headerName: 'date', width: 100 },
+  { field: 'status', headerName: 'status', width: 150 }
 ];
 
 const rows = [

@@ -3,7 +3,7 @@
 //import Login from './Login';
 //import Navbar from 'react-bootstrap/Navbar';
 import Tabletest from './Tabletest';import Foradmin  from './Foradmin';
-
+import Login from './Login';
 import Problem from './Problem';
 
 
@@ -15,7 +15,7 @@ function App() {
     <Foradmin/>
       <Tabletest/>
       <Problem/>
-      
+      <Login/>
       
       </div>
       {/*
