@@ -43,7 +43,8 @@ app.post('/login', jsonParser, function (req, res, next) {
          if (users.length == 0) { res.json({status: 'error', message: 'no user found'}); return }
         bcrypt.compare(req.body.password, users[0].password, function(err, isLogin) {
             if (isLogin) {
-                res.json({status: 'ok', message: 'login success'})
+                var token = jwt.sign({ email: users[0].email }, secret, {expiresIn: '1h'} );
+                res.json({status: 'ok', message: 'login success',token})
             }else {
                 res.json({status: 'error', message: 'login failed'})
             }
