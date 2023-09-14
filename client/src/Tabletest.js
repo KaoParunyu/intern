@@ -1,4 +1,4 @@
-import * as React from 'react';
+import  React, {useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 
 const columns = [
@@ -40,6 +40,33 @@ const rows = [
 ];
 
 export default function DataTable() {
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    fetch('http://localhost:3333/authen',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+token
+      }
+      
+    })
+      .then(response=> response.json())
+      .then(data => {
+        if (data.status == 'ok'){
+          // alert('authen Success')
+          
+        } else {
+          alert('authenn failed')
+          localStorage.removeItem('token')
+          window.location = '/login'
+        }
+        
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  },[])
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid

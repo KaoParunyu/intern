@@ -53,7 +53,17 @@ app.post('/login', jsonParser, function (req, res, next) {
         }
     );
 })
+app.post('/authen', jsonParser, function (req, res, next){
+    try{
+      const token = req.headers.authorization.split(' ')[1]
+   const decoded = jwt.verify(token, secret);
+   res.json({status: 'ok',decoded})  
 
+    }catch(err) {
+        res.json({status: 'error', message: err.message})
+    }
+   
+})
 
 app.listen(3333, function () {
   console.log('work on 3333')

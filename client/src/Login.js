@@ -14,10 +14,36 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    
+    const jsonData = ({
       email: data.get("email"),
       password: data.get("password"),
     });
+    
+    fetch('http://localhost:3333/login',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(jsonData),
+    })
+      .then(response=> response.json())
+      .then(data => {
+        if (data.status == 'ok'){
+          alert('login Success')
+          localStorage.setItem('token', data.token)
+          window.location = '/tabletest'
+        } else {
+          alert('login failed')
+        }
+        
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+
+
+
   };
 
   return (
