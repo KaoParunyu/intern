@@ -29,7 +29,7 @@ export default function SignInSide() {
     })
       .then(response=> response.json())
       .then(data => {
-        if (data.status == 'ok'){
+        if (data.status === 'ok'){
           alert('login Success')
           localStorage.setItem('token', data.token)
           window.location = '/tabletest'
@@ -137,7 +137,7 @@ export default function SignInSide() {
                     </Link>
                   </Grid>
                   <Grid item>
-                    <Link href="#" variant="body2">
+                    <Link href="/register" variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>

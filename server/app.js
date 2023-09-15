@@ -19,6 +19,10 @@ const connection = mysql.createConnection({
   });
 
 app.post('/register', jsonParser, function (req, res, next) {
+
+    if (!req.body.email.endsWith('@gmail.com')) {
+        return res.json({ status: 'error', message: 'รูปแบบอีเมลไม่ถูกต้อง' });
+    }
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
         connection.execute(
             'INSERT INTO users (email, password, fname, lname) VALUES (?, ?, ?, ?)',

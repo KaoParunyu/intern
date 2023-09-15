@@ -1,5 +1,18 @@
 import  React, {useEffect} from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import Button from "@mui/material/Button";
+
+ 
+const handleLogout = (event) => {
+  event.preventDefault();
+  localStorage.removeItem('token');
+  window.location = '/login'
+}
+
+
+<Button variant="contained" onClick={handleLogout}>Logout</Button>
+
+
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -39,6 +52,7 @@ const rows = [
   { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
 ];
 
+
 export default function DataTable() {
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -52,7 +66,8 @@ export default function DataTable() {
     })
       .then(response=> response.json())
       .then(data => {
-        if (data.status == 'ok'){
+        if (data.status === 'ok'){
+          localStorage.removeItem('token')
           // alert('authen Success')
           
         } else {
@@ -67,6 +82,8 @@ export default function DataTable() {
       });
   },[])
 
+  
+
   return (
     <div style={{ height: 400, width: '100%' }}>
       <DataGrid
@@ -79,7 +96,7 @@ export default function DataTable() {
         }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
-      />
+      /><Button variant="contained" onClick={handleLogout}>Logout</Button>
     </div>
   );
 }

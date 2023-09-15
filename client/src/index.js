@@ -6,7 +6,9 @@ import reportWebVitals from './reportWebVitals';
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from './Login';
 import Problem from './Problem';
-import Tabletest from './Tabletest'
+import Tabletest from './Tabletest';
+import Register from './Register';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -16,6 +18,7 @@ root.render(
     <Route path="/Problem" element={<Problem />} />
     <Route path="/Login" element={<Login />} />
     <Route path="/Tabletest" element={<Tabletest />} />
+    <Route path="/Register" element={<Register />} />
   </Routes>
     
   </BrowserRouter>
