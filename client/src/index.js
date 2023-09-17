@@ -8,7 +8,8 @@ import Login from './Login';
 import Problem from './Problem';
 import Tabletest from './Tabletest';
 import Register from './Register';
-
+import RepairForm from './RepairForm';
+import RepairList from './RepairList';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,6 +20,8 @@ root.render(
     <Route path="/Login" element={<Login />} />
     <Route path="/Tabletest" element={<Tabletest />} />
     <Route path="/Register" element={<Register />} />
+    <Route path="/RepairForm" element={<RepairForm />} />
+    <Route path="/RepairList" element={<RepairList />} />
   </Routes>
     
   </BrowserRouter>

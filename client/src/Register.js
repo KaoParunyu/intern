@@ -59,7 +59,7 @@ export default function SignUp() {
             alert('register Success')
             window.location = '/login'
           } else {
-            alert('รูปแบบอีเมลล์ไม่ถูกต้องอีเมลล์เคยใช้แล้ว')
+            alert('รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว')
           }
           
         })
