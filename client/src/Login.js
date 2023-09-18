@@ -32,7 +32,7 @@ export default function SignInSide() {
         if (data.status === 'ok'){
           alert('login Success')
           localStorage.setItem('token', data.token)
-          window.location = '/tabletest'
+          window.location = '/Foradmin'
         } else {
           alert('login failed')
         }

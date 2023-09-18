@@ -24,9 +24,10 @@ app.post('/register', jsonParser, function (req, res, next) {
         return res.json({ status: 'error', message: 'รูปแบบอีเมลไม่ถูกต้อง' });
     }
     bcrypt.hash(req.body.password, saltRounds, function(err, hash) {
+        const role = req.body.role || 'user';
         connection.execute(
-            'INSERT INTO users (email, password, fname, lname) VALUES (?, ?, ?, ?)',
-            [req.body.email, hash, req.body.fname, req.body.lname],
+            'INSERT INTO users (email, password, fname, lname, role) VALUES (?, ?, ?, ?, ?)',
+            [req.body.email, hash, req.body.fname, req.body.lname, role],
             function(err, results, fields) {
              if(err){
                 res.json({status: 'error', message: err})

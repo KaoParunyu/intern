@@ -12,24 +12,13 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+// import Alert from '@mui/material/Alert';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+
+
+
 
 const theme = createTheme();
 
@@ -43,6 +32,7 @@ export default function SignUp() {
         password: data.get('password'),
         fname: data.get('firstName'),
         lname: data.get('lastName'),
+        role: data.get('role'),
     }
     
     
@@ -66,6 +56,10 @@ export default function SignUp() {
         .catch((error) => {
           console.error('Error:', error);
         });
+
+
+
+
   };
 
   return (
@@ -135,6 +129,21 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
+               <Grid item xs={12}>
+                <Select
+                  required
+                  fullWidth
+                  name="role"
+                  label="role"
+                  id="role"
+ 
+                >
+                    
+            <MenuItem value="user">user</MenuItem>
+            <MenuItem value="admin">admin</MenuItem>
+            </Select>
+              </Grid> 
+
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
@@ -161,7 +170,7 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
+       
       </Container>
     </ThemeProvider>
   );
