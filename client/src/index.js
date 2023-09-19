@@ -12,6 +12,7 @@ import RepairForm from './RepairForm';
 import RepairList from './RepairList';
 import Foradmin from './Foradmin';
 import Sidebar from './Sidebar';
+import Foruser from './Foruser';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -28,6 +29,7 @@ root.render(
     <Route path="/Foradmin" element={<Foradmin />} />
     <Route path="/Foradmin" element={<Foradmin />} />
     <Route path="/Sidebar" element={<Sidebar />} />
+    <Route path="/Foruser" element={<Foruser />} />
 
   </Routes>
     

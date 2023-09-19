@@ -15,7 +15,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '12345678',
-    database: 'mydb'
+    database: 'project'
   });
 
 app.post('/register', jsonParser, function (req, res, next) {

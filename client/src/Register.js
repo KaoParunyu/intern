@@ -3,8 +3,8 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
+// import FormControlLabel from "@mui/material/FormControlLabel";
+// import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
@@ -15,7 +15,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import Alert from '@mui/material/Alert';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
-
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
 
 
 
@@ -23,39 +24,39 @@ import MenuItem from '@mui/material/MenuItem';
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
+  const handleSubmit = (event) => {                                 // เป็นฟังก์ชันที่ถูกเรียกเมื่อผู้ใช้กดปุ่ม Sign Up
+    event.preventDefault();                                       //ป้องกันการโหลดหน้าเว็บใหม่
+    const data = new FormData(event.currentTarget);             //ใช้้เพื่อเก็บแบบฟอร์มที่ถูกส่งเมื่อผู้ใช้กดปุ่ม Sign Up
 
-  const  jsonData = {
-        email: data.get('email'),
-        password: data.get('password'),
-        fname: data.get('firstName'),
-        lname: data.get('lastName'),
-        role: data.get('role'),
+    const jsonData = {
+      email: data.get('email'),
+      password: data.get('password'),
+      fname: data.get('firstName'),
+      lname: data.get('lastName'),
+      role: data.get('role'),
     }
-    
-    
-    fetch('http://localhost:3333/register',{
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(jsonData),
+
+
+    fetch('http://localhost:3333/register', {               // ส่งคำขอ HTTP POST ไปยัง URL
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',               //ระบุว่าข้อมูลที่ส่งไปยังเซิร์ฟเวอร์เป็น JSON
+      },
+      body: JSON.stringify(jsonData),                    //แปลงอ็อบเจ็กต์ jsonData เป็นสตริง JSON
+    })
+      .then(response => response.json())                  // เพื่อแปลงข้อมูล JSON ที่ถูกส่งกลับมาจากเซิร์ฟเวอร์เป็นอ็อบเจ็กต์ JavaScript
+      .then(data => {
+        if (data.status === 'ok') {
+          alert('register Success')
+          window.location = '/login'
+        } else {
+          alert('รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว')
+        }
+
       })
-        .then(response=> response.json())
-        .then(data => {
-          if (data.status === 'ok'){
-            alert('register Success')
-            window.location = '/login'
-          } else {
-            alert('รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว')
-          }
-          
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-        });
+      .catch((error) => {                                 // รับข้อมูลข้อผิดพลาดที่เกิดขึ้นในกรณีที่เกิดข้อผิดพลาดในการส่งคำขอ
+        console.error('Error:', error);
+      });
 
 
 
@@ -63,6 +64,7 @@ export default function SignUp() {
   };
 
   return (
+    
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -72,12 +74,13 @@ export default function SignUp() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
             <LockOutlinedIcon />
           </Avatar>
-          <Typography component="h1" variant="h5">
+          <Typography component="h1" variant="h1">
             Sign up
           </Typography>
           <Box
@@ -129,29 +132,24 @@ export default function SignUp() {
                   autoComplete="new-password"
                 />
               </Grid>
-               <Grid item xs={12}>
-                <Select
-                  required
-                  fullWidth
-                  name="role"
-                  label="role"
-                  id="role"
- 
-                >
-                    
-            <MenuItem value="user">user</MenuItem>
-            <MenuItem value="admin">admin</MenuItem>
-            </Select>
-              </Grid> 
-
               <Grid item xs={12}>
-                <FormControlLabel
-                  control={
-                    <Checkbox value="allowExtraEmails" color="primary" />
-                  }
-                  label="I want to receive inspiration, marketing promotions and updates via email."
-                />
+                <FormControl fullWidth>
+                  <InputLabel htmlFor="role">Role</InputLabel>
+                  <Select
+                    required
+                    fullWidth
+                    name="role"
+                    labelId="role"
+                    id="role"
+                  >
+                    <MenuItem value="user">User</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                  </Select>
+                </FormControl>
+
               </Grid>
+
+              
             </Grid>
             <Button
               type="submit"
@@ -170,7 +168,7 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-       
+
       </Container>
     </ThemeProvider>
   );
