@@ -29,17 +29,19 @@ export default function Messi() {
     })
       .then(response=> response.json())
       .then(data => {
+        console.log(data)
         if (data.status === 'ok'){
-          alert('login Success')
-          localStorage.setItem('token', data.token)
-          if (data.role === 'user') {
-            window.location = '/Foruser';
+       alert('login Success')
+      //  window.location = '/Foruser';
+        localStorage.setItem('token', data.token)
+         if (data.role === 'user') {
+           window.location = '/Foruser';
           } else if (data.role === 'admin') {
-            window.location = '/Foradmin';
-          }
-        } else {
-          alert('login failed')
+              window.location = '/Foradmin';
         }
+        } else {
+           alert('login failed')
+         }
  
         
       })
