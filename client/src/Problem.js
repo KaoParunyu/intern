@@ -1,20 +1,33 @@
-import  './App.css'
-const form = () =>
+import './App.css'
+import { useState } from 'react';
+import Axios from 'axios'
+import { Button } from '@mui/material';
 
-(
 
-  <>
 
-<div className="container">
+
+const Form = () => {
+
+  const [problemList, setProblemlist] = useState([]);
+  const getProblem = () => {
+    Axios.get('http://localhost:3333/repair_notifications').then((response) => {
+      setProblemlist(response.data);
+    });
+
+  }
+
+  return (
+
+    <div className="container">
       <h1>Form</h1>
       <form className="form">
         <div className="form-group">
           <label htmlFor="firstName">First Name:</label>
-          <input type="text" id="firstName" name="firstName" />
+          {/* <input type="text" id="firstName" name="firstName" /> */}
         </div>
         <div className="form-group">
           <label htmlFor="lastName">Last Name:</label>
-          <input type="text" id="lastName" name="lastName" />
+          {/* <input type="text" id="lastName" name="lastName" /> */}
         </div>
         <div className="form-group">
           <label htmlFor="problem">Problem:</label>
@@ -27,15 +40,43 @@ const form = () =>
         <div className="form-group">
           <input type="submit" value="Submit" className="submit-button" />
         </div>
+        <div>
+          <Button className='btn btn-primary' onClick={getProblem} >show</Button>
+
+          {problemList.map((val, key) => {
+            return (
+              <div className="card">
+                <div className="card-body text-left">
+                  <p className='card-text'>probleam: {val.title}</p>
+                  <p className='card-text'>probleam: {val.image_url}</p>
+                  <p className='card-text'>probleam: {val.title}</p>
+                  <p className='card-text'>probleam: {val.title}</p>
+                  <p className='card-text'>probleam: {val.title}</p>
+                  <p className='card-text'>probleam: {val.title}</p>
+
+
+
+                </div>
+                </div>
+                )
+          
+          
+          }
+          
+          )
+          }
+              </div>
       </form>
     </div>
 
 
 
- 
-  </>
+
+  )
 
 
-);
+};
 
-export default form;
+export default Form;
+
+

@@ -11,6 +11,7 @@ const secret = 'fullstack'
 app.use(cors())
 
 const mysql = require('mysql2');
+const { log } = require('console')
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -70,6 +71,76 @@ app.post('/authen', jsonParser, function (req, res, next){
    
 })
 
+
+app.get('/repair_notifications',(req, res)=>{
+    connection.execute("SELECT * FROM repair_notifications", (err, result) =>{
+
+        if (err) {
+           console.log(err);
+        }else{
+            res.send(result);
+
+    }
+
+});
+    
+    
+  }  );
+
+// app.get('/users',(req, res)=>{
+//     connection.execute("SELECT * FROM users", (err, result) =>{
+
+//         if (err) {
+//            console.log(err);
+//         }else{
+//             res.send(result);
+
+//     }
+
+// });
+    
+    
+//   }  );
+
+
+//   app.post('/Problem',jsonParser,  function (req, res, next) {
+
+   
+//     const usersId = req.body.usersId;
+        
+//         connection.execute(
+//             'INSERT INTO repair_notifications (title, image_url, users_id ) VALUES (?, ?, ?)',
+//             [req.body.title, req.body.image_url, usersId],
+//             function(err, results, fields) {
+//              if(err){
+//                 res.json({status: 'error', message: err})
+//                 return
+//              }
+//                res.json({status: 'ok'})
+//             }
+//           );
+   
+// })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.listen(3333, function () {
   console.log('work on 3333')
 })
+
+

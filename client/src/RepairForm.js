@@ -1,83 +1,60 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import Button from "@mui/material/Button";
+import Axios from 'axios';
 
-function RepairForm({ onSubmit }) {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    status: 'รอดำเนินการ',
-    repairType: '1', // ประเภทการซ่อมเริ่มต้น
-    image: null,
-  });
+export default function DataTable() {
+  const [rows, setRows] = useState([]);
+  const [problemList, setProblemList] = useState([]);
 
-  const handleChange = (e) => {
-    const { name, value, type, files } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'file' ? files[0] : value,
-    }));
-  };
+  const getProblem = () => {
+    Axios.get('http://localhost:3333/repair_notifications').then((response) => {
+      const data = response.data;
+      setProblemList(data);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+      // สร้าง rows จากข้อมูลที่ได้
+      const newRows = data.map((val) => ({
+        id: val.id,
+        lastName: val.user_id,
+        firstName: val.user_id,
+        age: val.title,
+        age: val.status_id,
+        created_at: val.created_at,
+        modified_date: val.modified_date,
+      }));
+      setRows(newRows);
+    });
+  }
+
+  useEffect(() => {
+    getProblem();
+  }, []);
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 40 },
+    { field: 'firstName', headerName: 'First name', width: 130 },
+    { field: 'lastName', headerName: 'Last name', width: 130 },
+    { field: 'problem', headerName: 'problem', width: 400 },
+    { field: 'created_at', headerName: 'created_at', width: 150 },
+    { field: 'modified_date', headerName: 'modified_date', width: 180 },
+    { field: 'status_id', headerName: 'status_id', width: 130 },
+   
+  ];
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="title">หัวข้อการแจ้งซ่อม:</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        required
-        value={formData.title}
-        onChange={handleChange}
-      /><br />
-
-      <label htmlFor="description">รายละเอียด:</label>
-      <textarea
-        id="description"
-        name="description"
-        required
-        value={formData.description}
-        onChange={handleChange}
-      ></textarea><br />
-
-      <label htmlFor="status">สถานะ:</label>
-      <select
-        id="status"
-        name="status"
-        value={formData.status}
-        onChange={handleChange}
-      >
-        <option value="รอดำเนินการ">รอดำเนินการ</option>
-        <option value="กำลังดำเนินการ">กำลังดำเนินการ</option>
-        <option value="เสร็จสมบูรณ์">เสร็จสมบูรณ์</option>
-      </select><br />
-
-      <label htmlFor="repairType">ประเภทการซ่อม:</label>
-      <select
-        id="repairType"
-        name="repairType"
-        value={formData.repairType}
-        onChange={handleChange}
-      >
-        <option value="1">คอมพิวเตอร์</option>
-        <option value="2">เครื่องปริ้น</option>
-        <option value="3">อินเทอร์เน็ต</option>
-      </select><br />
-
-      <label htmlFor="image">รูปภาพ:</label>
-      <input
-        type="file"
-        id="image"
-        name="image"
-        onChange={handleChange}
-      /><br />
-
-      <button type="submit">ส่งแบบฟอร์ม</button>
-    </form>
+    <div style={{ height: 400, width: '100%' }}>
+      <DataGrid
+        rows={rows}
+        columns={columns}
+        initialState={{
+          pagination: {
+            paginationModel: { page: 0, pageSize: 5 },
+          },
+        }}
+        pageSizeOptions={[5, 10]}
+        checkboxSelection
+      />
+       
+    </div>
   );
 }
-
-export default RepairForm;
