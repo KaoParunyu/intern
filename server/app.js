@@ -87,23 +87,90 @@ app.get('/repair_notifications',(req, res)=>{
     
   }  );
 
-// app.get('/users',(req, res)=>{
-//     connection.execute("SELECT * FROM users", (err, result) =>{
+app.get('/users',(req, res)=>{
+    connection.execute("SELECT * FROM users", (err, result) =>{
 
-//         if (err) {
-//            console.log(err);
-//         }else{
-//             res.send(result);
+        if (err) {
+           console.log(err);
+        }else{
+            res.send(result);
 
-//     }
+    }
 
-// });
+});
     
     
-//   }  );
+  }  );
+  
+  
+  
+  app.get('/status',(req, res)=>{
+      connection.execute("SELECT * FROM status", (err, result) =>{
+  
+          if (err) {
+             console.log(err);
+          }else{
+              res.send(result);
+  
+      }
+  
+  });
+      
+      
+    }  );
+  app.get('/repair_types',(req, res)=>{
+      connection.execute("SELECT * FROM repair_types", (err, result) =>{
+  
+          if (err) {
+             console.log(err);
+          }else{
+              res.send(result);
+  
+      }
+  
+  });
+      
+      
+    }  );
+  
+
+    app.put('/repair_notifications/:id', (req, res) => {
+        const id = req.params.id;
+        const newStatusId = req.body.status_id;
+      
+        const sql = 'UPDATE repair_notifications SET status_id = ? WHERE id = ?';
+      
+        connection.query(sql, [newStatusId, id], (err, result) => {
+          if (err) {
+            console.error('เกิดข้อผิดพลาดในการอัปเดตข้อมูล: ', err);
+            res.status(500).json({ message: 'ไม่สามารถอัปเดตข้อมูลได้' });
+          } else {
+            console.log(`อัปเดตข้อมูลสถานะสำเร็จสำหรับรายการที่มี ID ${id}`);
+            res.status(200).json({ message: 'อัปเดตข้อมูลสถานะสำเร็จ' });
+          }
+        });
+      });
+  
 
 
-//   app.post('/Problem',jsonParser,  function (req, res, next) {
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //   app.post('/Problem',jsonParser,  function (req, res, next) {
 
    
 //     const usersId = req.body.usersId;
