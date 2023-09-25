@@ -7,6 +7,7 @@ export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [problemList, setProblemList] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState({});
 
   const getProblem = async () => {
     try {
@@ -76,6 +77,7 @@ export default function DataTable() {
     { field: 'created_at', headerName: 'created_at', width: 150 },
     { field: 'modified_date', headerName: 'modified_date', width: 180 },
     { field: 'status_id', headerName: 'status_id', width: 130, 
+    
     renderCell: (params) => {
       const status = statusOptions.find((status) => status.id === params.value);
        return (
@@ -101,20 +103,27 @@ export default function DataTable() {
     { field: 'image_url', headerName: 'image_url', width: 130 },
   ];
 
-  const [selectedStatus, setSelectedStatus] = useState({});
+ 
 
   const handleSubmit = async () => {
     try {
       // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
       const updatedStatus = [];
       for (const row of rows) {
-        const newStatusId = selectedStatus[row.id];
+        
+        const newStatusId = selectedStatus[row.id]; 
         if (newStatusId !== undefined && newStatusId !== row.status_id) {
           updatedStatus.push({
             id: row.id,
             status_id: newStatusId,
           });
         }
+        for (const row of rows) {
+          const newStatusId = selectedStatus[row.id];
+          console.log(`Row ID: ${row.id}, New Status ID: ${newStatusId}`);
+          // ... ตรวจสอบและอัปเดตสถานะต่อไป
+        }
+        
       }
   
       // ส่งข้อมูลการอัปเดตไปยัง API หรือฐานข้อมูล
