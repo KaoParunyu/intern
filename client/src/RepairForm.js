@@ -132,6 +132,9 @@ export default function DataTable() {
           status_id: statusData.status_id,
         });
       }
+
+      // ดึงข้อมูลใหม่
+      await getProblem();
   
       // ล้างข้อมูลที่เลือกใน Dropdown
       setSelectedStatus({});
