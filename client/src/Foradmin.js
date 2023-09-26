@@ -3,9 +3,9 @@ import Sidebar from './Sidebar';
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 // import Register from './Register';
-// import RepairForm from './RepairForm';
+  import RepairForm from './RepairForm';
 import Tabletest from './Tabletest';
-
+ import UserProfile from './UserProfile';
 
 function OffcanvasExample() {
   return (
@@ -30,7 +30,9 @@ function OffcanvasExample() {
       
     </Navbar>
     {/* <Register/> */}
-    {/* <RepairForm/> */}
+    <RepairForm/>
+     <UserProfile/> 
+
     {/* <Tabletest/> */}
     <Link to="/">Home</Link>
 
@@ -41,17 +43,3 @@ function OffcanvasExample() {
 }
 
 export default OffcanvasExample;
-/*import DataGrid from '@mui/material/Grid';
-
-<DataGrid
-  rows={rows}
-  columns={columns}
-  initialState={{
-    pagination: {
-      paginationModel: { page: 0, pageSize: 5 },
-    },
-  }}
-  pageSizeOptions={[5, 10]}
-  checkboxSelection
-/>
-*/

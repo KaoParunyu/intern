@@ -3,6 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import Axios from 'axios';
 
+
 export default function DataTable() {
   const [rows, setRows] = useState([]);
   const [problemList, setProblemList] = useState([]);
@@ -68,6 +69,9 @@ export default function DataTable() {
     getStatusOptions();
   }, []);
 
+
+
+
   const columns = [
     { field: 'id', headerName: 'ID', width: 40 },
     { field: 'firstName', headerName: 'First name', width: 130 },
@@ -78,9 +82,14 @@ export default function DataTable() {
     { field: 'modified_date', headerName: 'modified_date', width: 180 },
     { field: 'status_id', headerName: 'status_id', width: 130, 
     
+    
     renderCell: (params) => {
+  
       const status = statusOptions.find((status) => status.id === params.value);
        return (
+        
+        <div> 
+
     <select
       value={selectedStatus[params.row.id] || params.value} // ใช้ selectedStatus หากมีค่า, ไม่งั้นใช้ค่าเดิม
       onChange={(e) => {
@@ -95,12 +104,12 @@ export default function DataTable() {
           {option.name}
         </option>
       ))}
-    </select>
+    </select></div>
   );
     },
     
     },
-    { field: 'image_url', headerName: 'image_url', width: 130 },
+    { field: 'image_url', headerName: 'image_url', width: 130, },
   ];
 
  
@@ -165,8 +174,7 @@ export default function DataTable() {
       <Button
   variant="contained"
   color="primary"
-  onClick={handleSubmit}
->
+  onClick={handleSubmit}>
   Submit
 </Button>
 

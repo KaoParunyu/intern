@@ -47,9 +47,9 @@ const Form = () => {
             return (
               <div className="card">
                 <div className="card-body text-left">
-                  <p className='card-text'>probleam: {val.title}</p>
-                  <p className='card-text'>probleam: {val.image_url}</p>
-                  <p className='card-text'>probleam: {val.title}</p>
+                  <p className='card-text'>title: {val.title}</p>
+                  <p className='card-text'>image_url: {val.image_url}</p>
+                  <p className='card-text'>created_at: {val.created_at}</p>
                   <p className='card-text'>probleam: {val.title}</p>
                   <p className='card-text'>probleam: {val.title}</p>
                   <p className='card-text'>probleam: {val.title}</p>
