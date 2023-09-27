@@ -65,7 +65,8 @@ export default function DataTable() {
       .then(response=> response.json())
       .then(data => {
         if (data.status === 'ok'){
-          
+          // localStorage.removeItem('token')
+
           // alert('authen Success')
           
         } else {

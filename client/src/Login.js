@@ -10,7 +10,10 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Container } from "@mui/material";
 
-export default function Messi() {
+
+export default function Login() {
+
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -54,6 +57,7 @@ export default function Messi() {
   };
 
   return (
+    <div>
     <Container component="main" maxWidth="full">
       <Grid
         sx={{                                       // sx คือคุณสมบัติพิเศษ ซึ่งถูกใช้ในการกำหนดรูปแบบและสไตล์
@@ -145,5 +149,6 @@ export default function Messi() {
         </Grid>
       </Grid>
     </Container>
+        </div>
   );
 }

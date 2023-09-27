@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+ 
 
 export default function UserProfile() {
   const [user, setUser] = useState(null);
@@ -13,15 +14,15 @@ export default function UserProfile() {
       fetch('http://localhost:3333/users', {
         method: 'GET',
         headers: {
-          Authorization: `Bearer ${token}`, // ส่ง token ใน header
-           
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer '+token
         },
       })
         .then((response) => response.json())
         .then((userData) => {
           // กำหนดข้อมูลผู้ใช้ใน state
           setUser(userData);
-          console.log(userData)
+          console.log(userData);
         })
         .catch((error) => {
           console.error('Error:', error);

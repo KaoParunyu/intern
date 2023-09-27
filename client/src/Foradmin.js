@@ -31,7 +31,7 @@ function OffcanvasExample() {
     </Navbar>
     {/* <Register/> */}
     <RepairForm/>
-     <UserProfile/> 
+     {/* <UserProfile/>  */}
 
     {/* <Tabletest/> */}
     <Link to="/">Home</Link>
