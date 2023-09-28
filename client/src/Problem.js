@@ -8,13 +8,45 @@ import { Button } from '@mui/material';
 
 const Form = () => {
 
+
+
+  const [title, setTitle] = useState("");
+  const [repair_type, setRepair_type] = useState("");
   const [problemList, setProblemlist] = useState([]);
   const getProblem = () => {
+    
     Axios.get('http://localhost:3333/repair_notifications').then((response) => {
       setProblemlist(response.data);
     });
 
   }
+
+  const postProblem = () => {
+    const user_id = 1;
+    Axios.post('http://localhost:3333/postproblem',    {
+      title: title,
+      repair_type: repair_type,
+      user_id: user_id,
+       
+    }).then(() => {
+      setProblemlist([
+        ...problemList,
+        {
+          title: title,
+          repair_type: repair_type,
+          user_id: user_id,
+        }
+      ])
+    })
+
+  }
+
+
+
+
+
+
+
 
   return (
 
@@ -30,15 +62,20 @@ const Form = () => {
           {/* <input type="text" id="lastName" name="lastName" /> */}
         </div>
         <div className="form-group">
-          <label htmlFor="problem">Problem:</label>
-          <input type="text" id="problem" name="problem" />
+          <label htmlFor="title">title:</label>
+          <input type="text" id="title" name="title" onChange={(event) => {  setTitle(event.target.value)}} />
         </div>
         <div className="form-group">
-          <label htmlFor="image">Image:</label>
-          <input type="file" id="image" name="image" />
+          <label htmlFor="repair_type">	repair_type:</label>
+          <select type="select" id="repair_type" name="repair_type" onChange={(event) => {  setRepair_type(event.target.value)}} > 
+          <option value="apple">Apple</option></select>
         </div>
         <div className="form-group">
-          <input type="submit" value="Submit" className="submit-button" />
+          <label htmlFor="image_url">Image:</label>
+          <input type="file" id="image_url" name="image_url" />
+        </div>
+        <div className="form-group">
+          <input type="submit" value="Submit" className="submit-button" onClick={postProblem}/>
         </div>
         <div>
           <Button className='btn btn-primary' onClick={getProblem} >show</Button>

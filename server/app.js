@@ -149,6 +149,48 @@ app.put("/repair_notifications/:statusId", (req, res) => {
   });
 });
 
+
+app.post("/postproblem", (req, res) => {
+  const title = req.body.title;
+  const user_id = 1;
+  const repair_type_id = req.body.repair_type_id; 
+  // const repair_type = req.body.repair_type;
+  // const image_url = req.body.image;
+  
+
+  connection.query(
+    "INSERT INTO repair_notifications (title, user_id, repair_type_id) VALUES (?,?,?)",
+    // "INSERT INTO repair_notifications (title, repair_type_id, image_url) VALUES (?,?,?)",
+    [title, user_id, repair_type_id],
+    // [problem, repair_type, image_url],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).send("Error inserting data");
+      } else {
+        res.send("Values Inserted");
+      }
+    }
+  );
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //   app.post('/Problem,  function (req, res, next) {
 
 //     const usersId = req.body.usersId;
