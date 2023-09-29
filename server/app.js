@@ -7,6 +7,9 @@ const saltRounds = 10;
 var jwt = require("jsonwebtoken");
 const secret = "fullstack";
 
+// app.use(express.static('public'));
+
+
 app.use(cors());
 app.use(bodyParser.json());
 
@@ -153,16 +156,18 @@ app.put("/repair_notifications/:statusId", (req, res) => {
 app.post("/postproblem", (req, res) => {
   const title = req.body.title;
   const user_id = 1;
-  const repair_type_id = req.body.repair_type_id; 
-  // const repair_type = req.body.repair_type;
-  // const image_url = req.body.image;
+  const repair_type_id = req.body.repair_type_id;
+  const image_url = req.body.image_url; 
+
   
+  if (!title || !repair_type_id || !image_url) {
+    return res.status(400).json({ error: 'Please provide all required fields.' });
+  }
 
   connection.query(
-    "INSERT INTO repair_notifications (title, user_id, repair_type_id) VALUES (?,?,?)",
-    // "INSERT INTO repair_notifications (title, repair_type_id, image_url) VALUES (?,?,?)",
-    [title, user_id, repair_type_id],
-    // [problem, repair_type, image_url],
+    'INSERT INTO repair_notifications (title, user_id, repair_type_id, image_url) VALUES (?, ?, ?, ?)',
+    [title, user_id, repair_type_id, image_url],
+   
     (err, result) => {
       if (err) {
         console.log(err);
@@ -175,6 +180,19 @@ app.post("/postproblem", (req, res) => {
 });
 
 
+// const multer = require("multer");
+
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, "public"); // ระบุไดเรกทอรี่ที่จะเก็บไฟล์
+//   },
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+//     cb(null, file.fieldname + "-" + uniqueSuffix + "." + file.originalname.split('.').pop());
+//   },
+// });
+
+// const upload = multer({ storage: storage });
 
 
 
