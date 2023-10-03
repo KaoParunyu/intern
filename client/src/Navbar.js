@@ -1,13 +1,22 @@
 
 
 import Navbar from 'react-bootstrap/Navbar';
+import { Button } from '@mui/material';
 
 
 
 function Navbar1() {
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location = '/login'
+  }
+  
+
   return (
     <>
-    
+    <Button variant="contained" onClick={handleLogout}>Logout</Button>
   
 <Navbar bg="secondary" data-bs-theme="white" >
 

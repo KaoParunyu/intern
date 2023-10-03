@@ -145,8 +145,8 @@ export default function DataTable() {
       // ดึงข้อมูลใหม่
       await getProblem();
   
-      // ล้างข้อมูลที่เลือกใน Dropdown
-      setSelectedStatus({});
+      // // ล้างข้อมูลที่เลือกใน Dropdown
+      // setSelectedStatus({});
     } catch (error) {
       console.error('Error:', error);
     }

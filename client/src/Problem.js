@@ -2,6 +2,8 @@ import './App.css'
 import { useState, useEffect } from 'react';
 import Axios from 'axios'
 // import { Button } from '@mui/material';
+
+
 import { DataGrid } from '@mui/x-data-grid';
 
 const Form = () => {
@@ -14,18 +16,35 @@ const Form = () => {
   const [repairTypes, setRepairTypes] = useState([]);
   const [statusTypes, setStatusTypes] = useState([]);
   const [problemList, setProblemlist] = useState([]);
+
+  const moment = require('moment-timezone');
+
   const [loggedInUser, setLoggedInUser] = useState({ fname: "", lname: "" });
+  const sortedProblemList = [...problemList].sort((a, b) => {
+    const timeA = new Date(a.created_at).getTime();
+    const timeB = new Date(b.created_at).getTime();
+    return timeB - timeA;
+  });
+  const filteredAndSortedRows = sortedProblemList.filter((row) => row.fname === loggedInUser.fname && row.lname === loggedInUser.lname);
 
   const getMe = async () => {
-    const response = await Axios.get('http://localhost:3333/me', {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem('token')
-      }
-    })
+    try {
+      const response = await Axios.get('http://localhost:3333/me', {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem('token')
+        }
+    });
     const data = response.data;
     setFirstName(data.fname);
     setLastName(data.lname);
+    setLoggedInUser(data);
+  } catch (error) {
+    console.error('Error:', error);
   }
+}
+
+  
+
 
   const getProblem = async () => {
     try {
@@ -41,6 +60,15 @@ const Form = () => {
       const statusTypesData = statusTypesResponse.data;
       setStatusTypes(statusTypesData);
 
+      const updatedData = data.map((problem) => {
+        const thaiTime = moment(problem.created_at).tz('Asia/Bangkok').format();
+        return {
+          ...problem,
+          created_at: thaiTime,
+        };
+      });
+  
+      setProblemlist(updatedData);
 
 
       // เรียกข้อมูล user จาก API ตามค่า user_id ในแต่ละรายการ
@@ -94,12 +122,12 @@ const Form = () => {
   }, []);
 
   const columns = [
-    { field: 'id', headerName: 'ID', width: 80 },
+    { field: 'id', headerName: 'ID', width: 50 },
     { field: 'fname', headerName: 'First Name', width: 130 },
     { field: 'lname', headerName: 'Last Name', width: 130 },
     { field: 'title', headerName: 'Title', width: 400 },
     {
-      field: 'repair_type_id', headerName: 'repair_type', width: 400, valueGetter: (params) => {
+      field: 'repair_type_id', headerName: 'repair_type', width: 100, valueGetter: (params) => {
         const repairType = repairTypes.find((type) => type.id === params.value);
         return repairType ? repairType.name : '';
       }
@@ -107,26 +135,33 @@ const Form = () => {
     {
       field: 'status_id',
       headerName: 'status_id',
-      width: 130,
+      width: 100,
       valueGetter: (params) => {
         const statusType = statusTypes.find((type) => type.id === params.value);
         return statusType ? statusType.name : '';
       }
     }
     ,
-    { field: 'image_url', headerName: 'Image', width: 200 },
-    { field: 'created_at', headerName: 'Created At', width: 200 },
+    { field: 'image_url', headerName: 'Image', width: 100 },
+    { field: 'created_at', headerName: 'Created At', width: 135,  valueGetter: (params) => {
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format();
+      return thaiTime;
+    }, },
+    { field: 'modified_date', headerName: 'modified_date At', width: 135,  valueGetter: (params) => {
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format();
+      return thaiTime;
+    }, },
   ];
 
-  // เรียงข้อมูลใน problemList จากใหม่ไปเก่า
-  const sortedProblemList = [...problemList].sort((a, b) => {
-    // ใช้ตัวแปรที่เกี่ยวข้องกับเวลาที่สร้าง (created_at) ของแต่ละรายการในอาร์เรย์
-    const timeA = new Date(a.created_at).getTime();
-    const timeB = new Date(b.created_at).getTime();
+  // // เรียงข้อมูลใน problemList จากใหม่ไปเก่า
+  // const sortedProblemList = [...problemList].sort((a, b) => {
+  //   // ใช้ตัวแปรที่เกี่ยวข้องกับเวลาที่สร้าง (created_at) ของแต่ละรายการในอาร์เรย์
+  //   const timeA = new Date(a.created_at).getTime();
+  //   const timeB = new Date(b.created_at).getTime();
 
-    // เรียงลำดับจากใหม่ไปเก่าโดยใช้เวลาที่สร้าง
-    return timeB - timeA;
-  });
+  //   // เรียงลำดับจากใหม่ไปเก่าโดยใช้เวลาที่สร้าง
+  //   return timeB - timeA;
+  // });
 
 
 
@@ -180,8 +215,10 @@ const Form = () => {
 
           {/* ตารางข้อมูล */}
           <div style={{ height: 390, width: '100%', justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+
+         
             <DataGrid
-              rows={sortedProblemList}
+              rows={filteredAndSortedRows} 
 
               columns={columns}
               initialState={{

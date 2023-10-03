@@ -11,6 +11,7 @@ function Foruseuser() {
 <div>
 
 <Sidebar/>
+<Navbar/>
  <Problem/>
 <UserProfile/>
 </div>
