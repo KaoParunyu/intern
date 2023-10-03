@@ -13,7 +13,7 @@ import RepairList from './RepairList';
 import Foradmin from './Foradmin';
 import Sidebar from './Sidebar';
 import Foruser from './Foruser';
-
+import UserProfile from './UserProfile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -30,6 +30,7 @@ root.render(
     <Route path="/Foradmin" element={<Foradmin />} />
     <Route path="/Sidebar" element={<Sidebar />} />
     <Route path="/Foruser" element={<Foruser />} />
+    <Route path="/UserProfile" element={<UserProfile />} />
 
   </Routes>
     

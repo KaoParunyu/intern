@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 const mysql = require("mysql2");
 const { log } = require("console");
+const { connect } = require("http2");
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -109,6 +110,15 @@ app.get("/users", (req, res) => {
   });
 });
 
+app.get('/me', (req, res) => {
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, secret);
+  connection.query("SELECT * FROM users WHERE email = ?", [decoded.email], (err, results) => {
+    const firstUser = results[0]
+    res.json(firstUser)
+  })
+})
+
 app.get("/status", (req, res) => {
   connection.execute("SELECT * FROM status", (err, result) => {
     if (err) {
@@ -155,29 +165,84 @@ app.put("/repair_notifications/:statusId", (req, res) => {
 
 app.post("/postproblem", (req, res) => {
   const title = req.body.title;
-  const user_id = 1;
+  const status_id = 1;
   const repair_type_id = req.body.repair_type_id;
-  const image_url = req.body.image_url; 
+  const image_url = req.body.image_url;
 
-  
-  if (!title || !repair_type_id || !image_url) {
+  if (!title || !repair_type_id) {
     return res.status(400).json({ error: 'Please provide all required fields.' });
   }
 
-  connection.query(
-    'INSERT INTO repair_notifications (title, user_id, repair_type_id, image_url) VALUES (?, ?, ?, ?)',
-    [title, user_id, repair_type_id, image_url],
-   
-    (err, result) => {
-      if (err) {
-        console.log(err);
-        res.status(500).send("Error inserting data");
-      } else {
-        res.send("Values Inserted");
+  const token = req.headers.authorization.split(" ")[1];
+  const decoded = jwt.verify(token, secret);
+
+  connection.query("SELECT * FROM users WHERE email = ?", [decoded.email], (err, results) => {
+    const firstUser = results[0]
+    const user_id = firstUser.id
+    connection.query(
+      'INSERT INTO repair_notifications (user_id, title, status_id, created_at, modified_date, repair_type_id, image_url) VALUES (?, ?, ?, NOW(), NOW(), ?, ?)',
+      [user_id, title, status_id, repair_type_id, image_url],
+     
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.status(500).send("Error inserting data");
+        } else {
+          res.send("Values Inserted");
+        }
       }
-    }
-  );
+    );
+  })
 });
+
+
+
+
+
+
+
+// app.post("/postproblem", (req, res) => {
+//   const title = req.body.title;
+//   // const user_id = 1;
+//   // const repair_type_id = req.body.repair_type_id;
+//   // const image_url = req.body.image_url; 
+
+  
+//   if (!title ) {
+//     return res.status(400).json({ error: 'Please provide all required fields.' });
+//   }
+
+//   connection.query(
+//     'INSERT INTO repair_notifications (title) VALUES (?)',
+//     [title],
+   
+//     (err, result) => {
+//       if (err) {
+//         console.log(err);
+//         res.status(500).send("Error inserting data");
+//       } else {
+//         res.send("Values Inserted");
+//       }
+//     }
+//   );
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 // const multer = require("multer");

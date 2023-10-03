@@ -7,15 +7,15 @@ export default function UserProfile() {
   useEffect(() => {
     // ดึงข้อมูลผู้ใช้จาก Local Storage โดยใช้ชื่อ "token"
     const token = localStorage.getItem('token');
-
+  
     // ตรวจสอบว่ามี token หรือไม่
     if (token) {
       // ดึงข้อมูลผู้ใช้จากเซิร์ฟเวอร์ของคุณโดยใช้ token
-      fetch('http://localhost:3333/users', {
+      fetch('http://localhost:3333/me', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer '+token
+          'Authorization': 'Bearer ' + token
         },
       })
         .then((response) => response.json())
@@ -29,6 +29,7 @@ export default function UserProfile() {
         });
     }
   }, []);
+  
 
   return (
     <div>
