@@ -2,6 +2,7 @@ import './App.css'
 import { useState, useEffect } from 'react';
 import Axios from 'axios'
 // import { Button } from '@mui/material';
+// import Select from '@material-ui/core/Select';
 
 
 import { DataGrid } from '@mui/x-data-grid';
@@ -144,11 +145,11 @@ const Form = () => {
     ,
     { field: 'image_url', headerName: 'Image', width: 100 },
     { field: 'created_at', headerName: 'Created At', width: 135,  valueGetter: (params) => {
-      const thaiTime = moment(params.value).tz('Asia/Bangkok').format();
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
       return thaiTime;
     }, },
     { field: 'modified_date', headerName: 'modified_date At', width: 135,  valueGetter: (params) => {
-      const thaiTime = moment(params.value).tz('Asia/Bangkok').format();
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
       return thaiTime;
     }, },
   ];
@@ -227,6 +228,8 @@ const Form = () => {
                 },
               }}
               pageSizeOptions={[5, 10]}
+              disableRowSelectionOnClick
+
             />
           </div>
         </div>

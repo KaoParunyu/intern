@@ -9,6 +9,11 @@ export default function DataTable() {
   const [problemList, setProblemList] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState({});
+  const [searchText, setSearchText] = useState("");
+
+  const moment = require('moment-timezone');
+
+
 
   const getProblem = async () => {
     try {
@@ -27,13 +32,38 @@ export default function DataTable() {
         repairTypesMap[repairType.id] = repairType.name;
       });
 
-      const newRows = data.map((val) => ({
+      const updatedData = data.map((problem) => {
+        const thaiTime = moment(problem.created_at).tz('Asia/Bangkok').format();
+        return {
+          ...problem,
+          created_at: thaiTime,
+        };
+      });
+  
+      setProblemList(updatedData);
+
+
+      const newRows = data
+      
+      .filter((val) => {
+        const lowerSearchText = searchText.toLowerCase();
+        return (
+          (val.id && val.id.toString().includes(lowerSearchText)) || // ตรวจสอบว่า val.id มีค่า
+          (val.fname && val.fname.toLowerCase().includes(lowerSearchText)) || // ตรวจสอบว่า val.fname มีค่า
+          (val.lname && val.lname.toLowerCase().includes(lowerSearchText)) ||// ตรวจสอบว่า val.lname มีค่า
+          (val.fname && val.fname.toUpperCase().includes(lowerSearchText)) || // ตรวจสอบว่า val.fname มีค่า
+          (val.lname && val.lname.toUpperCase().includes(lowerSearchText)) // ตรวจสอบว่า val.lname มีค่า
+        );
+      })
+      
+      .map((val) => ({
         id: val.id,
-        lastName: '',
-        firstName: '',
+        user_id: val.user_id, // เพิ่ม user_id ใน newRows
+        lastName: val.lname,
+        firstName: val.fname,
         problem: val.title,
         repair_type_id: val.repair_type_id,
-        repair_type: repairTypesMap[val.repair_type_id] || '', // ใช้ชื่อ repair_type จากข้อมูล repairTypesMap
+        repair_type: repairTypesMap[val.repair_type_id] || '',
         status_id: val.status_id,
         created_at: val.created_at,
         modified_date: val.modified_date,
@@ -41,7 +71,7 @@ export default function DataTable() {
       }));
 
       newRows.forEach((row) => {
-        const user = users.find((user) => user.id === row.id);  
+        const user = users.find((user) => user.id === row.user_id);  // เปรียบเทียบกับ user_id แทน
         if (user) {
           row.lastName = user.lname;
           row.firstName = user.fname;
@@ -67,19 +97,25 @@ export default function DataTable() {
   useEffect(() => {
     getProblem();
     getStatusOptions();
-  }, []);
+  }, [searchText]);
 
 
 
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 40 },
-    { field: 'firstName', headerName: 'First name', width: 130 },
-    { field: 'lastName', headerName: 'Last name', width: 130 },
-    { field: 'problem', headerName: 'problem', width: 400 },
-    { field: 'repair_type', headerName: 'repair_type', width: 150 },
-    { field: 'created_at', headerName: 'created_at', width: 150 },
-    { field: 'modified_date', headerName: 'modified_date', width: 180 },
+    { field: 'firstName', headerName: 'First name', width: 130 }, // เปลี่ยนเป็น firstName
+    { field: 'lastName', headerName: 'Last name', width: 130 }, // เปลี่ยนเป็น lastName
+        { field: 'problem', headerName: 'problem', width: 400 },
+    { field: 'repair_type', headerName: 'repair_type', width: 100 },
+    { field: 'created_at', headerName: 'created_at', width: 150 , valueGetter: (params) => {
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      return thaiTime;
+    }, },
+    { field: 'modified_date', headerName: 'modified_date', width: 180 , valueGetter: (params) => {
+      const thaiTime = moment(params.value).tz('Asia/Bangkok').format('YYYY-MM-DD HH:mm:ss');
+      return thaiTime;
+    }, },
     { field: 'status_id', headerName: 'status_id', width: 130, 
     
     
@@ -152,7 +188,9 @@ export default function DataTable() {
     }
   };
   
-
+  const handleSearch = () => {
+    getProblem(); // เรียกใช้ getProblem() เพื่อค้นหาข้อมูลใหม่
+  };
 
 
 
@@ -160,6 +198,20 @@ export default function DataTable() {
 
   return (
     <div style={{ height: 400, width: '100%' }}>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchText}
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSearch}
+      >
+        Search
+      </Button>
+
       <DataGrid
         rows={rows}
         columns={columns}
@@ -170,6 +222,8 @@ export default function DataTable() {
         }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
+        disableRowSelectionOnClick
+
       />
       <Button
   variant="contained"

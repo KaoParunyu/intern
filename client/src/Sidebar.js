@@ -1,85 +1,140 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
-import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
+import React, { useState } from "react";
+import "./App";
+import UserProfile from "./UserProfile";
+import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import Button from "@mui/material/Button";
 
-export default function TemporaryDrawer() {
-  const [state, setState] = React.useState({
-  
-    densityMedium : false,
-   
-    
-  });
+import {
+  AppBar,
+  Toolbar,
+  Avatar,
+  Box,
+  Divider,
+  IconButton,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  makeStyles,
+  CssBaseline,
+  Drawer,
+  Typography,
+} from "@material-ui/core";
+import {
+  Apps,
+  Menu,
+  ContactMail,
+  AssignmentInd,
+  Home,
+} from "@material-ui/icons";
 
-  const toggleDrawer = (anchor, open) => (event) => {
-    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
-      return;
-    }
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#A0CE7A', // เปลี่ยนเป็นสีที่คุณต้องการ
+    },
+  },
+});
 
-    setState({ ...state, [anchor]: open });
+const useStyles = makeStyles((theme) => ({
+  menuSliderContainer: {
+    width: 250,
+    background: "#511",
+    height: "100%",
+  },
+  avatar: {
+    margin: "0.5rem auto",
+    padding: "1rem",
+    width: theme.spacing(13),
+    height: theme.spacing(13),
+  },
+  listItem: {
+    color: "red",
+  },
+}));
+
+const listItems = [
+  {
+    listIcon: <Home />,
+    listText: "Home",
+  },
+  {
+    listIcon: <AssignmentInd />,
+    listText: "Resume",
+  },
+  {
+    listIcon: <Apps />,
+    listText: "Portfolio",
+  },
+  {
+    listIcon: <ContactMail />,
+    listText: "Contacts",
+  },
+];
+
+export default function App() {
+  const classes = useStyles();
+  const [open, setOpen] = useState(false);
+
+  const toggleSlider = () => {
+    setOpen(!open);
   };
 
-  const list = (anchor) => (
+  const sideList = () => (
     <Box
-      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
+      style={{
+        flex: 1,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
     >
-      <List>
-        {['1', '2', '  3', '4'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
+      <Avatar
+        className={classes.avatar}
+        src="https://i.ibb.co/rx5DFbs/avatar.png"
+        alt="Juaneme8"
+      />
+      
       <Divider />
+      <UserProfile />
       <List>
-        {['1', '2', '3'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
+        {listItems.map((listItem, index) => (
+          <ListItem className={classes.listItem} button key={index}>
+            <ListItemIcon className={classes.listItem}>
+              {listItem.listIcon}
+            </ListItemIcon>
+            <ListItemText primary={listItem.listText} />
           </ListItem>
         ))}
       </List>
+      <Button variant="contained" onClick={handleLogout}>Logout</Button>
     </Box>
   );
+  
+  const handleLogout = (event) => {
+    event.preventDefault();
+    localStorage.removeItem('token');
+    window.location = '/login'
+  }
 
   return (
-    <div>
-      {['densityMedium '].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}><DensityMediumIcon/> </Button>
-          <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}
-          >
-            {list(anchor)}
-          </Drawer>
-        </React.Fragment>
-      ))}
-    </div>
-    
+    <>
+      <CssBaseline />
+      <ThemeProvider theme={theme}>
+  <AppBar position="static" style={{ background: theme.palette.primary.main }}>
+    <Toolbar>
+      <IconButton onClick={toggleSlider}>
+        <Menu />
+      </IconButton>
+      <Typography>repair notifications</Typography>
+      
+      <Drawer open={open} anchor="over" onClose={toggleSlider}>
+        {sideList()}
+      </Drawer>
+    </Toolbar>
+  </AppBar>
+</ThemeProvider>
 
-    
+    </>
   );
 }
