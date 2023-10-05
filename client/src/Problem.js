@@ -10,6 +10,7 @@ import { DataGrid } from '@mui/x-data-grid';
 const Form = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [role, setRole] = useState("");
 
   const [title, setTitle] = useState("");
   const [image_url, setImage_url] = useState("");
@@ -28,6 +29,46 @@ const Form = () => {
   });
   const filteredAndSortedRows = sortedProblemList.filter((row) => row.fname === loggedInUser.fname && row.lname === loggedInUser.lname);
 
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    fetch('http://localhost:3333/authen', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    })
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'ok') {
+          localStorage.setItem('role', data.role); // บันทึกบทบาทใน localStorage
+          // alert('authen Success')
+        } else {
+          alert('authen failed');
+          localStorage.removeItem('token');
+          localStorage.removeItem('role'); // ลบบทบาทถ้าการตรวจสอบล้มเหลว
+          window.location = '/login';
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const role = localStorage.getItem('role');
+    if (role !== 'user') {
+      
+      // window.location = '/login';
+    }
+  }, []);
+    
+
+
+
+
+
   const getMe = async () => {
     try {
       const response = await Axios.get('http://localhost:3333/me', {
@@ -38,6 +79,7 @@ const Form = () => {
     const data = response.data;
     setFirstName(data.fname);
     setLastName(data.lname);
+    setRole(data.role);
     setLoggedInUser(data);
   } catch (error) {
     console.error('Error:', error);
@@ -179,6 +221,10 @@ const Form = () => {
         <div className="form-group">
           <label htmlFor="lastName">LastName:</label>
           <input disabled type="text" id="lastName" name="lastName" value={lastName} onChange={(event) => { setLastName(event.target.value) }} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="role">Role:</label>
+          <input disabled type="text" id="role" name="role" value={role} onChange={(event) => { setRole(event.target.value) }} />
         </div>
         <div className="form-group">
           <label htmlFor="title">Title:</label>

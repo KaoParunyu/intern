@@ -25,7 +25,7 @@ function Navbar1() {
             
           </Navbar.Text>
         </Navbar.Collapse>
-        <Navbar.Brand href="#home"><div></div>Project</Navbar.Brand>
+        <Navbar.Brand href="#home"><div></div><Project</Navbar.Brand>
         <Navbar.Toggle />
         <Navbar.Collapse className="justify-content-end">
           <Navbar.Text>

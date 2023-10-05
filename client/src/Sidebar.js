@@ -54,22 +54,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const listItems = [
-  {
-    listIcon: <Home />,
-    listText: "Home",
-  },
-  {
-    listIcon: <AssignmentInd />,
-    listText: "Resume",
-  },
-  {
-    listIcon: <Apps />,
-    listText: "Portfolio",
-  },
-  {
-    listIcon: <ContactMail />,
-    listText: "Contacts",
-  },
+  // {
+  //   listIcon: <Home />,
+  //   listText: "Home",
+  // },
+  // {
+  //   listIcon: <AssignmentInd />,
+  //   listText: "Resume",
+  // },
+  // {
+  //   listIcon: <Apps />,
+  //   listText: "Portfolio",
+  // },
+  // {
+  //   listIcon: <ContactMail />,
+  //   listText: "Contacts",
+  // },
 ];
 
 export default function App() {

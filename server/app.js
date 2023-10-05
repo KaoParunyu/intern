@@ -162,6 +162,26 @@ app.put("/repair_notifications/:statusId", (req, res) => {
   });
 });
 
+app.delete("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  const idsArray = id.split(','); // แยกค่า id ออกเป็นอาร์เรย์ของ id
+  connection.query("DELETE FROM repair_notifications WHERE id IN (?)", [idsArray], (err, result) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
+    } else {
+      res.status(200).json({ success: 'ลบข้อมูลเรียบร้อยแล้ว' });
+    }
+  });
+});
+
+
+
+
+
+
+
+
 
 app.post("/postproblem", (req, res) => {
   const title = req.body.title;

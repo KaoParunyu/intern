@@ -13,7 +13,34 @@ export default function DataTable() {
 
   const moment = require('moment-timezone');
 
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    fetch('http://localhost:3333/authen',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer '+token
+      }
+      
+    })
+      .then(response=> response.json())
+      .then(data => {
+        if (data.status === 'ok'){
+          // localStorage.removeItem('token')
 
+          // alert('authen Success')
+          
+        } else {
+          alert('authenn failed')
+          localStorage.removeItem('token')
+          window.location = '/login'
+        }
+        
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  },[])
 
   const getProblem = async () => {
     try {
@@ -50,9 +77,8 @@ export default function DataTable() {
         return (
           (val.id && val.id.toString().includes(lowerSearchText)) || // ตรวจสอบว่า val.id มีค่า
           (val.fname && val.fname.toLowerCase().includes(lowerSearchText)) || // ตรวจสอบว่า val.fname มีค่า
-          (val.lname && val.lname.toLowerCase().includes(lowerSearchText)) ||// ตรวจสอบว่า val.lname มีค่า
-          (val.fname && val.fname.toUpperCase().includes(lowerSearchText)) || // ตรวจสอบว่า val.fname มีค่า
-          (val.lname && val.lname.toUpperCase().includes(lowerSearchText)) // ตรวจสอบว่า val.lname มีค่า
+          (val.lname && val.lname.toLowerCase().includes(lowerSearchText)) // ตรวจสอบว่า val.lname มีค่า
+
         );
       })
       
@@ -183,6 +209,8 @@ export default function DataTable() {
   
       // // ล้างข้อมูลที่เลือกใน Dropdown
       // setSelectedStatus({});
+      setSelectedRows([]);
+
     } catch (error) {
       console.error('Error:', error);
     }
@@ -193,6 +221,36 @@ export default function DataTable() {
   };
 
 
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  const deleteProblem = () => {
+    if (selectedRows.length === 0) {
+      // ถ้าไม่มีแถวที่ถูกเลือก ไม่ต้องทำอะไร
+      return;
+    }
+  
+    const selectedIds = selectedRows.map((row) => row.id);
+  
+    Axios.delete(`http://localhost:3333/delete/${selectedIds.join(',')}`)
+    .then((response) => {
+      if (response.status === 200) {
+        console.log('ลบข้อมูลเรียบร้อยแล้ว');
+        // ทำอย่างอื่น ๆ ที่คุณต้องการหลังจากลบสำเร็จ
+      } else {
+        console.log('เกิดข้อผิดพลาดในการลบข้อมูล');
+        // จัดการกับข้อผิดพลาด
+      }
+    })
+    .catch((error) => {
+      console.error('เกิดข้อผิดพลาดในการส่งคำขอ DELETE:', error);
+      // จัดการกับข้อผิดพลาดอื่น ๆ ที่อาจเกิดขึ้นในระหว่างการส่งคำขอ
+    });
+  
+    // เคลียร์การเลือก
+    setSelectedRows([]);
+  };
+  
+  
 
 
 
@@ -204,17 +262,15 @@ export default function DataTable() {
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSearch}
-      >
-        Search
-      </Button>
+
 
       <DataGrid
         rows={rows}
         columns={columns}
+        selectionModel={selectedRows}
+        onSelectionModelChange={(newSelection) => {
+          setSelectedRows(newSelection.selectionModel);
+        }}
         initialState={{
           pagination: {
             paginationModel: { page: 0, pageSize: 5 },
@@ -225,12 +281,14 @@ export default function DataTable() {
         disableRowSelectionOnClick
 
       />
-      <Button
-  variant="contained"
-  color="primary"
-  onClick={handleSubmit}>
-  Submit
+      <Button variant="contained" color="primary" onClick={handleSubmit}>Submit</Button>
+
+      <Button variant="contained" color="secondary" onClick={deleteProblem}>
+  Delete
 </Button>
+
+
+
 
     </div>
     
