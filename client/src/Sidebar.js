@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import "./App";
 import UserProfile from "./UserProfile";
-import { createTheme, ThemeProvider } from '@material-ui/core/styles';
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 import {
   AppBar,
   Toolbar,
-  Avatar,
   Box,
-  Divider,
   IconButton,
   List,
   ListItem,
@@ -20,61 +19,43 @@ import {
   Drawer,
   Typography,
 } from "@material-ui/core";
-import {
-  Apps,
-  Menu,
-  ContactMail,
-  AssignmentInd,
-  Home,
-} from "@material-ui/icons";
+import { Menu, AssignmentInd, Home } from "@material-ui/icons";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#A0CE7A', // เปลี่ยนเป็นสีที่คุณต้องการ
+      main: "#A0CE7A", // เปลี่ยนเป็นสีที่คุณต้องการ
     },
   },
 });
 
 const useStyles = makeStyles((theme) => ({
   menuSliderContainer: {
-    width: 250,
     background: "#511",
-    height: "100%",
-  },
-  avatar: {
-    margin: "0.5rem auto",
-    padding: "1rem",
-    width: theme.spacing(13),
-    height: theme.spacing(13),
-  },
-  listItem: {
-    color: "red",
   },
 }));
 
 const listItems = [
-  // {
-  //   listIcon: <Home />,
-  //   listText: "Home",
-  // },
-  // {
-  //   listIcon: <AssignmentInd />,
-  //   listText: "Resume",
-  // },
-  // {
-  //   listIcon: <Apps />,
-  //   listText: "Portfolio",
-  // },
-  // {
-  //   listIcon: <ContactMail />,
-  //   listText: "Contacts",
-  // },
+  {
+    listIcon: <AssignmentInd />,
+    listText: "User",
+    value: "/Foruser",
+  },
+  {
+    listIcon: <Home />,
+    listText: "Admin",
+    value: "/Foradmin",
+  },
 ];
 
 export default function App() {
+  const navigate = useNavigate();
   const classes = useStyles();
   const [open, setOpen] = useState(false);
+
+  const handleMenuClick = (value) => {
+    navigate(value);
+  };
 
   const toggleSlider = () => {
     setOpen(!open);
@@ -87,19 +68,19 @@ export default function App() {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
+        width: 250,
+        padding: "1rem",
       }}
     >
-      <Avatar
-        className={classes.avatar}
-        src="https://i.ibb.co/rx5DFbs/avatar.png"
-        alt="Juaneme8"
-      />
-      
-      <Divider />
       <UserProfile />
       <List>
         {listItems.map((listItem, index) => (
-          <ListItem className={classes.listItem} button key={index}>
+          <ListItem
+            onClick={() => handleMenuClick(listItem.value)}
+            className={classes.listItem}
+            button
+            key={index}
+          >
             <ListItemIcon className={classes.listItem}>
               {listItem.listIcon}
             </ListItemIcon>
@@ -107,34 +88,39 @@ export default function App() {
           </ListItem>
         ))}
       </List>
-      <Button variant="contained" onClick={handleLogout}>Logout</Button>
+      <Button variant="contained" onClick={handleLogout}>
+        Logout
+      </Button>
     </Box>
   );
-  
+
   const handleLogout = (event) => {
     event.preventDefault();
-    localStorage.removeItem('token');
-    window.location = '/login'
-  }
+    localStorage.removeItem("token");
+    window.location = "/login";
+  };
 
   return (
     <>
       <CssBaseline />
       <ThemeProvider theme={theme}>
-  <AppBar position="static" style={{ background: theme.palette.primary.main }}>
-    <Toolbar>
-      <IconButton onClick={toggleSlider}>
-        <Menu />
-      </IconButton>
-      <Typography>repair notifications</Typography>
-      
-      <Drawer open={open} anchor="over" onClose={toggleSlider}>
-        {sideList()}
-      </Drawer>
-    </Toolbar>
-  </AppBar>
-</ThemeProvider>
-
+        <AppBar
+          position="static"
+          style={{ background: theme.palette.primary.main }}
+        >
+          <Toolbar>
+            <IconButton onClick={toggleSlider}>
+              <Menu />
+            </IconButton>
+            <Typography style={{ marginLeft: "1rem" }} variant="h6">
+              Repair Notifications
+            </Typography>
+            <Drawer open={open} anchor="over" onClose={toggleSlider}>
+              {sideList()}
+            </Drawer>
+          </Toolbar>
+        </AppBar>
+      </ThemeProvider>
     </>
   );
 }

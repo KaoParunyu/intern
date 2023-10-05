@@ -1,25 +1,26 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-var bodyParser = require("body-parser");
+const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const fileUpload = require("express-fileupload");
 const secret = "fullstack";
+const path = require("path");
 
-// app.use(express.static('public'));
+app.use(fileUpload());
 
+app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 app.use(cors());
 app.use(bodyParser.json());
 
 const mysql = require("mysql2");
-const { log } = require("console");
-const { connect } = require("http2");
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "project",
 });
 
@@ -80,6 +81,7 @@ app.post("/login", function (req, res, next) {
     }
   );
 });
+
 app.post("/authen", function (req, res, next) {
   try {
     const token = req.headers.authorization.split(" ")[1];
@@ -110,14 +112,18 @@ app.get("/users", (req, res) => {
   });
 });
 
-app.get('/me', (req, res) => {
+app.get("/me", (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, secret);
-  connection.query("SELECT * FROM users WHERE email = ?", [decoded.email], (err, results) => {
-    const firstUser = results[0]
-    res.json(firstUser)
-  })
-})
+  connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    [decoded.email],
+    (err, results) => {
+      const firstUser = results[0];
+      res.json(firstUser);
+    }
+  );
+});
 
 app.get("/status", (req, res) => {
   connection.execute("SELECT * FROM status", (err, result) => {
@@ -164,24 +170,20 @@ app.put("/repair_notifications/:statusId", (req, res) => {
 
 app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
-  const idsArray = id.split(','); // แยกค่า id ออกเป็นอาร์เรย์ของ id
-  connection.query("DELETE FROM repair_notifications WHERE id IN (?)", [idsArray], (err, result) => {
-    if (err) {
-      console.log(err);
-      res.status(500).json({ error: 'เกิดข้อผิดพลาดในการลบข้อมูล' });
-    } else {
-      res.status(200).json({ success: 'ลบข้อมูลเรียบร้อยแล้ว' });
+  const idsArray = id.split(","); // แยกค่า id ออกเป็นอาร์เรย์ของ id
+  connection.query(
+    "DELETE FROM repair_notifications WHERE id IN (?)",
+    [idsArray],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        res.status(500).json({ error: "เกิดข้อผิดพลาดในการลบข้อมูล" });
+      } else {
+        res.status(200).json({ success: "ลบข้อมูลเรียบร้อยแล้ว" });
+      }
     }
-  });
+  );
 });
-
-
-
-
-
-
-
-
 
 app.post("/postproblem", (req, res) => {
   const title = req.body.title;
@@ -190,127 +192,52 @@ app.post("/postproblem", (req, res) => {
   const image_url = req.body.image_url;
 
   if (!title || !repair_type_id) {
-    return res.status(400).json({ error: 'Please provide all required fields.' });
+    return res
+      .status(400)
+      .json({ error: "Please provide all required fields." });
   }
 
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, secret);
 
-  connection.query("SELECT * FROM users WHERE email = ?", [decoded.email], (err, results) => {
-    const firstUser = results[0]
-    const user_id = firstUser.id
-    connection.query(
-      'INSERT INTO repair_notifications (user_id, title, status_id, created_at, modified_date, repair_type_id, image_url) VALUES (?, ?, ?, NOW(), NOW(), ?, ?)',
-      [user_id, title, status_id, repair_type_id, image_url],
-     
-      (err, result) => {
-        if (err) {
-          console.log(err);
-          res.status(500).send("Error inserting data");
-        } else {
-          res.send("Values Inserted");
+  connection.query(
+    "SELECT * FROM users WHERE email = ?",
+    [decoded.email],
+    (err, results) => {
+      const firstUser = results[0];
+      const user_id = firstUser.id;
+      connection.query(
+        "INSERT INTO repair_notifications (user_id, title, status_id, created_at, modified_date, repair_type_id, image_url) VALUES (?, ?, ?, NOW(), NOW(), ?, ?)",
+        [user_id, title, status_id, repair_type_id, image_url],
+
+        (err, result) => {
+          if (err) {
+            console.log(err);
+            res.status(500).send("Error inserting data");
+          } else {
+            res.send("Values Inserted");
+          }
         }
-      }
-    );
-  })
+      );
+    }
+  );
 });
 
+app.post("/images", (req, res) => {
+  const { image } = req.files;
 
+  if (!image) return res.sendStatus(400);
 
+  const imageExtension = image.name.split(".").pop();
 
+  const imageName = Date.now() + "." + imageExtension;
 
+  const path = "/upload/" + imageName;
 
+  image.mv(__dirname + path);
 
-// app.post("/postproblem", (req, res) => {
-//   const title = req.body.title;
-//   // const user_id = 1;
-//   // const repair_type_id = req.body.repair_type_id;
-//   // const image_url = req.body.image_url; 
-
-  
-//   if (!title ) {
-//     return res.status(400).json({ error: 'Please provide all required fields.' });
-//   }
-
-//   connection.query(
-//     'INSERT INTO repair_notifications (title) VALUES (?)',
-//     [title],
-   
-//     (err, result) => {
-//       if (err) {
-//         console.log(err);
-//         res.status(500).send("Error inserting data");
-//       } else {
-//         res.send("Values Inserted");
-//       }
-//     }
-//   );
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const multer = require("multer");
-
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, "public"); // ระบุไดเรกทอรี่ที่จะเก็บไฟล์
-//   },
-//   filename: function (req, file, cb) {
-//     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-//     cb(null, file.fieldname + "-" + uniqueSuffix + "." + file.originalname.split('.').pop());
-//   },
-// });
-
-// const upload = multer({ storage: storage });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//   app.post('/Problem,  function (req, res, next) {
-
-//     const usersId = req.body.usersId;
-
-//         connection.execute(
-//             'INSERT INTO repair_notifications (title, image_url, users_id ) VALUES (?, ?, ?)',
-//             [req.body.title, req.body.image_url, usersId],
-//             function(err, results, fields) {
-//              if(err){
-//                 res.json({status: 'error', message: err})
-//                 return
-//              }
-//                res.json({status: 'ok'})
-//             }
-//           );
-
-// })
+  res.json(path).status(200);
+});
 
 app.listen(3333, function () {
   console.log("work on 3333");

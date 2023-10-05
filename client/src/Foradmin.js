@@ -1,26 +1,39 @@
-import Sidebar from './Sidebar';
-//import Container from 'react-bootstrap/Container';
-import Navbar from 'react-bootstrap/Navbar';
-// import { Link } from 'react-router-dom';
-// import Register from './Register';
-  import RepairForm from './RepairForm';
-// import Tabletest from './Tabletest';
-//  import UserProfile from './UserProfile';
+import Sidebar from "./Sidebar";
+import { useEffect } from "react";
+import RepairForm from "./RepairForm";
+import Navbar from "react-bootstrap/Navbar";
 
 function OffcanvasExample() {
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:3333/authen", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "ok") {
+          if (data.decoded.role === "user") {
+            window.location = "/Foruser";
+          }
+        } else {
+          localStorage.removeItem("token");
+          window.location = "/login";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   return (
     <>
-    
- 
-            <Sidebar/>
-       
-  
-      
-    <Navbar/>
-
-    <RepairForm/>
-
-
+      <Sidebar />
+      <Navbar />
+      <RepairForm />
     </>
   );
 }
