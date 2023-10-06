@@ -166,6 +166,9 @@ export default function DataTable() {
       field: "image_url",
       headerName: "Image",
       renderCell: (params) => {
+        if(!params.value) {
+          return <span>-</span>
+        }
         return (
           <a
             href={`http://localhost:3333${params.value}`}
