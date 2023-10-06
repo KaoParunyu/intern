@@ -13,58 +13,63 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 // import Alert from '@mui/material/Alert';
-import Select from '@mui/material/Select';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-
-
-
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+const MySwal = withReactContent(Swal);
 
 const theme = createTheme();
 
 export default function SignUp() {
-  const handleSubmit = (event) => {                                 // เป็นฟังก์ชันที่ถูกเรียกเมื่อผู้ใช้กดปุ่ม Sign Up
-    event.preventDefault();                                       //ป้องกันการโหลดหน้าเว็บใหม่
-    const data = new FormData(event.currentTarget);             //ใช้้เพื่อเก็บแบบฟอร์มที่ถูกส่งเมื่อผู้ใช้กดปุ่ม Sign Up
+  const handleSubmit = (event) => {
+    // เป็นฟังก์ชันที่ถูกเรียกเมื่อผู้ใช้กดปุ่ม Sign Up
+    event.preventDefault(); //ป้องกันการโหลดหน้าเว็บใหม่
+    const data = new FormData(event.currentTarget); //ใช้้เพื่อเก็บแบบฟอร์มที่ถูกส่งเมื่อผู้ใช้กดปุ่ม Sign Up
 
     const jsonData = {
-      email: data.get('email'),
-      password: data.get('password'),
-      fname: data.get('firstName'),
-      lname: data.get('lastName'),
-      role: data.get('role'),
-    }
+      email: data.get("email"),
+      password: data.get("password"),
+      fname: data.get("firstName"),
+      lname: data.get("lastName"),
+      role: data.get("role"),
+    };
 
-
-    fetch('http://localhost:3333/register', {               // ส่งคำขอ HTTP POST ไปยัง URL
-      method: 'POST',
+    fetch("http://localhost:3333/register", {
+      // ส่งคำขอ HTTP POST ไปยัง URL
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',               //ระบุว่าข้อมูลที่ส่งไปยังเซิร์ฟเวอร์เป็น JSON
+        "Content-Type": "application/json", //ระบุว่าข้อมูลที่ส่งไปยังเซิร์ฟเวอร์เป็น JSON
       },
-      body: JSON.stringify(jsonData),                    //แปลงอ็อบเจ็กต์ jsonData เป็นสตริง JSON
+      body: JSON.stringify(jsonData), //แปลงอ็อบเจ็กต์ jsonData เป็นสตริง JSON
     })
-      .then(response => response.json())                  // เพื่อแปลงข้อมูล JSON ที่ถูกส่งกลับมาจากเซิร์ฟเวอร์เป็นอ็อบเจ็กต์ JavaScript
-      .then(data => {
-        if (data.status === 'ok') {
-          alert('register Success')
-          window.location = '/login'
+      .then((response) => response.json()) // เพื่อแปลงข้อมูล JSON ที่ถูกส่งกลับมาจากเซิร์ฟเวอร์เป็นอ็อบเจ็กต์ JavaScript
+      .then((data) => {
+        if (data.status === "ok") {
+          MySwal.fire({
+            title: "สมัครสมาชิกสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+          }).then(() => {
+            window.location = "/login";
+          });
         } else {
-          alert('รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว')
+          MySwal.fire({
+            title: "รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว",
+            icon: "warning",
+            confirmButtonText: "ตกลง",
+          });
         }
-
       })
-      .catch((error) => {                                 // รับข้อมูลข้อผิดพลาดที่เกิดขึ้นในกรณีที่เกิดข้อผิดพลาดในการส่งคำขอ
-        console.error('Error:', error);
+      .catch((error) => {
+        // รับข้อมูลข้อผิดพลาดที่เกิดขึ้นในกรณีที่เกิดข้อผิดพลาดในการส่งคำขอ
+        console.error("Error:", error);
       });
-
-
-
-
   };
 
   return (
-    
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -74,7 +79,6 @@ export default function SignUp() {
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -146,10 +150,7 @@ export default function SignUp() {
                     <MenuItem value="admin">Admin</MenuItem>
                   </Select>
                 </FormControl>
-
               </Grid>
-
-              
             </Grid>
             <Button
               type="submit"
@@ -168,7 +169,6 @@ export default function SignUp() {
             </Grid>
           </Box>
         </Box>
-
       </Container>
     </ThemeProvider>
   );

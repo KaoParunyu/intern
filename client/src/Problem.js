@@ -6,10 +6,22 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Box } from "@mui/material";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const MySwal = withReactContent(Swal);
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 2,
+  borderRadius: "0.5rem",
+};
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -33,6 +45,16 @@ const Form = () => {
   const [statusTypes, setStatusTypes] = useState([]);
   const [problemList, setProblemlist] = useState([]);
   const [file, setFile] = useState();
+  const [open, setOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const handleOpen = (image) => {
+    setPreviewImage(image);
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setPreviewImage("");
+    setOpen(false);
+  };
 
   const moment = require("moment-timezone");
 
@@ -212,7 +234,7 @@ const Form = () => {
     { field: "id", headerName: "Id", width: 50 },
     { field: "fname", headerName: "First Name", width: 150 },
     { field: "lname", headerName: "Last Name", width: 150 },
-    { field: "title", headerName: "Title", width: 300 },
+    { field: "title", headerName: "Title", width: 200 },
     {
       field: "repair_type_id",
       headerName: "Repair Type",
@@ -234,22 +256,22 @@ const Form = () => {
     {
       field: "created_at",
       headerName: "Created At",
-      width: 135,
+      width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format("DD/MM/YYYY - HH:mm");
         return thaiTime;
       },
     },
     {
       field: "modified_date",
       headerName: "Modified Date At",
-      width: 135,
+      width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format("DD/MM/YYYY - HH:mm");
         return thaiTime;
       },
     },
@@ -261,10 +283,8 @@ const Form = () => {
           return <span>-</span>;
         }
         return (
-          <a
-            href={`http://localhost:3333${params.value}`}
-            target="_blank"
-            rel="noreferrer"
+          <Button
+            onClick={() => handleOpen(`http://localhost:3333${params.value}`)}
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
@@ -272,7 +292,7 @@ const Form = () => {
               src={`http://localhost:3333${params.value}`}
               alt="preview"
             />
-          </a>
+          </Button>
         );
       },
     },
@@ -280,47 +300,86 @@ const Form = () => {
 
   return (
     <div className="container">
-      <h1 style={{ marginTop: "1rem" }}>Form</h1>
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: "1rem",
+            }}
+          >
+            <Typography color="primary" variant="h6">
+              พรีวิว
+            </Typography>
+            <IconButton
+              color="primary"
+              sx={{
+                width: "3rem",
+                height: "3rem",
+              }}
+              onClick={handleClose}
+            >
+              <Typography variant="srOnly">Close</Typography>
+              <span aria-hidden>×</span>
+            </IconButton>
+          </Box>
+          <img
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              borderRadius: "0.5rem",
+            }}
+            src={previewImage}
+            alt="preview"
+          />
+        </Box>
+      </Modal>
+      <h1 style={{ marginTop: "1rem" }}>User</h1>
       <form className="form">
         {/* ข้อมูลอื่น ๆ ในฟอร์ม */}
-        <div className="form-group">
-          <label htmlFor="firstName">First Name</label>
-          <input
-            disabled
-            type="text"
-            id="firstName"
-            name="firstName"
-            value={firstName}
-            onChange={(event) => {
-              setFirstName(event.target.value);
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="lastName">Last Name</label>
-          <input
-            disabled
-            type="text"
-            id="lastName"
-            name="lastName"
-            value={lastName}
-            onChange={(event) => {
-              setLastName(event.target.value);
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="role">Role</label>
-          <input
-            disabled
-            type="text"
-            id="role"
-            name="role"
-            value={role}
-            onChange={(event) => {
-              setRole(event.target.value);
-            }}
-          />
+        <div className="row">
+          <div className="form-group col">
+            <label htmlFor="firstName">First Name</label>
+            <input
+              disabled
+              type="text"
+              id="firstName"
+              name="firstName"
+              value={firstName}
+              onChange={(event) => {
+                setFirstName(event.target.value);
+              }}
+            />
+          </div>
+          <div className="form-group col">
+            <label htmlFor="lastName">Last Name</label>
+            <input
+              disabled
+              type="text"
+              id="lastName"
+              name="lastName"
+              value={lastName}
+              onChange={(event) => {
+                setLastName(event.target.value);
+              }}
+            />
+          </div>
+          <div className="form-group col">
+            <label htmlFor="role">Role</label>
+            <input
+              disabled
+              type="text"
+              id="role"
+              name="role"
+              value={role}
+              onChange={(event) => {
+                setRole(event.target.value);
+              }}
+            />
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="title">Title</label>

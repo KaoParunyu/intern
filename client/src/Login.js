@@ -10,6 +10,9 @@ import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import { Container } from "@mui/material";
 import { useEffect } from "react";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
+const MySwal = withReactContent(Swal);
 
 export default function Login() {
   const handleSubmit = (event) => {
@@ -30,18 +33,26 @@ export default function Login() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         if (data.status === "ok") {
-          alert("login Success");
-          localStorage.setItem("role", data.role); // บันทึกบทบาทใน localStorage
-          localStorage.setItem("token", data.token);
-          if (data.role === "user") {
-            window.location = "/Foruser";
-          } else if (data.role === "admin") {
-            window.location = "/Foradmin";
-          }
+          MySwal.fire({
+            title: "เข้าสู่ระบบสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ตกลง",
+          }).then(() => {
+            localStorage.setItem("role", data.role); // บันทึกบทบาทใน localStorage
+            localStorage.setItem("token", data.token);
+            if (data.role === "user") {
+              window.location = "/Foruser";
+            } else if (data.role === "admin") {
+              window.location = "/Foradmin";
+            }
+          });
         } else {
-          alert("login failed");
+          MySwal.fire({
+            title: "อีเมลล์หรือรหัสผ่านไม่ถูกต้อง",
+            icon: "warning",
+            confirmButtonText: "ตกลง",
+          });
         }
       })
       .catch((error) => {

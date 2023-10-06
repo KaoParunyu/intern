@@ -2,10 +2,22 @@ import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Axios from "axios";
-import { Box } from "@mui/material";
+import { Box, IconButton, Modal, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 const moment = require("moment-timezone");
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 2,
+  borderRadius: "0.5rem",
+};
 
 const MySwal = withReactContent(Swal);
 
@@ -16,6 +28,16 @@ export default function DataTable() {
   const [selectedStatus, setSelectedStatus] = useState({});
   const [searchText, setSearchText] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const handleOpen = (image) => {
+    setPreviewImage(image);
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setPreviewImage("");
+    setOpen(false);
+  };
 
   const sortedRowsByCreatedAt = [...rows].sort((a, b) => {
     const timeA = new Date(a.created_at).getTime();
@@ -135,21 +157,22 @@ export default function DataTable() {
     {
       field: "created_at",
       headerName: "Created At",
-
+      width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format("DD/MM/YYYY - HH:mm");
         return thaiTime;
       },
     },
     {
       field: "modified_date",
       headerName: "Modified Date",
+      width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
-          .format("YYYY-MM-DD HH:mm:ss");
+          .format("DD/MM/YYYY - HH:mm");
         return thaiTime;
       },
     },
@@ -186,10 +209,8 @@ export default function DataTable() {
           return <span>-</span>;
         }
         return (
-          <a
-            href={`http://localhost:3333${params.value}`}
-            target="_blank"
-            rel="noreferrer"
+          <Button
+            onClick={() => handleOpen(`http://localhost:3333${params.value}`)}
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
@@ -197,7 +218,7 @@ export default function DataTable() {
               src={`http://localhost:3333${params.value}`}
               alt="preview"
             />
-          </a>
+          </Button>
         );
       },
     },
@@ -305,6 +326,43 @@ export default function DataTable() {
 
   return (
     <div className="container">
+      <Modal open={open} onClose={handleClose}>
+        <Box sx={style}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: "1rem",
+            }}
+          >
+            <Typography color="primary" variant="h6">
+              พรีวิว
+            </Typography>
+            <IconButton
+              color="primary"
+              sx={{
+                width: "3rem",
+                height: "3rem",
+              }}
+              onClick={handleClose}
+            >
+              <Typography variant="srOnly">Close</Typography>
+              <span aria-hidden>×</span>
+            </IconButton>
+          </Box>
+          <img
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              borderRadius: "0.5rem",
+            }}
+            src={previewImage}
+            alt="preview"
+          />
+        </Box>
+      </Modal>
       <h1>Admin</h1>
       <input
         style={{ marginBottom: "1rem" }}
