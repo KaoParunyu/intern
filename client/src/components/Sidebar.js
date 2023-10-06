@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./App";
 import UserProfile from "./UserProfile";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import Button from "@mui/material/Button";

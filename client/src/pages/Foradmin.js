@@ -1,9 +1,9 @@
-import Sidebar from "./Sidebar";
+import Sidebar from "../components/Sidebar";
 import { useEffect } from "react";
-import RepairForm from "./RepairForm";
+import RepairForm from "../components/RepairForm";
 import Navbar from "react-bootstrap/Navbar";
 
-function OffcanvasExample() {
+function ForAdmin() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetch("http://localhost:3333/authen", {
@@ -38,4 +38,4 @@ function OffcanvasExample() {
   );
 }
 
-export default OffcanvasExample;
+export default ForAdmin;

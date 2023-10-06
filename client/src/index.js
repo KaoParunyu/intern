@@ -1,13 +1,11 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
 import "./index.css";
-// import App from './App';
-import reportWebVitals from "./reportWebVitals";
+import React from "react";
+import Login from "./pages/Login";
+import Foruser from "./pages/Foruser";
+import Register from "./pages/Register";
+import ReactDOM from "react-dom/client";
+import Foradmin from "./pages/Foradmin";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./Login";
-import Register from "./Register";
-import Foradmin from "./Foradmin";
-import Foruser from "./Foruser";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,5 +19,3 @@ root.render(
     </Routes>
   </BrowserRouter>
 );
-
-reportWebVitals();
