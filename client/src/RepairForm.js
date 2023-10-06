@@ -3,6 +3,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Axios from "axios";
 import { Box } from "@mui/material";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const moment = require("moment-timezone");
+
+const MySwal = withReactContent(Swal);
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
@@ -12,7 +17,11 @@ export default function DataTable() {
   const [searchText, setSearchText] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
 
-  const moment = require("moment-timezone");
+  const sortedRowsByCreatedAt = [...rows].sort((a, b) => {
+    const timeA = new Date(a.created_at).getTime();
+    const timeB = new Date(b.created_at).getTime();
+    return timeB - timeA;
+  });
 
   const getProblem = async () => {
     try {
@@ -33,8 +42,12 @@ export default function DataTable() {
       );
       const repairTypesData = repairTypesResponse.data;
       const repairTypesMap = {};
+      const statusOptionsMap = {};
       repairTypesData.forEach((repairType) => {
         repairTypesMap[repairType.id] = repairType.name;
+      });
+      statusOptions.forEach((status) => {
+        statusOptionsMap[status.id] = status.name;
       });
 
       const updatedData = data.map((problem) => {
@@ -63,10 +76,13 @@ export default function DataTable() {
             (repairTypesMap[val.repair_type_id] &&
               repairTypesMap[val.repair_type_id]
                 .toLowerCase()
+                .includes(lowerSearchText)) ||
+            (statusOptionsMap[val.status_id] &&
+              statusOptionsMap[val.status_id]
+                .toLowerCase()
                 .includes(lowerSearchText))
           );
         })
-
         .map((val) => ({
           id: val.id,
           user_id: val.user_id, // เพิ่ม user_id ใน newRows
@@ -166,8 +182,8 @@ export default function DataTable() {
       field: "image_url",
       headerName: "Image",
       renderCell: (params) => {
-        if(!params.value) {
-          return <span>-</span>
+        if (!params.value) {
+          return <span>-</span>;
         }
         return (
           <a
@@ -189,44 +205,59 @@ export default function DataTable() {
 
   const handleSubmit = async () => {
     if (selectedRows.length === 0) {
-      window.alert("กรุณาเลือกข้อมูลที่ต้องการอัปเดต");
-      // ถ้าไม่มีแถวที่ถูกเลือก ไม่ต้องทำอะไร
+      MySwal.fire({
+        title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดต",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
       return;
     }
 
     try {
-      // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
-      console.log(selectedStatus);
-      const updatedStatus = [];
-      for (const selectedRow of selectedRows) {
-        if (selectedRow in selectedStatus) {
-          const newStatusId = selectedStatus[selectedRow];
-          updatedStatus.push({
-            id: selectedRow,
-            status_id: newStatusId,
+      MySwal.fire({
+        title: "คุณต้องการอัปเดตสถานะหรือไม่?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "ตกลง",
+        cancelButtonText: "ยกเลิก",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
+          const updatedStatus = [];
+          for (const selectedRow of selectedRows) {
+            if (selectedRow in selectedStatus) {
+              const newStatusId = selectedStatus[selectedRow];
+              updatedStatus.push({
+                id: selectedRow,
+                status_id: newStatusId,
+              });
+            }
+          }
+
+          // ส่งข้อมูลการอัปเดตไปยัง API หรือฐานข้อมูล
+          for (const statusData of updatedStatus) {
+            await Axios.put(
+              `http://localhost:3333/repair_notifications/${statusData.id}`,
+              {
+                status_id: statusData.status_id,
+              }
+            );
+          }
+
+          // ดึงข้อมูลใหม่
+          await getProblem();
+
+          // // ล้างข้อมูลที่เลือกใน Dropdown
+          // setSelectedStatus({});
+          setSelectedRows([]);
+
+          MySwal.fire({
+            title: "อัปเดตสถานะเรียบร้อยแล้ว",
+            icon: "success",
+            confirmButtonText: "ตกลง",
           });
         }
-      }
-
-      console.log(updatedStatus);
-      // ส่งข้อมูลการอัปเดตไปยัง API หรือฐานข้อมูล
-      for (const statusData of updatedStatus) {
-        await Axios.put(
-          `http://localhost:3333/repair_notifications/${statusData.id}`,
-          {
-            status_id: statusData.status_id,
-          }
-        );
-      }
-
-      // ดึงข้อมูลใหม่
-      await getProblem();
-
-      // // ล้างข้อมูลที่เลือกใน Dropdown
-      // setSelectedStatus({});
-      setSelectedRows([]);
-
-      alert("อัปเดตสถานะเรียบร้อยแล้ว");
+      });
     } catch (error) {
       console.error("Error:", error);
     }
@@ -234,30 +265,42 @@ export default function DataTable() {
 
   const deleteProblem = async () => {
     if (selectedRows.length === 0) {
-      window.alert("กรุณาเลือกข้อมูลที่ต้องการลบ");
-      // ถ้าไม่มีแถวที่ถูกเลือก ไม่ต้องทำอะไร
+      MySwal.fire({
+        title: "กรุณาเลือกข้อมูลที่ต้องการลบ",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
       return;
     }
 
-    const comfirmed = window.confirm("คุณต้องการลบข้อมูลหรือไม่?");
+    MySwal.fire({
+      title: "คุณต้องการลบข้อมูลหรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await Axios.delete(
+          `http://localhost:3333/delete/${selectedRows.join(",")}`
+        );
+        if (response.status === 200) {
+          console.log("ลบข้อมูลเรียบร้อยแล้ว");
+          await getProblem();
+        } else {
+          console.log("เกิดข้อผิดพลาดในการลบข้อมูล");
+        }
 
-    if (!comfirmed) return;
+        // เคลียร์การเลือก
+        setSelectedRows([]);
 
-    const response = await Axios.delete(
-      `http://localhost:3333/delete/${selectedRows.join(",")}`
-    );
-    if (response.status === 200) {
-      console.log("ลบข้อมูลเรียบร้อยแล้ว");
-      await getProblem();
-    } else {
-      console.log("เกิดข้อผิดพลาดในการลบข้อมูล");
-    }
-
-    // เคลียร์การเลือก
-    setSelectedRows([]);
-
-    // แสดงข้อความ
-    alert("ลบข้อมูลเรียบร้อยแล้ว");
+        MySwal.fire({
+          title: "ลบข้อมูลสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
+      }
+    });
   };
 
   return (
@@ -271,7 +314,7 @@ export default function DataTable() {
         onChange={(e) => setSearchText(e.target.value)}
       />
       <DataGrid
-        rows={rows}
+        rows={sortedRowsByCreatedAt}
         columns={columns}
         rowSelectionModel={selectedRows}
         onRowSelectionModelChange={(newSelection) => {

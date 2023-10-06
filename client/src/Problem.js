@@ -7,6 +7,9 @@ import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box } from "@mui/material";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
+const MySwal = withReactContent(Swal);
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -147,46 +150,56 @@ const Form = () => {
   const postProblem = async (e) => {
     e.preventDefault();
 
-    let imagePath = "";
+    MySwal.fire({
+      title: "คุณต้องการแจ้งปัญหาหรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        let imagePath = "";
 
-    if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      const response = await Axios.post(
-        "http://localhost:3333/images",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
+        if (file) {
+          const formData = new FormData();
+          formData.append("image", file);
+          const response = await Axios.post(
+            "http://localhost:3333/images",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          imagePath = response.data;
         }
-      );
 
-      imagePath = response.data;
-    }
-
-    try {
-      await Axios.post(
-        "http://localhost:3333/postproblem",
-        {
-          title: title,
-          repair_type_id: repair_type,
-          image_url: imagePath,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
+        try {
+          await Axios.post(
+            "http://localhost:3333/postproblem",
+            {
+              title: title,
+              repair_type_id: repair_type,
+              image_url: imagePath,
+            },
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            }
+          );
+          // เรียกใช้ฟังก์ชัน getProblem เพื่อดึงข้อมูลล่าสุดหลังจากทำการโพสต์
+          getProblem();
+          setTitle("");
+          setRepair_type("");
+          setFile(null);
+        } catch (error) {
+          console.error("Error:", error);
         }
-      );
-      // เรียกใช้ฟังก์ชัน getProblem เพื่อดึงข้อมูลล่าสุดหลังจากทำการโพสต์
-      getProblem();
-      setTitle("");
-      setRepair_type("");
-      setFile(null);
-    } catch (error) {
-      console.error("Error:", error);
-    }
+      }
+    });
   };
 
   useEffect(() => {
@@ -244,6 +257,9 @@ const Form = () => {
       field: "image_url",
       headerName: "Image",
       renderCell: (params) => {
+        if (!params.value) {
+          return <span>-</span>;
+        }
         return (
           <a
             href={`http://localhost:3333${params.value}`}
