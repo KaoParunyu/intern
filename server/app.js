@@ -1,22 +1,21 @@
-const express = require("express");
-const cors = require("cors");
-const app = express();
-const bodyParser = require("body-parser");
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const jwt = require("jsonwebtoken");
-const fileUpload = require("express-fileupload");
-const secret = "fullstack";
 const path = require("path");
+const cors = require("cors");
+const mysql = require("mysql2");
+const bcrypt = require("bcrypt");
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
+const fileUpload = require("express-fileupload");
+
+const app = express();
+
+const secret = "fullstack";
 
 app.use(fileUpload());
-
 app.use("/upload", express.static(path.join(__dirname, "upload")));
-
 app.use(cors());
 app.use(bodyParser.json());
 
-const mysql = require("mysql2");
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
@@ -28,6 +27,7 @@ app.post("/register", function (req, res, next) {
   if (!req.body.email.endsWith("@gmail.com")) {
     return res.json({ status: "error", message: "รูปแบบอีเมลไม่ถูกต้อง" });
   }
+  const saltRounds = 10;
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
     const role = req.body.role || "user";
     connection.execute(

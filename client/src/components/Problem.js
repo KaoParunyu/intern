@@ -427,6 +427,7 @@ const Form = () => {
               <Button
                 onClick={() => {
                   setFile(null);
+                  setPreviewImage("");
                 }}
                 size="small"
                 component="label"

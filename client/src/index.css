@@ -44,3 +44,15 @@ input[type="file"] {
 .submit-button:hover {
   background-color: #0056b3;
 }
+
+.MuiInputBase-root.MuiOutlinedInput-root.MuiInputBase-colorPrimary.MuiInputBase-fullWidth.MuiInputBase-formControl.MuiInputBase-adornedEnd {
+  height: 56px;
+}
+
+#password {
+  border: none;
+}
+
+.MuiBox-root.css-164r41r {
+  max-width: 500px;
+}

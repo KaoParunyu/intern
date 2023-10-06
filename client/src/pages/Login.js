@@ -8,13 +8,17 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { Container } from "@mui/material";
-import { useEffect } from "react";
+import { Container, InputAdornment } from "@mui/material";
+import { useEffect, useState } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 const MySwal = withReactContent(Swal);
 
 export default function Login() {
+  const [passwordInputType, setPasswordInputType] = useState("password");
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -123,12 +127,12 @@ export default function Login() {
                   sx={{ mt: 1 }}
                 >
                   <TextField
+                    name="email"
                     margin="normal"
                     required
                     fullWidth
                     id="email"
                     label="Email Address"
-                    name="email"
                     autoComplete="email"
                     autoFocus
                   />
@@ -136,13 +140,31 @@ export default function Login() {
                     margin="normal"
                     required
                     fullWidth
-                    name="password"
                     label="Password"
-                    type="password"
+                    type={passwordInputType}
                     id="password"
+                    name="password"
                     autoComplete="current-password"
+                    InputProps={{
+                      endAdornment: (
+                        <InputAdornment
+                          onClick={() => {
+                            setPasswordInputType((prev) => {
+                              return prev === "password" ? "text" : "password";
+                            });
+                          }}
+                          sx={{ cursor: "pointer" }}
+                          position="end"
+                        >
+                          {passwordInputType === "password" ? (
+                            <VisibilityOffIcon />
+                          ) : (
+                            <VisibilityIcon />
+                          )}
+                        </InputAdornment>
+                      ),
+                    }}
                   />
-
                   <Button
                     type="submit"
                     fullWidth
