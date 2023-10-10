@@ -20,7 +20,9 @@ function ForAdmin() {
             window.location = "/Foruser";
           }
         } else {
+          alert("การยืนยันตัวตนแอดมินล้มเหลว");
           localStorage.removeItem("token");
+          localStorage.removeItem("role");
           window.location = "/login";
         }
       })

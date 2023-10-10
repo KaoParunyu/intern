@@ -68,35 +68,14 @@ const Form = () => {
       row.fname === loggedInUser.fname && row.lname === loggedInUser.lname
   );
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    fetch("http://localhost:3333/authen", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status !== "ok") {
-          alert("authen failed");
-          localStorage.removeItem("token");
-          localStorage.removeItem("role"); // ลบบทบาทถ้าการตรวจสอบล้มเหลว
-          window.location = "/login";
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  }, []);
 
-  useEffect(() => {
-    const role = localStorage.getItem("role");
-    if (role !== "user") {
-      // window.location = '/login';
-    }
-  }, []);
+
+  // useEffect(() => {
+  //   const role = localStorage.getItem("role");
+  //   if (role !== "user") {
+  //     // window.location = '/login';
+  //   }
+  // }, []);
 
   const getMe = async () => {
     try {
