@@ -82,7 +82,7 @@ export default function Login() {
         <Grid
           sx={{
             // sx คือคุณสมบัติพิเศษ ซึ่งถูกใช้ในการกำหนดรูปแบบและสไตล์
-            marginTop: 4,
+            marginTop: 3,
           }}
         >
           <Grid container>
