@@ -5,6 +5,7 @@ import Axios from "axios";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import ExportReport from "./ExportReport";
 const moment = require("moment-timezone");
 
 const style = {
@@ -392,14 +393,23 @@ export default function DataTable() {
           display: "flex",
           gap: "1rem",
           marginTop: "1rem",
+          justifyContent: "space-between",
         }}
       >
-        <Button variant="contained" color="secondary" onClick={deleteProblem}>
-          Delete
-        </Button>
-        <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Submit
-        </Button>
+        <Box
+          sx={{
+            display: "flex",
+            gap: "1rem",
+          }}
+        >
+          <Button variant="contained" color="secondary" onClick={deleteProblem}>
+            Delete
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleSubmit}>
+            Submit
+          </Button>
+        </Box>
+        <ExportReport />
       </Box>
     </div>
   );

@@ -8,6 +8,7 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Box, IconButton, Modal, Typography } from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import ExportReport from "./ExportReport";
 const MySwal = withReactContent(Swal);
 
 const style = {
@@ -46,6 +47,8 @@ const Form = () => {
   const [file, setFile] = useState();
   const [open, setOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+  const [loggedInUser, setLoggedInUser] = useState({ fname: "", lname: "" });
+
   const handleOpen = (image) => {
     setPreviewImage(image);
     setOpen(true);
@@ -57,7 +60,6 @@ const Form = () => {
 
   const moment = require("moment-timezone");
 
-  const [loggedInUser, setLoggedInUser] = useState({ fname: "", lname: "" });
   const sortedProblemList = [...problemList].sort((a, b) => {
     const timeA = new Date(a.created_at).getTime();
     const timeB = new Date(b.created_at).getTime();
@@ -67,15 +69,6 @@ const Form = () => {
     (row) =>
       row.fname === loggedInUser.fname && row.lname === loggedInUser.lname
   );
-
-
-
-  // useEffect(() => {
-  //   const role = localStorage.getItem("role");
-  //   if (role !== "user") {
-  //     // window.location = '/login';
-  //   }
-  // }, []);
 
   const getMe = async () => {
     try {
@@ -468,6 +461,7 @@ const Form = () => {
           </div>
         </div>
       </form>
+      <ExportReport />
     </div>
   );
 };

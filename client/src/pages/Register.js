@@ -37,6 +37,21 @@ export default function SignUp() {
       role: data.get("role"),
     };
 
+    if (
+      jsonData.fname === "" ||
+      jsonData.lname === "" ||
+      jsonData.email === "" ||
+      jsonData.password === "" ||
+      jsonData.role === ""
+    ) {
+      MySwal.fire({
+        title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+        icon: "warning",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
     fetch("http://localhost:3333/register", {
       // ส่งคำขอ HTTP POST ไปยัง URL
       method: "POST",
@@ -123,6 +138,14 @@ export default function SignUp() {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  helperText="อีเมลล์ต้องลงท้ายด้วย @onee.com เท่านั้น *"
+                  FormHelperTextProps={{
+                    style: {
+                      marginLeft: "auto",
+                      marginRight: 0,
+                      marginTop: 8,
+                    },
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
