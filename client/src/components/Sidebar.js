@@ -18,12 +18,12 @@ import {
   Drawer,
   Typography,
 } from "@material-ui/core";
-import { Menu, AssignmentInd, Home } from "@material-ui/icons";
+import { Menu, AssignmentInd, Home, Dashboard } from "@material-ui/icons";
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#A0CE7A", // เปลี่ยนเป็นสีที่คุณต้องการ
+      main: "#A0CE7A",
     },
   },
 });
@@ -35,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const listItems = [
+  {
+    listIcon: <Dashboard />,
+    listText: "Dashboard",
+    value: "/Dashboard",
+  },
   {
     listIcon: <AssignmentInd />,
     listText: "User",
