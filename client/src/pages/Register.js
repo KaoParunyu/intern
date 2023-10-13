@@ -57,7 +57,7 @@ export default function SignUp() {
           });
         } else {
           MySwal.fire({
-            title: "รูปแบบอีเมลล์ไม่ถูกต้องหรืออีเมลล์เคยใช้แล้ว",
+            title: data.message,
             icon: "warning",
             confirmButtonText: "ตกลง",
           });
