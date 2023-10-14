@@ -75,107 +75,104 @@ export default function Login() {
   }, []);
 
   return (
-    <div>
-      <Container component="main" maxWidth="full">
-        <Grid
-          sx={{
-            marginTop: 3,
-          }}
-        >
-          <Grid container>
-            <CssBaseline />
-            <Grid
-              item
-              xs={false}
-              sm={4}
-              md={7}
-              sx={{
-                backgroundImage:
-                  "url(https://www.projectsmart.co.uk/img/tw-project-management-word-cloud.jpg)",
+    <Container component="main" maxWidth="full">
+      <Grid
+        sx={{
+          marginTop: 3,
+        }}
+      >
+        <Grid container>
+          <CssBaseline />
+          <Grid
+            item
+            xs={false}
+            sm={4}
+            md={7}
+            sx={{
+              backgroundImage: "url(/word-cloud.png)",
 
-                backgroundSize: "cover",
-                backgroundPosition: "center",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          />
+          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={2}>
+            <Box
+              sx={{
+                my: 25,
+                mx: 5,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
               }}
-            />
-            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={2}>
+            >
+              <Typography component="h1" variant="h3">
+                Sign in
+              </Typography>
               <Box
-                sx={{
-                  my: 25,
-                  mx: 5,
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                }}
+                component="form"
+                noValidate
+                onSubmit={handleSubmit}
+                sx={{ mt: 1 }}
               >
-                <Typography component="h1" variant="h3">
-                  Sign in
-                </Typography>
-                <Box
-                  component="form"
-                  noValidate
-                  onSubmit={handleSubmit}
-                  sx={{ mt: 1 }}
+                <TextField
+                  name="email"
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  autoComplete="email"
+                  autoFocus
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  label="Password"
+                  type={passwordInputType}
+                  id="password"
+                  name="password"
+                  autoComplete="current-password"
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment
+                        onClick={() => {
+                          setPasswordInputType((prev) => {
+                            return prev === "password" ? "text" : "password";
+                          });
+                        }}
+                        sx={{ cursor: "pointer" }}
+                        position="end"
+                      >
+                        {passwordInputType === "password" ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mt: 3, mb: 2 }}
                 >
-                  <TextField
-                    name="email"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email Address"
-                    autoComplete="email"
-                    autoFocus
-                  />
-                  <TextField
-                    margin="normal"
-                    required
-                    fullWidth
-                    label="Password"
-                    type={passwordInputType}
-                    id="password"
-                    name="password"
-                    autoComplete="current-password"
-                    InputProps={{
-                      endAdornment: (
-                        <InputAdornment
-                          onClick={() => {
-                            setPasswordInputType((prev) => {
-                              return prev === "password" ? "text" : "password";
-                            });
-                          }}
-                          sx={{ cursor: "pointer" }}
-                          position="end"
-                        >
-                          {passwordInputType === "password" ? (
-                            <VisibilityOffIcon />
-                          ) : (
-                            <VisibilityIcon />
-                          )}
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    sx={{ mt: 3, mb: 2 }}
-                  >
-                    Sign In
-                  </Button>
-                  <Grid container>
-                    <Grid item>
-                      <Link href="/register" variant="body1">
-                        {"Don't have an account? Sign Up"}
-                      </Link>
-                    </Grid>
+                  Sign In
+                </Button>
+                <Grid container>
+                  <Grid item>
+                    <Link href="/register" variant="body1">
+                      {"Don't have an account? Sign Up"}
+                    </Link>
                   </Grid>
-                </Box>
+                </Grid>
               </Box>
-            </Grid>
+            </Box>
           </Grid>
         </Grid>
-      </Container>
-    </div>
+      </Grid>
+    </Container>
   );
 }
