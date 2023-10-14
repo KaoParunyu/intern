@@ -2,7 +2,17 @@ import React, { useEffect, useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Axios from "axios";
-import { Box, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  Input,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Typography,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ExportReport from "./ExportReport";
@@ -151,8 +161,8 @@ export default function DataTable() {
 
   const columns = [
     { field: "id", headerName: "Id" },
-    { field: "firstName", headerName: "First Name" }, // เปลี่ยนเป็น firstName
-    { field: "lastName", headerName: "Last Name" }, // เปลี่ยนเป็น lastName
+    { field: "firstName", headerName: "First Name" },
+    { field: "lastName", headerName: "Last Name" },
     { field: "problem", headerName: "Problem" },
     { field: "repair_type", headerName: "Repair Type" },
     {
@@ -179,26 +189,33 @@ export default function DataTable() {
     },
     {
       field: "status_id",
-      width: 150,
+      width: 200,
       headerName: "Status",
       renderCell: (params) => {
         return (
-          <select
-            style={{ width: "100%" }}
-            value={selectedStatus[params.row.id] || params.value} // ใช้ selectedStatus หากมีค่า, ไม่งั้นใช้ค่าเดิม
-            onChange={(e) => {
-              setSelectedStatus({
-                ...selectedStatus,
-                [params.row.id]: e.target.value, // เก็บค่าใน selectedStatus
-              });
+          <FormControl
+            fullWidth
+            style={{
+              height: "calc(100% - 10px * 2)",
             }}
           >
-            {statusOptions.map((option) => (
-              <option key={option.id} value={option.id}>
-                {option.name}
-              </option>
-            ))}
-          </select>
+            <Select
+              sx={{ height: "100%" }}
+              value={selectedStatus[params.row.id] || params.value}
+              onChange={(e) => {
+                setSelectedStatus({
+                  ...selectedStatus,
+                  [params.row.id]: e.target.value,
+                });
+              }}
+            >
+              {statusOptions.map((option) => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         );
       },
     },
@@ -215,7 +232,12 @@ export default function DataTable() {
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                borderRadius: "0.5rem",
+              }}
               src={`http://localhost:3333${params.value}`}
               alt="preview"
             />
@@ -365,9 +387,8 @@ export default function DataTable() {
         </Box>
       </Modal>
       <h1>Admin</h1>
-      <input
-        style={{ marginBottom: "1rem" }}
-        type="text"
+      <Input
+        sx={{ mb: "1rem", width: "100%" }}
         placeholder="Search..."
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}

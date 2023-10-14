@@ -5,7 +5,18 @@ import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Box, IconButton, Modal, Typography } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Paper,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import ExportReport from "./ExportReport";
@@ -259,7 +270,12 @@ const Form = () => {
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "contain",
+                borderRadius: "0.5rem",
+              }}
               src={`http://localhost:3333${params.value}`}
               alt="preview"
             />
@@ -309,159 +325,207 @@ const Form = () => {
         </Box>
       </Modal>
       <h1 style={{ marginTop: "1rem" }}>User</h1>
-      <form className="form">
-        {/* ข้อมูลอื่น ๆ ในฟอร์ม */}
-        <div className="row">
-          <div className="form-group col">
-            <label htmlFor="firstName">First Name</label>
-            <input
-              disabled
-              type="text"
-              id="firstName"
-              name="firstName"
-              value={firstName}
-              onChange={(event) => {
-                setFirstName(event.target.value);
-              }}
-            />
-          </div>
-          <div className="form-group col">
-            <label htmlFor="lastName">Last Name</label>
-            <input
-              disabled
-              type="text"
-              id="lastName"
-              name="lastName"
-              value={lastName}
-              onChange={(event) => {
-                setLastName(event.target.value);
-              }}
-            />
-          </div>
-          <div className="form-group col">
-            <label htmlFor="role">Role</label>
-            <input
-              disabled
-              type="text"
-              id="role"
-              name="role"
-              value={role}
-              onChange={(event) => {
-                setRole(event.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            name="title"
-            value={title}
-            onChange={(event) => {
-              setTitle(event.target.value);
-            }}
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="repair_type">Repair Type : </label>
-          <select
-            style={{ marginLeft: "0.5rem" }}
-            type="select"
-            id="repair_type"
-            name="repair_type"
-            value={repair_type}
-            onChange={(event) => {
-              setRepair_type(event.target.value);
-            }}
-          >
-            <option value="">Select Repair Type</option>
-            {repairTypes.map((type) => (
-              <option key={type.id} value={type.id}>
-                {type.name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="image" style={{ marginBottom: "0.5rem" }}>
-            Image
-          </label>
-          <br />
-          {file && (
-            <div style={{ marginBottom: "0.5rem" }}>
-              <img width={300} src={URL.createObjectURL(file)} alt="preview" />
+      <Paper
+        elevation={3}
+        sx={{ p: "1rem", borderRadius: "0.5rem", mb: "1rem" }}
+      >
+        <h2 className="mb-3">ฟอร์มแจ้งซ่อม</h2>
+        <form className="form">
+          <div className="row">
+            <div className="col">
+              <FormControl fullWidth className="form-group">
+                <label className="mb-1" htmlFor="firstName">
+                  First Name
+                </label>
+                <TextField
+                  fullWidth
+                  placeholder="First Name"
+                  id="firstName"
+                  name="firstName"
+                  disabled
+                  value={firstName}
+                />
+              </FormControl>
             </div>
-          )}
-          <Box sx={{ display: "flex", gap: "0.5rem" }}>
+            <div className="col">
+              <FormControl fullWidth className="form-group">
+                <label className="mb-1" htmlFor="lastName">
+                  Last Name
+                </label>
+                <TextField
+                  fullWidth
+                  placeholder="Last Name"
+                  id="lastName"
+                  name="lastName"
+                  value={lastName}
+                  disabled
+                />
+              </FormControl>
+            </div>
+            <div className="col">
+              <FormControl fullWidth className="form-group">
+                <label className="mb-1" htmlFor="role">
+                  Role
+                </label>
+                <TextField
+                  fullWidth
+                  id="role"
+                  name="role"
+                  value={role}
+                  disabled
+                />
+              </FormControl>
+            </div>
+          </div>
+          <div className="row mt-3">
+            <div className="col">
+              <FormControl fullWidth className="form-group">
+                <label className="mb-1" htmlFor="title">
+                  Title
+                </label>
+                <TextField
+                  fullWidth
+                  placeholder="Title"
+                  id="title"
+                  name="title"
+                  value={title}
+                  onChange={(event) => {
+                    setTitle(event.target.value);
+                  }}
+                />
+              </FormControl>
+            </div>
+            <div className="col">
+              <div className="form-group">
+                <label className="mb-1" htmlFor="repair_type">
+                  Repair Type
+                </label>
+                <FormControl fullWidth sx={{ height: "45px" }}>
+                  <Select
+                    displayEmpty
+                    placeholder="Repair Type"
+                    sx={{
+                      height: "100%",
+                    }}
+                    id="repair_type"
+                    value={repair_type}
+                    onChange={(event) => {
+                      setRepair_type(event.target.value);
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select Repair Type
+                    </MenuItem>
+                    {repairTypes.map((type) => (
+                      <MenuItem key={type.id} value={type.id}>
+                        {type.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            </div>
+          </div>
+          <div className="form-group">
+            <label htmlFor="image" style={{ marginBottom: "0.5rem" }}>
+              Image
+            </label>
+            <br />
             {file && (
-              <Button
-                onClick={() => {
-                  setFile(null);
-                  setPreviewImage("");
+              <div
+                style={{
+                  marginBottom: "0.5rem",
+                  borderRadius: "0.5rem",
+                  overflow: "hidden",
                 }}
+              >
+                <img
+                  width={300}
+                  src={URL.createObjectURL(file)}
+                  alt="preview"
+                />
+              </div>
+            )}
+            <Box sx={{ display: "flex", gap: "0.5rem" }}>
+              {file && (
+                <Button
+                  onClick={() => {
+                    setFile(null);
+                    setPreviewImage("");
+                  }}
+                  size="small"
+                  component="label"
+                  variant="contained"
+                  startIcon={<DeleteIcon />}
+                >
+                  Clear
+                </Button>
+              )}
+              <Button
                 size="small"
                 component="label"
                 variant="contained"
-                startIcon={<DeleteIcon />}
+                startIcon={<CloudUploadIcon />}
               >
-                Clear
+                Upload Image
+                <VisuallyHiddenInput
+                  onChange={(e) => {
+                    setFile(e.target.files[0]);
+                  }}
+                  accept="image/*"
+                  id="image"
+                  type="file"
+                />
               </Button>
-            )}
-            <Button
-              size="small"
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-            >
-              Upload Image
-              <VisuallyHiddenInput
-                onChange={(e) => {
-                  setFile(e.target.files[0]);
-                }}
-                accept="image/*"
-                id="image"
-                type="file"
-              />
-            </Button>
-          </Box>
-        </div>
-        <div className="form-group mt-2">
-          <input
-            type="submit"
-            value="Submit"
-            className="submit-button"
-            onClick={postProblem}
-          />
-        </div>
-        {/* ปุ่มแสดงข้อมูล */}
-        <div>
-          {/* ตารางข้อมูล */}
-          <div
-            style={{
-              height: 390,
-              width: "100%",
-              justifyContent: "center",
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            <DataGrid
-              rows={filteredAndSortedRows}
-              columns={columns}
-              initialState={{
-                pagination: {
-                  paginationModel: { page: 0, pageSize: 5 },
-                },
-              }}
-              pageSizeOptions={[5, 10]}
-              disableRowSelectionOnClick
+            </Box>
+          </div>
+          <div className="form-group">
+            <input
+              type="submit"
+              value="Submit"
+              className="submit-button"
+              onClick={postProblem}
             />
           </div>
+        </form>
+      </Paper>
+      <Paper
+        elevation={3}
+        sx={{ p: "1rem", borderRadius: "0.5rem", mb: "1rem" }}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            mb: "0.5rem",
+          }}
+        >
+          <h2>ตารางแจ้งซ่อม</h2>
+          <ExportReport />
+        </Box>
+        <div
+          style={{
+            height: 390,
+            width: "100%",
+            justifyContent: "center",
+            alignItems: "center",
+            display: "flex",
+          }}
+        >
+          <DataGrid
+            rows={filteredAndSortedRows}
+            columns={columns}
+            initialState={{
+              pagination: {
+                paginationModel: { page: 0, pageSize: 5 },
+              },
+            }}
+            pageSizeOptions={[5, 10]}
+            disableRowSelectionOnClick
+          />
         </div>
-      </form>
-      <ExportReport />
+      </Paper>
     </div>
   );
 };

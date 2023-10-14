@@ -1,3 +1,5 @@
+import { ExplicitOutlined } from "@material-ui/icons";
+import { Button } from "@mui/material";
 import Axios from "axios";
 import { downloadExcel } from "react-export-table-to-excel";
 
@@ -43,7 +45,11 @@ const ExportReport = () => {
     });
   };
 
-  return <button onClick={handleDownloadExcel}>Export Excel</button>;
+  return (
+    <Button variant="contained" color="success" onClick={handleDownloadExcel}>
+      Export Excel
+    </Button>
+  );
 };
 
 export default ExportReport;

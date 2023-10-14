@@ -1,8 +1,6 @@
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-// import FormControlLabel from "@mui/material/FormControlLabel";
-// import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
@@ -81,7 +79,6 @@ export default function Login() {
       <Container component="main" maxWidth="full">
         <Grid
           sx={{
-            // sx คือคุณสมบัติพิเศษ ซึ่งถูกใช้ในการกำหนดรูปแบบและสไตล์
             marginTop: 3,
           }}
         >
@@ -106,7 +103,7 @@ export default function Login() {
               sm={8}
               md={5}
               component={Paper}
-              elevation={10}
+              elevation={3}
             >
               <Box
                 sx={{

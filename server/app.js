@@ -19,13 +19,16 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "project",
 });
 
 app.post("/register", function (req, res, next) {
-  if (!req.body.email.endsWith("@gmail.com")) {
-    return res.json({ status: "error", message: "รูปแบบอีเมลไม่ถูกต้อง" });
+  if (!req.body.email.endsWith("@onee.com")) {
+    return res.json({
+      status: "error",
+      message: "อีเมลไม่ถูกต้อง ต้องลงท้ายด้วย @onee.com เท่านั้น",
+    });
   }
   const saltRounds = 10;
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
@@ -34,8 +37,8 @@ app.post("/register", function (req, res, next) {
       "INSERT INTO users (email, password, fname, lname, role) VALUES (?, ?, ?, ?, ?)",
       [req.body.email, hash, req.body.fname, req.body.lname, role],
       function (err, results, fields) {
-        if (err) {
-          res.json({ status: "error", message: err });
+        if (err?.code === "ER_DUP_ENTRY") {
+          res.json({ status: "error", message: "อีเมลนี้มีผู้ใช้งานแล้ว" });
           return;
         }
         res.json({ status: "ok" });
@@ -168,6 +171,31 @@ app.put("/repair_notifications/:statusId", (req, res) => {
   });
 });
 
+app.get("/repair_notifications/current-month", (req, res) => {
+  connection.execute(
+    `SELECT repair_notifications.id AS repairNotificationId,
+    users.fname AS firstName,
+    users.lname AS lastName,
+    repair_notifications.title AS title,
+    repair_types.name AS repairTypeName,
+    status.name AS statusName,
+    repair_notifications.created_at AS createdAt,
+    repair_notifications.modified_date AS modifiedDate 
+    FROM repair_notifications 
+    LEFT JOIN status ON repair_notifications.status_id = status.id 
+    LEFT JOIN users ON repair_notifications.user_id = users.id 
+    LEFT JOIN repair_types ON repair_notifications.repair_type_id = repair_types.id 
+    WHERE MONTH(created_at) = MONTH(NOW())`,
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.send(result);
+      }
+    }
+  );
+});
+
 app.delete("/delete/:id", (req, res) => {
   const id = req.params.id;
   const idsArray = id.split(","); // แยกค่า id ออกเป็นอาร์เรย์ของ id
@@ -237,6 +265,71 @@ app.post("/images", (req, res) => {
   image.mv(__dirname + path);
 
   res.json(path).status(200);
+});
+
+app.get("/dashboard", (req, res) => {
+  connection.execute(`SELECT * FROM repair_notifications`, (err, results) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const months = [
+        "january",
+        "february",
+        "march",
+        "april",
+        "may",
+        "june",
+        "july",
+        "august",
+        "september",
+        "octobor",
+        "november",
+        "december",
+      ];
+
+      const result = {
+        totalRepairNotifications: results.length,
+        totalPendingRepairNotifications: results.filter(
+          (item) => item.status_id === 1
+        ).length,
+        totalInProgrssRepairNotifications: results.filter(
+          (item) => item.status_id === 2
+        ).length,
+        totalCompletedRepairNotifications: results.filter(
+          (item) => item.status_id === 3
+        ).length,
+        graph: {
+          labels: months,
+          datas: {
+            computer: [],
+            printer: [],
+            internet: [],
+          },
+        },
+      };
+      months.forEach((month, index) => {
+        const computerAmount = results.filter(
+          (item) =>
+            item.repair_type_id === 1 &&
+            new Date(item.created_at).getMonth() === index
+        ).length;
+        const printerAmount = results.filter(
+          (item) =>
+            item.repair_type_id === 2 &&
+            new Date(item.created_at).getMonth() === index
+        ).length;
+        const internetAmount = results.filter(
+          (item) =>
+            item.repair_type_id === 3 &&
+            new Date(item.created_at).getMonth() === index
+        ).length;
+        result["graph"]["datas"]["computer"].push(computerAmount);
+        result["graph"]["datas"]["printer"].push(printerAmount);
+        result["graph"]["datas"]["internet"].push(internetAmount);
+      });
+      res.send(result);
+    }
+  });
 });
 
 app.listen(3333, function () {
