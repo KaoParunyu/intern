@@ -324,7 +324,7 @@ const Form = () => {
   ];
 
   return (
-    <div className="container">
+    <div className="container py-4">
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <Box
@@ -362,12 +362,12 @@ const Form = () => {
           />
         </Box>
       </Modal>
-      <h1 className="mt-4 mb-3 fw-semibold fs-2">User</h1>
+      <h1 className="mb-3 fw-semibold fs-2">User</h1>
       <Paper
-        elevation={3}
+        elevation={2}
         sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
       >
-        <h2 className="mb-3 fs-3 fw-semibold">ฟอร์มแจ้งซ่อม</h2>
+        <h2 className="mb-3 fs-4 fw-semibold">ฟอร์มแจ้งซ่อม</h2>
         <form onSubmit={postProblem} className="form">
           <div className="row">
             <div className="col">
@@ -477,6 +477,7 @@ const Form = () => {
                   marginBottom: "0.5rem",
                   borderRadius: "0.5rem",
                   overflow: "hidden",
+                  display: "inline-block",
                 }}
               >
                 <img
@@ -522,8 +523,8 @@ const Form = () => {
               </Button>
             </Box>
           </div>
-          <Divider sx={{ mb: "1rem" }} />
-          <div className="form-group">
+          <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)", mb: "1rem" }} />
+          <div className="form-group mb-0">
             <Button
               onClick={handleResetForm}
               sx={{ mr: "0.5rem" }}
@@ -539,11 +540,11 @@ const Form = () => {
         </form>
       </Paper>
       <Paper
-        elevation={3}
+        elevation={2}
         sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1rem" }}
       >
         <div className="mb-3 d-flex justify-content-between align-items-end">
-          <h2 className="fs-3 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
+          <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
           <ExportReport />
         </div>
         <div
@@ -556,6 +557,11 @@ const Form = () => {
           }}
         >
           <DataGrid
+            sx={{
+              "& p": {
+                mb: 0,
+              },
+            }}
             rows={filteredAndSortedRows}
             columns={columns}
             initialState={{

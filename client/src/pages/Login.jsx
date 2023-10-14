@@ -97,14 +97,7 @@ export default function Login() {
                 backgroundPosition: "center",
               }}
             />
-            <Grid //  หน้าจอขนาดเล็กขึ้น (extra small)
-              item //หน้าจอขนาดเล็ก  (small)
-              xs={12} //  หน้าจอขนาดกลาง (medium)
-              sm={8}
-              md={5}
-              component={Paper}
-              elevation={3}
-            >
+            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={2}>
               <Box
                 sx={{
                   my: 25,

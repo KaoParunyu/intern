@@ -77,7 +77,7 @@ export default function UserProfile() {
         >
           <Avatar {...stringAvatar(`${user.fname} ${user.lname}`)} />
           <p>
-            {user.fname} {user.lname}!
+            Hello, {user.fname} {user.lname}
           </p>
         </Box>
       ) : (

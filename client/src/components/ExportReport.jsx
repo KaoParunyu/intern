@@ -48,8 +48,20 @@ const ExportReport = () => {
   };
 
   return (
-    <Button variant="outlined" color="success" onClick={handleDownloadExcel}>
-      Export Excel
+    <Button
+      endIcon={
+        <img
+          width={16}
+          height={16}
+          src="https://upload.wikimedia.org/wikipedia/commons/3/34/Microsoft_Office_Excel_%282019%E2%80%93present%29.svg"
+          alt="excel icon"
+        />
+      }
+      variant="outlined"
+      color="success"
+      onClick={handleDownloadExcel}
+    >
+      Export
     </Button>
   );
 };

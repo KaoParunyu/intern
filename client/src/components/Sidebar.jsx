@@ -21,6 +21,7 @@ import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Menu, AssignmentInd, Home, Dashboard } from "@material-ui/icons";
 
 import UserProfile from "./UserProfile";
+import { Divider } from "@mui/material";
 
 const MySwal = withReactContent(Swal);
 
@@ -78,12 +79,12 @@ export default function App() {
         flex: 1,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
-        width: 250,
+        width: 260,
         padding: "1rem",
       }}
     >
       <UserProfile />
+      <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)" }} />
       <List>
         {listItems.map((listItem, index) => (
           <>
@@ -115,6 +116,7 @@ export default function App() {
           </>
         ))}
       </List>
+      <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)", mb: "1rem" }} />
       <Button variant="contained" onClick={handleLogout}>
         Logout
       </Button>

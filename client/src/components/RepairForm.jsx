@@ -1,4 +1,3 @@
-import Axios from "axios";
 import {
   Box,
   FormControl,
@@ -10,14 +9,15 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import ExportReport from "./ExportReport";
+import Axios from "axios";
 import Swal from "sweetalert2";
+import moment from "moment-timezone";
+import ExportReport from "./ExportReport";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
+import DeleteIcon from "@mui/icons-material/Delete";
 import withReactContent from "sweetalert2-react-content";
-
-const moment = require("moment-timezone");
 
 const style = {
   position: "absolute",
@@ -35,17 +35,18 @@ const MySwal = withReactContent(Swal);
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
-  const [problemList, setProblemList] = useState([]);
   const [statusOptions, setStatusOptions] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState({});
   const [searchText, setSearchText] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   const [open, setOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+
   const handleOpen = (image) => {
     setPreviewImage(image);
     setOpen(true);
   };
+
   const handleClose = () => {
     setPreviewImage("");
     setOpen(false);
@@ -63,7 +64,6 @@ export default function DataTable() {
         "http://localhost:3333/repair_notifications"
       );
       const data = response.data;
-      setProblemList(data);
 
       const userIds = data.map((val) => val.user_id);
       const usersResponse = await Axios.get(
@@ -84,18 +84,7 @@ export default function DataTable() {
         statusOptionsMap[status.id] = status.name;
       });
 
-      const updatedData = data.map((problem) => {
-        const thaiTime = moment(problem.created_at).tz("Asia/Bangkok").format();
-        return {
-          ...problem,
-          created_at: thaiTime,
-        };
-      });
-
-      setProblemList(updatedData);
-
       const newRows = data
-
         .filter((val) => {
           const lowerSearchText = searchText.toLowerCase();
           const user = users.find((user) => user.id === val.user_id); // เปรียบเทียบกับ user_id แทน
@@ -130,7 +119,6 @@ export default function DataTable() {
           modified_date: val.modified_date,
           image_url: val.image_url,
         }));
-
       newRows.forEach((row) => {
         const user = users.find((user) => user.id === row.user_id); // เปรียบเทียบกับ user_id แทน
         if (user) {
@@ -138,7 +126,6 @@ export default function DataTable() {
           row.firstName = user.fname;
         }
       });
-
       setRows(newRows);
     } catch (error) {
       console.error("Error:", error);
@@ -161,7 +148,19 @@ export default function DataTable() {
   }, [searchText]);
 
   const columns = [
-    { field: "id", headerName: "Id" },
+    { field: "id", headerName: "Id", width: 50 },
+    {
+      field: "delete",
+      headerName: "Delete",
+      width: 75,
+      renderCell: (params) => {
+        return (
+          <IconButton onClick={() => deleteOneProblem(params.row.id)}>
+            <DeleteIcon color="error" />
+          </IconButton>
+        );
+      },
+    },
     { field: "firstName", headerName: "First Name" },
     { field: "lastName", headerName: "Last Name" },
     { field: "problem", headerName: "Problem" },
@@ -251,7 +250,7 @@ export default function DataTable() {
   const handleSubmit = async () => {
     if (selectedRows.length === 0) {
       MySwal.fire({
-        title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดต",
+        title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดตสถานะ",
         icon: "warning",
         confirmButtonText: "ตกลง",
       });
@@ -292,8 +291,6 @@ export default function DataTable() {
           // ดึงข้อมูลใหม่
           await getProblem();
 
-          // // ล้างข้อมูลที่เลือกใน Dropdown
-          // setSelectedStatus({});
           setSelectedRows([]);
 
           MySwal.fire({
@@ -306,6 +303,33 @@ export default function DataTable() {
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const deleteOneProblem = async (id) => {
+    MySwal.fire({
+      title: "คุณต้องการลบข้อมูลหรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const response = await Axios.delete(
+          `http://localhost:3333/delete/${id}}`
+        );
+        if (response.status === 200) {
+          console.log("ลบข้อมูลเรียบร้อยแล้ว");
+          await getProblem();
+        } else {
+          console.log("เกิดข้อผิดพลาดในการลบข้อมูล");
+        }
+        MySwal.fire({
+          title: "ลบข้อมูลสำเร็จ",
+          icon: "success",
+          confirmButtonText: "ตกลง",
+        });
+      }
+    });
   };
 
   const deleteProblem = async () => {
@@ -388,9 +412,9 @@ export default function DataTable() {
         </Box>
       </Modal>
       <h1 className="mb-3 fw-semibold fs-2">Admin</h1>
-      <Paper elevation={3} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
+      <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
         <div className="mb-3 d-flex justify-content-between align-items-end">
-          <h2 className="fs-3 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
+          <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
           <ExportReport />
         </div>
         <Input
@@ -405,6 +429,11 @@ export default function DataTable() {
           rowSelectionModel={selectedRows}
           onRowSelectionModelChange={(newSelection) => {
             setSelectedRows(newSelection);
+          }}
+          sx={{
+            "& p": {
+              mb: 0,
+            },
           }}
           initialState={{
             pagination: {
@@ -426,7 +455,7 @@ export default function DataTable() {
             Delete
           </Button>
           <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Submit
+            Update Status
           </Button>
         </Box>
       </Paper>

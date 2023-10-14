@@ -41,20 +41,21 @@ const Dashboard = () => {
     <div>
       <Sidebar />
       <div className="container py-4">
-        <h1 className="mb-3 fw-semibold fs-2">Dashboard</h1>
+        <h1 className="fw-semibold fs-2 mb-3">Dashboard</h1>
         <Paper
-          elevation={3}
+          elevation={2}
           sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
         >
-          <h2 className="mb-3 fs-3 fw-semibold">จำนวนรายการแจ้งซ่อม</h2>
+          <h2 className="mb-3 fs-4 fw-semibold">จำนวนรายการแจ้งซ่อม</h2>
           <div className="row">
-            <div className="col-8">
+            <div className="col-xl-8">
               <div className="d-flex gap-3">
                 <div
                   style={{
                     borderRadius: "0.5rem",
                     overflow: "hidden",
                     boxShadow: "0 0 0.5rem #ccc",
+                    flex: 1,
                   }}
                   className="col-6"
                 >
@@ -86,6 +87,7 @@ const Dashboard = () => {
                     borderRadius: "0.5rem",
                     overflow: "hidden",
                     boxShadow: "0 0 0.5rem #ccc",
+                    flex: 1,
                   }}
                   className="col-6"
                 >
@@ -119,6 +121,7 @@ const Dashboard = () => {
                     borderRadius: "0.5rem",
                     overflow: "hidden",
                     boxShadow: "0 0 0.5rem #ccc",
+                    flex: 1,
                   }}
                   className="col-6"
                 >
@@ -150,12 +153,16 @@ const Dashboard = () => {
                     borderRadius: "0.5rem",
                     overflow: "hidden",
                     boxShadow: "0 0 0.5rem #ccc",
+                    flex: 1,
                   }}
                   className="col-6"
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#77dd77", borderRadius: "0.5rem" }}
+                      sx={{
+                        bgcolor: "#77dd77",
+                        borderRadius: "0.5rem",
+                      }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <CheckIcon
@@ -178,7 +185,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
-            <div className="col-4">
+            <div className="mt-3 mt-xl-0 col-xl-4">
               <Doughnut
                 options={{ maintainAspectRatio: false }}
                 data={{
@@ -199,8 +206,8 @@ const Dashboard = () => {
             </div>
           </div>
         </Paper>
-        <Paper elevation={3} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
-          <h2 className="mb-3 fs-3 fw-semibold">
+        <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
+          <h2 className="mb-3 fs-4 fw-semibold">
             จำนวนรายการแจ้งซ่อมตามประเภท
           </h2>
           <div>
