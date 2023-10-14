@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
 import Axios from "axios";
 import {
   Box,
   FormControl,
   IconButton,
   Input,
-  InputLabel,
   MenuItem,
   Modal,
+  Paper,
   Select,
   Typography,
 } from "@mui/material";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import ExportReport from "./ExportReport";
+import Swal from "sweetalert2";
+import Button from "@mui/material/Button";
+import { DataGrid } from "@mui/x-data-grid";
+import React, { useEffect, useState } from "react";
+import withReactContent from "sweetalert2-react-content";
+
 const moment = require("moment-timezone");
 
 const style = {
@@ -348,7 +349,7 @@ export default function DataTable() {
   };
 
   return (
-    <div className="container">
+    <div className="container py-4">
       <Modal open={open} onClose={handleClose}>
         <Box sx={style}>
           <Box
@@ -386,52 +387,49 @@ export default function DataTable() {
           />
         </Box>
       </Modal>
-      <h1>Admin</h1>
-      <Input
-        sx={{ mb: "1rem", width: "100%" }}
-        placeholder="Search..."
-        value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
-      />
-      <DataGrid
-        rows={sortedRowsByCreatedAt}
-        columns={columns}
-        rowSelectionModel={selectedRows}
-        onRowSelectionModelChange={(newSelection) => {
-          setSelectedRows(newSelection);
-        }}
-        initialState={{
-          pagination: {
-            paginationModel: { page: 0, pageSize: 5 },
-          },
-        }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
-      <Box
-        sx={{
-          display: "flex",
-          gap: "1rem",
-          marginTop: "1rem",
-          justifyContent: "space-between",
-        }}
-      >
+      <h1 className="mb-3 fw-semibold fs-2">Admin</h1>
+      <Paper elevation={3} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
+        <div className="mb-3 d-flex justify-content-between align-items-end">
+          <h2 className="fs-3 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
+          <ExportReport />
+        </div>
+        <Input
+          sx={{ mb: "1rem", width: "100%" }}
+          placeholder="Search..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+        <DataGrid
+          rows={sortedRowsByCreatedAt}
+          columns={columns}
+          rowSelectionModel={selectedRows}
+          onRowSelectionModelChange={(newSelection) => {
+            setSelectedRows(newSelection);
+          }}
+          initialState={{
+            pagination: {
+              paginationModel: { page: 0, pageSize: 5 },
+            },
+          }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          disableRowSelectionOnClick
+        />
         <Box
           sx={{
             display: "flex",
             gap: "1rem",
+            mt: "1rem",
           }}
         >
-          <Button variant="contained" color="secondary" onClick={deleteProblem}>
+          <Button variant="outlined" color="error" onClick={deleteProblem}>
             Delete
           </Button>
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
         </Box>
-        <ExportReport />
-      </Box>
+      </Paper>
     </div>
   );
 }

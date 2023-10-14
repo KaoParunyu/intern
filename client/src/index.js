@@ -1,5 +1,6 @@
 import "./index.css";
 import React from "react";
+import { Toaster } from "sonner";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -12,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <BrowserRouter>
+    <Toaster richColors />
     <Routes>
       <Route path="/" element={<Login />} />
       <Route path="/login" element={<Login />} />

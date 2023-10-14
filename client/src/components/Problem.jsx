@@ -1,15 +1,8 @@
-import { useState, useEffect } from "react";
-import Axios from "axios";
-import { DataGrid } from "@mui/x-data-grid";
-import Button from "@mui/material/Button";
-import { styled } from "@mui/material/styles";
-import DeleteIcon from "@mui/icons-material/Delete";
-import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import {
   Box,
+  Divider,
   FormControl,
   IconButton,
-  InputLabel,
   MenuItem,
   Modal,
   Paper,
@@ -17,9 +10,20 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import Axios from "axios";
 import Swal from "sweetalert2";
+import { toast } from "sonner";
+import Button from "@mui/material/Button";
+import { useState, useEffect } from "react";
+import { DataGrid } from "@mui/x-data-grid";
+import { styled } from "@mui/material/styles";
+import DeleteIcon from "@mui/icons-material/Delete";
 import withReactContent from "sweetalert2-react-content";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { baseUrl } from "../constants/api";
+
 import ExportReport from "./ExportReport";
+
 const MySwal = withReactContent(Swal);
 
 const style = {
@@ -83,7 +87,7 @@ const Form = () => {
 
   const getMe = async () => {
     try {
-      const response = await Axios.get("http://localhost:3333/me", {
+      const response = await Axios.get(`${baseUrl}/me`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -100,21 +104,15 @@ const Form = () => {
 
   const getProblem = async () => {
     try {
-      const response = await Axios.get(
-        "http://localhost:3333/repair_notifications"
-      );
+      const response = await Axios.get(`${baseUrl}/repair_notifications`);
       const data = response.data;
       setProblemlist(data);
 
-      const repairTypesResponse = await Axios.get(
-        "http://localhost:3333/repair_types"
-      );
+      const repairTypesResponse = await Axios.get(`${baseUrl}/repair_types`);
       const repairTypesData = repairTypesResponse.data;
       setRepairTypes(repairTypesData);
 
-      const statusTypesResponse = await Axios.get(
-        "http://localhost:3333/status"
-      );
+      const statusTypesResponse = await Axios.get(`${baseUrl}/status`);
       const statusTypesData = statusTypesResponse.data;
       setStatusTypes(statusTypesData);
 
@@ -131,7 +129,7 @@ const Form = () => {
       // เรียกข้อมูล user จาก API ตามค่า user_id ในแต่ละรายการ
       const userIds = data.map((val) => val.user_id);
       const usersResponse = await Axios.get(
-        `http://localhost:3333/users?ids=${userIds.join(",")}`
+        `${baseUrl}/users?ids=${userIds.join(",")}`
       );
       const users = usersResponse.data;
 
@@ -154,6 +152,33 @@ const Form = () => {
   const postProblem = async (e) => {
     e.preventDefault();
 
+    if (!title && !repair_type) {
+      MySwal.fire({
+        title: "กรุณากรอก Title และเลือก Repair Type",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    if (!title) {
+      MySwal.fire({
+        title: "กรุณากรอก Title",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
+    if (!repair_type) {
+      MySwal.fire({
+        title: "กรุณาเลือก Repair Type",
+        icon: "error",
+        confirmButtonText: "ตกลง",
+      });
+      return;
+    }
+
     MySwal.fire({
       title: "คุณต้องการแจ้งปัญหาหรือไม่?",
       icon: "warning",
@@ -167,22 +192,18 @@ const Form = () => {
         if (file) {
           const formData = new FormData();
           formData.append("image", file);
-          const response = await Axios.post(
-            "http://localhost:3333/images",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          const response = await Axios.post(`${baseUrl}/images`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
 
           imagePath = response.data;
         }
 
         try {
           await Axios.post(
-            "http://localhost:3333/postproblem",
+            `${baseUrl}/postproblem`,
             {
               title: title,
               repair_type_id: repair_type,
@@ -194,7 +215,7 @@ const Form = () => {
               },
             }
           );
-          // เรียกใช้ฟังก์ชัน getProblem เพื่อดึงข้อมูลล่าสุดหลังจากทำการโพสต์
+          toast.success("แจ้งปัญหาสำเร็จ");
           getProblem();
           setTitle("");
           setRepair_type("");
@@ -202,6 +223,23 @@ const Form = () => {
         } catch (error) {
           console.error("Error:", error);
         }
+      }
+    });
+  };
+
+  const handleResetForm = () => {
+    MySwal.fire({
+      title: "คุณต้องการรีเซ็ตฟอร์มหรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setTitle("");
+        setRepair_type("");
+        setFile(null);
+        toast.success("รีเซ็ตฟอร์มสำเร็จ");
       }
     });
   };
@@ -266,7 +304,7 @@ const Form = () => {
         }
         return (
           <Button
-            onClick={() => handleOpen(`http://localhost:3333${params.value}`)}
+            onClick={() => handleOpen(`${baseUrl}${params.value}`)}
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
@@ -276,7 +314,7 @@ const Form = () => {
                 objectFit: "contain",
                 borderRadius: "0.5rem",
               }}
-              src={`http://localhost:3333${params.value}`}
+              src={`${baseUrl}${params.value}`}
               alt="preview"
             />
           </Button>
@@ -324,17 +362,17 @@ const Form = () => {
           />
         </Box>
       </Modal>
-      <h1 style={{ marginTop: "1rem" }}>User</h1>
+      <h1 className="mt-4 mb-3 fw-semibold fs-2">User</h1>
       <Paper
         elevation={3}
-        sx={{ p: "1rem", borderRadius: "0.5rem", mb: "1rem" }}
+        sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
       >
-        <h2 className="mb-3">ฟอร์มแจ้งซ่อม</h2>
-        <form className="form">
+        <h2 className="mb-3 fs-3 fw-semibold">ฟอร์มแจ้งซ่อม</h2>
+        <form onSubmit={postProblem} className="form">
           <div className="row">
             <div className="col">
               <FormControl fullWidth className="form-group">
-                <label className="mb-1" htmlFor="firstName">
+                <label className="mb-2" htmlFor="firstName">
                   First Name
                 </label>
                 <TextField
@@ -349,7 +387,7 @@ const Form = () => {
             </div>
             <div className="col">
               <FormControl fullWidth className="form-group">
-                <label className="mb-1" htmlFor="lastName">
+                <label className="mb-2" htmlFor="lastName">
                   Last Name
                 </label>
                 <TextField
@@ -364,7 +402,7 @@ const Form = () => {
             </div>
             <div className="col">
               <FormControl fullWidth className="form-group">
-                <label className="mb-1" htmlFor="role">
+                <label className="mb-2" htmlFor="role">
                   Role
                 </label>
                 <TextField
@@ -380,8 +418,9 @@ const Form = () => {
           <div className="row mt-3">
             <div className="col">
               <FormControl fullWidth className="form-group">
-                <label className="mb-1" htmlFor="title">
+                <label className="mb-2" htmlFor="title">
                   Title
+                  <span className="text-danger d-inline-block ms-1">*</span>
                 </label>
                 <TextField
                   fullWidth
@@ -397,8 +436,9 @@ const Form = () => {
             </div>
             <div className="col">
               <div className="form-group">
-                <label className="mb-1" htmlFor="repair_type">
+                <label className="mb-2" htmlFor="repair_type">
                   Repair Type
+                  <span className="text-danger d-inline-block ms-1">*</span>
                 </label>
                 <FormControl fullWidth sx={{ height: "45px" }}>
                   <Select
@@ -427,7 +467,7 @@ const Form = () => {
             </div>
           </div>
           <div className="form-group">
-            <label htmlFor="image" style={{ marginBottom: "0.5rem" }}>
+            <label htmlFor="image" className="mb-2">
               Image
             </label>
             <br />
@@ -452,25 +492,28 @@ const Form = () => {
                   onClick={() => {
                     setFile(null);
                     setPreviewImage("");
+                    toast.success("ลบรูปภาพสำเร็จ");
                   }}
                   size="small"
                   component="label"
                   variant="contained"
                   startIcon={<DeleteIcon />}
                 >
-                  Clear
+                  Clear Image
                 </Button>
               )}
               <Button
                 size="small"
                 component="label"
                 variant="contained"
+                color="secondary"
                 startIcon={<CloudUploadIcon />}
               >
                 Upload Image
                 <VisuallyHiddenInput
                   onChange={(e) => {
                     setFile(e.target.files[0]);
+                    toast.success("อัพโหลดรูปภาพสำเร็จ");
                   }}
                   accept="image/*"
                   id="image"
@@ -479,31 +522,30 @@ const Form = () => {
               </Button>
             </Box>
           </div>
+          <Divider sx={{ mb: "1rem" }} />
           <div className="form-group">
-            <input
-              type="submit"
-              value="Submit"
-              className="submit-button"
-              onClick={postProblem}
-            />
+            <Button
+              onClick={handleResetForm}
+              sx={{ mr: "0.5rem" }}
+              variant="outlined"
+              color="error"
+            >
+              Reset
+            </Button>
+            <Button type="submit" variant="contained">
+              Submit
+            </Button>
           </div>
         </form>
       </Paper>
       <Paper
         elevation={3}
-        sx={{ p: "1rem", borderRadius: "0.5rem", mb: "1rem" }}
+        sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1rem" }}
       >
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            mb: "0.5rem",
-          }}
-        >
-          <h2>ตารางแจ้งซ่อม</h2>
+        <div className="mb-3 d-flex justify-content-between align-items-end">
+          <h2 className="fs-3 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
           <ExportReport />
-        </Box>
+        </div>
         <div
           style={{
             height: 390,

@@ -1,7 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import { useEffect } from "react";
 import RepairForm from "../components/RepairForm";
-import Navbar from "react-bootstrap/Navbar";
 
 function ForAdmin() {
   useEffect(() => {
@@ -34,7 +33,6 @@ function ForAdmin() {
   return (
     <>
       <Sidebar />
-      <Navbar />
       <RepairForm />
     </>
   );

@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import UserProfile from "./UserProfile";
-import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import Swal from "sweetalert2";
+import React, { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-
 import {
   AppBar,
   Toolbar,
@@ -18,7 +16,13 @@ import {
   Drawer,
   Typography,
 } from "@material-ui/core";
+import withReactContent from "sweetalert2-react-content";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Menu, AssignmentInd, Home, Dashboard } from "@material-ui/icons";
+
+import UserProfile from "./UserProfile";
+
+const MySwal = withReactContent(Swal);
 
 const theme = createTheme({
   palette: {
@@ -39,16 +43,19 @@ const listItems = [
     listIcon: <Dashboard />,
     listText: "Dashboard",
     value: "/Dashboard",
+    isAdminOnly: true,
   },
   {
     listIcon: <AssignmentInd />,
     listText: "User",
     value: "/Foruser",
+    isAdminOnly: false,
   },
   {
     listIcon: <Home />,
     listText: "Admin",
     value: "/Foradmin",
+    isAdminOnly: true,
   },
 ];
 
@@ -79,17 +86,33 @@ export default function App() {
       <UserProfile />
       <List>
         {listItems.map((listItem, index) => (
-          <ListItem
-            onClick={() => handleMenuClick(listItem.value)}
-            className={classes.listItem}
-            button
-            key={index}
-          >
-            <ListItemIcon className={classes.listItem}>
-              {listItem.listIcon}
-            </ListItemIcon>
-            <ListItemText primary={listItem.listText} />
-          </ListItem>
+          <>
+            {listItem.isAdminOnly && isAdminRole ? (
+              <ListItem
+                onClick={() => handleMenuClick(listItem.value)}
+                className={classes.listItem}
+                button
+                key={index}
+              >
+                <ListItemIcon className={classes.listItem}>
+                  {listItem.listIcon}
+                </ListItemIcon>
+                <ListItemText primary={listItem.listText} />
+              </ListItem>
+            ) : !listItem.isAdminOnly ? (
+              <ListItem
+                onClick={() => handleMenuClick(listItem.value)}
+                className={classes.listItem}
+                button
+                key={index}
+              >
+                <ListItemIcon className={classes.listItem}>
+                  {listItem.listIcon}
+                </ListItemIcon>
+                <ListItemText primary={listItem.listText} />
+              </ListItem>
+            ) : null}
+          </>
         ))}
       </List>
       <Button variant="contained" onClick={handleLogout}>
@@ -100,9 +123,22 @@ export default function App() {
 
   const handleLogout = (event) => {
     event.preventDefault();
-    localStorage.removeItem("token");
-    window.location = "/login";
+    setOpen(false);
+    MySwal.fire({
+      title: "คุณต้องการออกจากระบบใช่หรือไม่?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "ตกลง",
+      cancelButtonText: "ยกเลิก",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("token");
+        window.location = "/login";
+      }
+    });
   };
+
+  const isAdminRole = localStorage.getItem("role") === "admin";
 
   return (
     <>
@@ -116,7 +152,7 @@ export default function App() {
             <IconButton onClick={toggleSlider}>
               <Menu />
             </IconButton>
-            <Typography style={{ marginLeft: "1rem" }} variant="h6">
+            <Typography style={{ marginLeft: "1rem", fontSize: "1.25rem" }}>
               Repair Notifications
             </Typography>
             <Drawer open={open} anchor="over" onClose={toggleSlider}>

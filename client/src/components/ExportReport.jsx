@@ -1,14 +1,15 @@
-import { ExplicitOutlined } from "@material-ui/icons";
-import { Button } from "@mui/material";
 import Axios from "axios";
+import { toast } from "sonner";
+import { Button } from "@mui/material";
 import { downloadExcel } from "react-export-table-to-excel";
+import { baseUrl } from "../constants/api";
 
 const ExportReport = () => {
   const moment = require("moment-timezone");
 
   const handleDownloadExcel = async () => {
     const response = await Axios.get(
-      "http://localhost:3333/repair_notifications/current-month"
+      `${baseUrl}/repair_notifications/current-month`
     );
     console.log(response.data);
     const header = [
@@ -43,10 +44,11 @@ const ExportReport = () => {
         body,
       },
     });
+    toast.success("Export Excel Success");
   };
 
   return (
-    <Button variant="contained" color="success" onClick={handleDownloadExcel}>
+    <Button variant="outlined" color="success" onClick={handleDownloadExcel}>
       Export Excel
     </Button>
   );
