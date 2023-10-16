@@ -88,7 +88,7 @@ export default function SignUp() {
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm">
-        <CssBaseline />
+        {/* <CssBaseline /> */}
         <Paper
           elevation={2}
           sx={{
@@ -105,10 +105,10 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+            <Avatar sx={{ m: 1, bgcolor: "#071952" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h3">
+            <Typography component="h1" variant="h3" style={{ color:"#071952"}}>
               Sign up
             </Typography>
             <Box
@@ -188,13 +188,14 @@ export default function SignUp() {
                 type="submit"
                 fullWidth
                 variant="contained"
+                style={{ backgroundColor:"#071952",color:"white"}}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign Up
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="/login" variant="body2">
+                  <Link href="/login" variant="body2" style={{ color:"#071952"}}>
                     Already have an account? Sign in
                   </Link>
                 </Grid>

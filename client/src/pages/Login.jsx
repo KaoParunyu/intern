@@ -76,13 +76,13 @@ export default function Login() {
 
   return (
     <Container component="main" maxWidth="full">
-      <Grid
+      {/* <Grid
         sx={{
-          marginTop: 3,
+          marginTop: 2,
         }}
-      >
+      > */}
         <Grid container>
-          <CssBaseline />
+          {/* <CssBaseline /> */}
           <Grid
             item
             xs={false}
@@ -105,7 +105,7 @@ export default function Login() {
                 alignItems: "center",
               }}
             >
-              <Typography component="h1" variant="h3">
+              <Typography component="h1" variant="h1"style={{ color:"#071952"}}>
                 Sign in
               </Typography>
               <Box
@@ -157,13 +157,14 @@ export default function Login() {
                   type="submit"
                   fullWidth
                   variant="contained"
+                  style={{ backgroundColor:"#071952",color:"white"}}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Sign In
                 </Button>
                 <Grid container>
                   <Grid item>
-                    <Link href="/register" variant="body1">
+                    <Link href="/register" variant="body1"style={{ color:"#071952"}}>
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
@@ -172,7 +173,7 @@ export default function Login() {
             </Box>
           </Grid>
         </Grid>
-      </Grid>
+      {/* </Grid> */}
     </Container>
   );
 }

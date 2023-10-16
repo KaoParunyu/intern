@@ -93,7 +93,7 @@ const Dashboard = () => {
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#FF6384", borderRadius: "0.5rem" }}
+                      sx={{ bgcolor: "#071952", borderRadius: "0.5rem" }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <PendingIcon
@@ -127,7 +127,7 @@ const Dashboard = () => {
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#FFCE56", borderRadius: "0.5rem" }}
+                      sx={{ bgcolor: "#F3E55E", borderRadius: "0.5rem" }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <MemoryIcon
@@ -160,7 +160,7 @@ const Dashboard = () => {
                   <div className="row h-100 bg-white">
                     <Box
                       sx={{
-                        bgcolor: "#77dd77",
+                        bgcolor: "#088395",
                         borderRadius: "0.5rem",
                       }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
@@ -197,7 +197,7 @@ const Dashboard = () => {
                         data.totalInProgrssRepairNotifications,
                         data.totalCompletedRepairNotifications,
                       ],
-                      backgroundColor: ["#FF6384", "#FFCE56", "#77dd77"],
+                      backgroundColor: ["#071952", "#F3E55E", "#088395"],
                       hoverOffset: 4,
                     },
                   ],

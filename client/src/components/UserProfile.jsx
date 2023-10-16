@@ -29,8 +29,8 @@ export default function UserProfile() {
     return {
       sx: {
         bgcolor: stringToColor(name),
-        width: 50,
-        height: 50,
+        width: 100,
+        height: 100,
         marginBottom: "0.5rem",
       },
       children: `${name.split(" ")[0][0]}${name.split(" ")[1][0]}`,
@@ -76,7 +76,12 @@ export default function UserProfile() {
           }}
         >
           <Avatar {...stringAvatar(`${user.fname} ${user.lname}`)} />
-          <p>
+          <p
+            style={{
+              color: "#0F81AB", // สีของฟอนต์ที่คุณต้องการ
+              fontSize:"150%",
+              fontFamily:"fantasy"
+            }}>
             Hello, {user.fname} {user.lname}
           </p>
         </Box>

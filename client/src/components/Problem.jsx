@@ -9,6 +9,7 @@ import {
   Select,
   TextField,
   Typography,
+  colors,
 } from "@mui/material";
 import Axios from "axios";
 import Swal from "sweetalert2";
@@ -498,6 +499,7 @@ const Form = () => {
                   size="small"
                   component="label"
                   variant="contained"
+                  style={{backgroundColor:"", color:"black"}}
                   startIcon={<DeleteIcon />}
                 >
                   Clear Image
@@ -507,7 +509,7 @@ const Form = () => {
                 size="small"
                 component="label"
                 variant="contained"
-                color="secondary"
+                style={{ backgroundColor: "#088395", color: "white" }}
                 startIcon={<CloudUploadIcon />}
               >
                 Upload Image
@@ -529,11 +531,11 @@ const Form = () => {
               onClick={handleResetForm}
               sx={{ mr: "0.5rem" }}
               variant="outlined"
-              color="error"
+              style={{ Color: "#071952", color: "#071952" }}
             >
               Reset
             </Button>
-            <Button type="submit" variant="contained">
+            <Button type="submit" variant="contained" style={{ backgroundColor: "#071952", color: "white" }}> 
               Submit
             </Button>
           </div>

@@ -156,7 +156,7 @@ export default function DataTable() {
       renderCell: (params) => {
         return (
           <IconButton onClick={() => deleteOneProblem(params.row.id)}>
-            <DeleteIcon color="error" />
+            <DeleteIcon style={{ color:"#071952"}} />
           </IconButton>
         );
       },
@@ -384,8 +384,8 @@ export default function DataTable() {
               mb: "1rem",
             }}
           >
-            <Typography color="primary" variant="h6">
-              พรีวิว
+            <Typography style={{ color:"#071952"}} variant="h6">
+              Preview
             </Typography>
             <IconButton
               color="primary"
@@ -395,8 +395,8 @@ export default function DataTable() {
               }}
               onClick={handleClose}
             >
-              <Typography variant="srOnly">Close</Typography>
-              <span aria-hidden>×</span>
+              <Typography variant="srOnly"style={{ color:"#071952"}}>Close</Typography>
+              <span aria-hidden style={{ color:"#071952"}}>×</span>
             </IconButton>
           </Box>
           <img
@@ -431,6 +431,9 @@ export default function DataTable() {
             setSelectedRows(newSelection);
           }}
           sx={{
+            "& .MuiDataGrid-checkboxInput": {
+              color: "#071952", // เปลี่ยนสีของ checkbox
+            },
             "& p": {
               mb: 0,
             },
@@ -451,10 +454,10 @@ export default function DataTable() {
             mt: "1rem",
           }}
         >
-          <Button variant="outlined" color="error" onClick={deleteProblem}>
+          <Button variant="outlined" style={{ Color: "#071952", color: "#071952" }} onClick={deleteProblem}>
             Delete
           </Button>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
+          <Button variant="contained"  style={{ backgroundColor: "#071952", color: "white" }} onClick={handleSubmit}>
             Update Status
           </Button>
         </Box>

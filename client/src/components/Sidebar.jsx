@@ -28,7 +28,7 @@ const MySwal = withReactContent(Swal);
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#A0CE7A",
+      main: "#169EAB",
     },
   },
 });
@@ -37,13 +37,16 @@ const useStyles = makeStyles((theme) => ({
   menuSliderContainer: {
     background: "#511",
   },
+  listItem: {
+    color: "#169EAB",
+  },
 }));
 
 const listItems = [
   {
-    listIcon: <Dashboard />,
-    listText: "Dashboard",
-    value: "/Dashboard",
+    listIcon: <Home />,
+    listText: "Admin",
+    value: "/Foradmin",
     isAdminOnly: true,
   },
   {
@@ -52,10 +55,11 @@ const listItems = [
     value: "/Foruser",
     isAdminOnly: false,
   },
+
   {
-    listIcon: <Home />,
-    listText: "Admin",
-    value: "/Foradmin",
+    listIcon: <Dashboard />,
+    listText: "Dashboard",
+    value: "/Dashboard",
     isAdminOnly: true,
   },
 ];
@@ -81,6 +85,7 @@ export default function App() {
         flexDirection: "column",
         width: 260,
         padding: "1rem",
+        background: "#C6F5E4",
       }}
     >
       <UserProfile />
@@ -117,7 +122,7 @@ export default function App() {
         ))}
       </List>
       <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)", mb: "1rem" }} />
-      <Button variant="contained" onClick={handleLogout}>
+      <Button variant="contained" style={{ backgroundColor: "#071952", color: "white" }} onClick={handleLogout}>
         Logout
       </Button>
     </Box>
@@ -154,9 +159,16 @@ export default function App() {
             <IconButton onClick={toggleSlider}>
               <Menu />
             </IconButton>
-            <Typography style={{ marginLeft: "1rem", fontSize: "1.25rem" }}>
+            {/* <Typography style={{ marginLeft: "40rem", fontSize: "2.25rem",fontFamily:"Helvetica", }}>
               Repair Notifications
-            </Typography>
+            </Typography> */}
+            <img
+              src="/aa.png"
+              alt=""
+              srcSet=""
+              style={{ display: "block", margin: "0 auto" }}
+            />
+
             <Drawer open={open} anchor="over" onClose={toggleSlider}>
               {sideList()}
             </Drawer>
