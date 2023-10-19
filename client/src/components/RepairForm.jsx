@@ -9,7 +9,9 @@ import {
   Select,
   Typography,
 } from "@mui/material";
+import RefreshIcon from '@mui/icons-material/Refresh';
 import Axios from "axios";
+import { toast } from "sonner";
 import Swal from "sweetalert2";
 import moment from "moment-timezone";
 import ExportReport from "./ExportReport";
@@ -152,7 +154,7 @@ export default function DataTable() {
     {
       field: "delete",
       headerName: "Delete",
-      width: 75,
+      width: 70,
       renderCell: (params) => {
         return (
           <IconButton onClick={() => deleteOneProblem(params.row.id)}>
@@ -163,8 +165,8 @@ export default function DataTable() {
     },
     { field: "firstName", headerName: "First Name" },
     { field: "lastName", headerName: "Last Name" },
-    { field: "problem", headerName: "Problem" },
-    { field: "repair_type", headerName: "Repair Type" },
+    { field: "problem", headerName: "Problem", width: 180 },
+    { field: "repair_type", headerName: "Repair Type", width: 80 },
     {
       field: "created_at",
       headerName: "Created At",
@@ -190,7 +192,7 @@ export default function DataTable() {
     {
       field: "status_id",
       width: 200,
-      headerName: "Status",
+      headerName: "Status",headerAlign:"center",
       renderCell: (params) => {
         return (
           <FormControl
@@ -221,7 +223,7 @@ export default function DataTable() {
     },
     {
       field: "image_url",
-      headerName: "Image",
+      headerName: "Image",align:"center",headerAlign:"center",
       renderCell: (params) => {
         if (!params.value) {
           return <span>-</span>;
@@ -411,7 +413,7 @@ export default function DataTable() {
           />
         </Box>
       </Modal>
-      <h1 className="mb-3 fw-semibold fs-2">Administator</h1>
+      {/* <h1 className="mb-3 fw-semibold fs-2">Administator</h1> */}
       <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
         <div className="mb-3 d-flex justify-content-between align-items-end">
           <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
@@ -460,6 +462,14 @@ export default function DataTable() {
           <Button variant="contained"  style={{ backgroundColor: "#071952", color: "white" }} onClick={handleSubmit}>
             Update Status
           </Button>
+          <IconButton
+            variant="contained"
+            style={{  color: "black" }}
+            onClick={getProblem} 
+            
+          >
+            <RefreshIcon/>
+          </IconButton>
         </Box>
       </Paper>
     </div>

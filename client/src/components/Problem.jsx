@@ -252,10 +252,10 @@ const Form = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Id", width: 50 },
-    { field: "fname", headerName: "First Name", width: 150 },
-    { field: "lname", headerName: "Last Name", width: 150 },
-    { field: "title", headerName: "Title", width: 200 },
+    { field: "id", headerName: "Tricker Id", width: 90 ,align: "center",headerAlign:"center"},
+    // { field: "fname", headerName: "First Name", width: 150 },
+    // { field: "lname", headerName: "Last Name", width: 150 },
+    { field: "title", headerName: "Service Detail", width: 550,headerAlign:"center" },
     {
       field: "repair_type_id",
       headerName: "Repair Type",
@@ -298,10 +298,10 @@ const Form = () => {
     },
     {
       field: "image_url",
-      headerName: "Image",
+      headerName: "Image",headerAlign:"center",align:'center',
       renderCell: (params) => {
         if (!params.value) {
-          return <span>-</span>;
+          return <span style={{textAlign: 'center'}}>-</span>;
         }
         return (
           <Button
@@ -363,12 +363,12 @@ const Form = () => {
           />
         </Box>
       </Modal>
-      <h1 className="mb-3 fw-semibold fs-2">User</h1>
+      {/* <h1 className="mb-3 fw-semibold fs-2">User</h1> */}
       <Paper
         elevation={2}
         sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
       >
-        <h2 className="mb-3 fs-4 fw-semibold">ฟอร์มแจ้งซ่อม</h2>
+        <h2 className="mb-3 fs-4 fw-semibold">SERVICE REQUEST</h2>
         <form onSubmit={postProblem} className="form">
           <div className="row">
             <div className="col">
@@ -420,12 +420,12 @@ const Form = () => {
             <div className="col">
               <FormControl fullWidth className="form-group">
                 <label className="mb-2" htmlFor="title">
-                  Title
+                  Service Detail
                   <span className="text-danger d-inline-block ms-1">*</span>
                 </label>
                 <TextField
                   fullWidth
-                  placeholder="Title"
+                  // placeholder="Title"
                   id="title"
                   name="title"
                   value={title}
@@ -499,7 +499,7 @@ const Form = () => {
                   size="small"
                   component="label"
                   variant="contained"
-                  style={{backgroundColor:"", color:"black"}}
+                  style={{backgroundColor:"", color:"white"}}
                   startIcon={<DeleteIcon />}
                 >
                   Clear Image

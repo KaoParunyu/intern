@@ -41,12 +41,12 @@ const Dashboard = () => {
     <div>
       <Sidebar />
       <div className="container py-4">
-        <h1 className="fw-semibold fs-2 mb-3">Dashboard</h1>
+        {/* <h1 className="fw-semibold fs-2 mb-3">Dashboard</h1> */}
         <Paper
           elevation={2}
           sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
         >
-          <h2 className="mb-3 fs-4 fw-semibold">จำนวนรายการแจ้งซ่อม</h2>
+          <h2 className="mb-3 fs-4 fw-semibold">Summary</h2>
           <div className="row">
             <div className="col-xl-8">
               <div className="d-flex gap-3">
@@ -219,17 +219,17 @@ const Dashboard = () => {
                 ),
                 datasets: [
                   {
-                    backgroundColor: "#FF6384",
+                    backgroundColor: "#071952",
                     label: "Computer",
                     data: data?.graph?.datas.computer,
                   },
                   {
-                    backgroundColor: "#FFCE56",
+                    backgroundColor: "#35A29F",
                     label: "Printer",
                     data: data?.graph?.datas.printer,
                   },
                   {
-                    backgroundColor: "#77dd77",
+                    backgroundColor: "#F2F7A1",
                     label: "Internet",
                     data: data?.graph?.datas.internet,
                   },

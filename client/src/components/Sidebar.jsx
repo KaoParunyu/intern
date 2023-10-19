@@ -28,15 +28,15 @@ const MySwal = withReactContent(Swal);
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#169EAB",
+      main: "#0082E0",
     },
   },
 });
 
 const useStyles = makeStyles((theme) => ({
-  menuSliderContainer: {
-    background: "#511",
-  },
+  // menuSliderContainer: {
+  //   background: "#511",
+  // },
   listItem: {
     color: "#169EAB",
   },
@@ -85,7 +85,7 @@ export default function App() {
         flexDirection: "column",
         width: 260,
         padding: "1rem",
-        background: "#C6F5E4",
+        background: "#E6EFEA",
       }}
     >
       <UserProfile />
