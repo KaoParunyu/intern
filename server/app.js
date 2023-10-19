@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "project",
 });
 
@@ -27,15 +27,23 @@ app.post("/register", function (req, res, next) {
   if (!req.body.email.endsWith("@onee.one")) {
     return res.json({
       status: "error",
-      message: "อีเมลไม่ถูกต้อง ต้องลงท้ายด้วย @onee.one เท่านั้น",
+      // message: "อีเมลไม่ถูกต้อง ต้องลงท้ายด้วย @onee.one เท่านั้น",
+      message: "Email is invalid, must end with @onee.one",
     });
   }
   const saltRounds = 10;
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
     const role = req.body.role || "user";
     connection.execute(
-      "INSERT INTO users (email, password, fname, lname, role) VALUES (?, ?, ?, ?, ?)",
-      [req.body.email, hash, req.body.fname, req.body.lname, role],
+      "INSERT INTO users (email, password, fname, lname, role, departmentId) VALUES (?, ?, ?, ?, ?, ?)",
+      [
+        req.body.email,
+        hash,
+        req.body.fname,
+        req.body.lname,
+        role,
+        req.body.departmentId,
+      ],
       function (err, results, fields) {
         if (err?.code === "ER_DUP_ENTRY") {
           res.json({ status: "error", message: "อีเมลนี้มีผู้ใช้งานแล้ว" });
@@ -119,7 +127,7 @@ app.get("/me", (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   const decoded = jwt.verify(token, secret);
   connection.query(
-    "SELECT * FROM users WHERE email = ?",
+    "SELECT * FROM users LEFT JOIN departments ON departments.id = users.departmentId WHERE email = ?",
     [decoded.email],
     (err, results) => {
       const firstUser = results[0];
@@ -137,6 +145,7 @@ app.get("/status", (req, res) => {
     }
   });
 });
+
 app.get("/repair_types", (req, res) => {
   connection.execute("SELECT * FROM repair_types", (err, result) => {
     if (err) {
@@ -328,6 +337,16 @@ app.get("/dashboard", (req, res) => {
         result["graph"]["datas"]["internet"].push(internetAmount);
       });
       res.send(result);
+    }
+  });
+});
+
+app.get("/departments", (req, res) => {
+  connection.execute("SELECT * FROM departments", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.json(result);
     }
   });
 });

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 // import FormControlLabel from "@mui/material/FormControlLabel";
 // import Checkbox from "@mui/material/Checkbox";
@@ -20,11 +19,16 @@ import InputLabel from "@mui/material/InputLabel";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Paper } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { baseUrl } from "../constants/api";
 const MySwal = withReactContent(Swal);
 
 const theme = createTheme();
 
 export default function SignUp() {
+  const [departments, setDepartments] = React.useState([]);
+  const [password, setPassword] = React.useState("");
+
   const handleSubmit = (event) => {
     // เป็นฟังก์ชันที่ถูกเรียกเมื่อผู้ใช้กดปุ่ม Sign Up
     event.preventDefault(); //ป้องกันการโหลดหน้าเว็บใหม่
@@ -36,6 +40,7 @@ export default function SignUp() {
       fname: data.get("firstName"),
       lname: data.get("lastName"),
       role: data.get("role"),
+      departmentId: data.get("department"),
     };
 
     if (
@@ -43,12 +48,12 @@ export default function SignUp() {
       jsonData.lname === "" ||
       jsonData.email === "" ||
       jsonData.password === "" ||
-      jsonData.role === ""
+      jsonData.role === "" ||
+      jsonData.departmentId === ""
     ) {
       MySwal.fire({
-        title: "กรุณากรอกข้อมูลให้ครบถ้วน",
+        title: "Please fill in all information",
         icon: "warning",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
@@ -65,9 +70,8 @@ export default function SignUp() {
       .then((data) => {
         if (data.status === "ok") {
           MySwal.fire({
-            title: "สมัครสมาชิกสำเร็จ",
+            title: "Register Success",
             icon: "success",
-            confirmButtonText: "ตกลง",
           }).then(() => {
             window.location = "/login";
           });
@@ -85,10 +89,17 @@ export default function SignUp() {
       });
   };
 
+  React.useEffect(() => {
+    fetch(`${baseUrl}/departments`)
+      .then((response) => response.json())
+      .then((data) => {
+        setDepartments(data);
+      });
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm">
-        {/* <CssBaseline /> */}
         <Paper
           elevation={2}
           sx={{
@@ -108,7 +119,11 @@ export default function SignUp() {
             <Avatar sx={{ m: 1, bgcolor: "#071952" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h3" style={{ color:"#071952"}}>
+            <Typography
+              component="h1"
+              variant="h3"
+              style={{ color: "#071952" }}
+            >
               Sign up
             </Typography>
             <Box
@@ -147,7 +162,7 @@ export default function SignUp() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
-                    helperText="อีเมลล์ต้องลงท้ายด้วย @onee.one เท่านั้น *"
+                    helperText="Email must end with @onee.one"
                     FormHelperTextProps={{
                       style: {
                         marginLeft: "auto",
@@ -160,6 +175,8 @@ export default function SignUp() {
                 <Grid item xs={12}>
                   <TextField
                     required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     fullWidth
                     name="password"
                     label="Password"
@@ -167,6 +184,52 @@ export default function SignUp() {
                     id="password"
                     autoComplete="new-password"
                   />
+                  {password.length >= 1 && (
+                    <>
+                      {password.length < 8 ||
+                      !/[A-Z]/.test(password) ||
+                      !/[^A-Za-z0-9 ]/.test(password) ? (
+                        <div
+                          class="alert alert-danger d-flex flex-column gap-2 mt-3"
+                          role="alert"
+                        >
+                          {password.length < 8 && (
+                            <div
+                              style={{
+                                fontSize: "0.75rem",
+                              }}
+                              className="d-flex align-items-center gap-3"
+                            >
+                              <CloseIcon fontSize="small" />
+                              Password must contain at least 8 characters
+                            </div>
+                          )}
+                          {!/[A-Z]/.test(password) && (
+                            <div
+                              style={{
+                                fontSize: "0.75rem",
+                              }}
+                              className="d-flex align-items-center gap-3"
+                            >
+                              <CloseIcon fontSize="small" />
+                              Password must contain one uppercase letter
+                            </div>
+                          )}
+                          {!/[^A-Za-z0-9 ]/.test(password) && (
+                            <div
+                              style={{
+                                fontSize: "0.75rem",
+                              }}
+                              className="d-flex align-items-center gap-3"
+                            >
+                              <CloseIcon fontSize="small" />
+                              Password must contain special character
+                            </div>
+                          )}
+                        </div>
+                      ) : null}
+                    </>
+                  )}
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl fullWidth>
@@ -183,19 +246,41 @@ export default function SignUp() {
                     </Select>
                   </FormControl>
                 </Grid>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel htmlFor="department">Department</InputLabel>
+                    <Select
+                      required
+                      fullWidth
+                      name="department"
+                      labelId="department"
+                      id="department"
+                    >
+                      {departments.map((department) => (
+                        <MenuItem value={department.id}>
+                          {department.description}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
               </Grid>
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
-                style={{ backgroundColor:"#071952",color:"white"}}
+                style={{ backgroundColor: "#071952", color: "white" }}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign Up
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="/login" variant="body2" style={{ color:"#071952"}}>
+                  <Link
+                    href="/login"
+                    variant="body2"
+                    style={{ color: "#071952" }}
+                  >
                     Already have an account? Sign in
                   </Link>
                 </Grid>

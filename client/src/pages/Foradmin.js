@@ -19,7 +19,8 @@ function ForAdmin() {
             window.location = "/Foruser";
           }
         } else {
-          alert("การยืนยันตัวตนแอดมินล้มเหลว");
+          // alert("การยืนยันตัวตนแอดมินล้มเหลว");
+          alert("Authentication failed");
           localStorage.removeItem("token");
           localStorage.removeItem("role");
           window.location = "/login";

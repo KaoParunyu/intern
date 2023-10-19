@@ -15,7 +15,8 @@ function ForUser() {
       .then((response) => response.json())
       .then((data) => {
         if (data.status !== "ok") {
-          alert("การยืนยันตัวตนผู้ใช้ล้มเหลว");
+          // alert("การยืนยันตัวตนผู้ใช้ล้มเหลว");
+          alert("Authentication failed");
           localStorage.removeItem("token");
           localStorage.removeItem("role"); // ลบบทบาทถ้าการตรวจสอบล้มเหลว
           window.location = "/login";

@@ -14,7 +14,6 @@ import {
   makeStyles,
   CssBaseline,
   Drawer,
-  Typography,
 } from "@material-ui/core";
 import withReactContent from "sweetalert2-react-content";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
@@ -122,7 +121,11 @@ export default function App() {
         ))}
       </List>
       <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)", mb: "1rem" }} />
-      <Button variant="contained" style={{ backgroundColor: "#071952", color: "white" }} onClick={handleLogout}>
+      <Button
+        variant="contained"
+        style={{ backgroundColor: "#071952", color: "white" }}
+        onClick={handleLogout}
+      >
         Logout
       </Button>
     </Box>
@@ -132,11 +135,10 @@ export default function App() {
     event.preventDefault();
     setOpen(false);
     MySwal.fire({
-      title: "คุณต้องการออกจากระบบใช่หรือไม่?",
+      // title: "คุณต้องการออกจากระบบใช่หรือไม่?",
+      title: "Do you want to logout?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.removeItem("token");

@@ -9,7 +9,6 @@ import {
   Select,
   TextField,
   Typography,
-  colors,
 } from "@mui/material";
 import Axios from "axios";
 import Swal from "sweetalert2";
@@ -55,6 +54,7 @@ const Form = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
+  const [department, setDepartment] = useState("");
   const [title, setTitle] = useState("");
   const [repair_type, setRepair_type] = useState("");
   const [repairTypes, setRepairTypes] = useState([]);
@@ -94,9 +94,11 @@ const Form = () => {
         },
       });
       const data = response.data;
+      console.log(data);
       setFirstName(data.fname);
       setLastName(data.lname);
       setRole(data.role);
+      setDepartment(data.description);
       setLoggedInUser(data);
     } catch (error) {
       console.error("Error:", error);
@@ -155,7 +157,8 @@ const Form = () => {
 
     if (!title && !repair_type) {
       MySwal.fire({
-        title: "กรุณากรอก Title และเลือก Repair Type",
+        // title: "กรุณากรอก Title และเลือก Repair Type",
+        title: "Please enter Title and select Repair Type",
         icon: "error",
         confirmButtonText: "ตกลง",
       });
@@ -164,7 +167,8 @@ const Form = () => {
 
     if (!title) {
       MySwal.fire({
-        title: "กรุณากรอก Title",
+        // title: "กรุณากรอก Title",
+        title: "Please enter Title",
         icon: "error",
         confirmButtonText: "ตกลง",
       });
@@ -173,19 +177,18 @@ const Form = () => {
 
     if (!repair_type) {
       MySwal.fire({
-        title: "กรุณาเลือก Repair Type",
+        // title: "กรุณาเลือก Repair Type",
+        title: "Please select Repair Type",
         icon: "error",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     MySwal.fire({
-      title: "คุณต้องการแจ้งปัญหาหรือไม่?",
+      // title: "คุณต้องการแจ้งปัญหาหรือไม่?",
+      title: "Do you want to report a problem?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
     }).then(async (result) => {
       if (result.isConfirmed) {
         let imagePath = "";
@@ -216,7 +219,8 @@ const Form = () => {
               },
             }
           );
-          toast.success("แจ้งปัญหาสำเร็จ");
+          // toast.success("แจ้งปัญหาสำเร็จ");
+          toast.success("Report a problem successfully");
           getProblem();
           setTitle("");
           setRepair_type("");
@@ -230,17 +234,17 @@ const Form = () => {
 
   const handleResetForm = () => {
     MySwal.fire({
-      title: "คุณต้องการรีเซ็ตฟอร์มหรือไม่?",
+      // title: "คุณต้องการรีเซ็ตฟอร์มหรือไม่?",
+      title: "Do you want to reset the form?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
     }).then((result) => {
       if (result.isConfirmed) {
         setTitle("");
         setRepair_type("");
         setFile(null);
-        toast.success("รีเซ็ตฟอร์มสำเร็จ");
+        // toast.success("รีเซ็ตฟอร์มสำเร็จ");
+        toast.success("Reset form successfully");
       }
     });
   };
@@ -252,10 +256,21 @@ const Form = () => {
   }, []);
 
   const columns = [
-    { field: "id", headerName: "Tricker Id", width: 90 ,align: "center",headerAlign:"center"},
+    {
+      field: "id",
+      headerName: "Ticket Id",
+      width: 90,
+      align: "center",
+      headerAlign: "center",
+    },
     // { field: "fname", headerName: "First Name", width: 150 },
     // { field: "lname", headerName: "Last Name", width: 150 },
-    { field: "title", headerName: "Service Detail", width: 550,headerAlign:"center" },
+    {
+      field: "title",
+      headerName: "Service Detail",
+      width: 550,
+      headerAlign: "center",
+    },
     {
       field: "repair_type_id",
       headerName: "Repair Type",
@@ -298,10 +313,12 @@ const Form = () => {
     },
     {
       field: "image_url",
-      headerName: "Image",headerAlign:"center",align:'center',
+      headerName: "Image",
+      headerAlign: "center",
+      align: "center",
       renderCell: (params) => {
         if (!params.value) {
-          return <span style={{textAlign: 'center'}}>-</span>;
+          return <span style={{ textAlign: "center" }}>-</span>;
         }
         return (
           <Button
@@ -337,7 +354,7 @@ const Form = () => {
             }}
           >
             <Typography color="primary" variant="h6">
-              พรีวิว
+              Preview
             </Typography>
             <IconButton
               color="primary"
@@ -411,6 +428,20 @@ const Form = () => {
                   id="role"
                   name="role"
                   value={role}
+                  disabled
+                />
+              </FormControl>
+            </div>
+            <div className="col">
+              <FormControl fullWidth className="form-group">
+                <label className="mb-2" htmlFor="role">
+                  Department
+                </label>
+                <TextField
+                  fullWidth
+                  id="department"
+                  name="department"
+                  value={department}
                   disabled
                 />
               </FormControl>
@@ -494,12 +525,13 @@ const Form = () => {
                   onClick={() => {
                     setFile(null);
                     setPreviewImage("");
-                    toast.success("ลบรูปภาพสำเร็จ");
+                    // toast.success("ลบรูปภาพสำเร็จ");
+                    toast.success("Delete image successfully");
                   }}
                   size="small"
                   component="label"
                   variant="contained"
-                  style={{backgroundColor:"", color:"white"}}
+                  style={{ backgroundColor: "", color: "white" }}
                   startIcon={<DeleteIcon />}
                 >
                   Clear Image
@@ -516,7 +548,8 @@ const Form = () => {
                 <VisuallyHiddenInput
                   onChange={(e) => {
                     setFile(e.target.files[0]);
-                    toast.success("อัพโหลดรูปภาพสำเร็จ");
+                    // toast.success("อัพโหลดรูปภาพสำเร็จ");
+                    toast.success("Upload image successfully");
                   }}
                   accept="image/*"
                   id="image"
@@ -535,7 +568,11 @@ const Form = () => {
             >
               Reset
             </Button>
-            <Button type="submit" variant="contained" style={{ backgroundColor: "#071952", color: "white" }}> 
+            <Button
+              type="submit"
+              variant="contained"
+              style={{ backgroundColor: "#071952", color: "white" }}
+            >
               Submit
             </Button>
           </div>
@@ -546,7 +583,7 @@ const Form = () => {
         sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1rem" }}
       >
         <div className="mb-3 d-flex justify-content-between align-items-end">
-          <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
+          <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>
           <ExportReport />
         </div>
         <div

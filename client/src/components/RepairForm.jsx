@@ -9,9 +9,8 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import RefreshIcon from '@mui/icons-material/Refresh';
+import RefreshIcon from "@mui/icons-material/Refresh";
 import Axios from "axios";
-import { toast } from "sonner";
 import Swal from "sweetalert2";
 import moment from "moment-timezone";
 import ExportReport from "./ExportReport";
@@ -20,6 +19,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
 import withReactContent from "sweetalert2-react-content";
+import { toast } from "sonner";
 
 const style = {
   position: "absolute",
@@ -158,7 +158,7 @@ export default function DataTable() {
       renderCell: (params) => {
         return (
           <IconButton onClick={() => deleteOneProblem(params.row.id)}>
-            <DeleteIcon style={{ color:"#071952"}} />
+            <DeleteIcon style={{ color: "#071952" }} />
           </IconButton>
         );
       },
@@ -192,7 +192,8 @@ export default function DataTable() {
     {
       field: "status_id",
       width: 200,
-      headerName: "Status",headerAlign:"center",
+      headerName: "Status",
+      headerAlign: "center",
       renderCell: (params) => {
         return (
           <FormControl
@@ -223,7 +224,9 @@ export default function DataTable() {
     },
     {
       field: "image_url",
-      headerName: "Image",align:"center",headerAlign:"center",
+      headerName: "Image",
+      align: "center",
+      headerAlign: "center",
       renderCell: (params) => {
         if (!params.value) {
           return <span>-</span>;
@@ -252,7 +255,8 @@ export default function DataTable() {
   const handleSubmit = async () => {
     if (selectedRows.length === 0) {
       MySwal.fire({
-        title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดตสถานะ",
+        // title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดตสถานะ",
+        title: "Please select data to update status.",
         icon: "warning",
         confirmButtonText: "ตกลง",
       });
@@ -261,11 +265,10 @@ export default function DataTable() {
 
     try {
       MySwal.fire({
-        title: "คุณต้องการอัปเดตสถานะหรือไม่?",
+        // title: "คุณต้องการอัปเดตสถานะหรือไม่?",
+        title: "Do you want to update this status?",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonText: "ตกลง",
-        cancelButtonText: "ยกเลิก",
       }).then(async (result) => {
         if (result.isConfirmed) {
           // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
@@ -296,7 +299,7 @@ export default function DataTable() {
           setSelectedRows([]);
 
           MySwal.fire({
-            title: "อัปเดตสถานะเรียบร้อยแล้ว",
+            title: "Update Status Success",
             icon: "success",
             confirmButtonText: "ตกลง",
           });
@@ -309,26 +312,22 @@ export default function DataTable() {
 
   const deleteOneProblem = async (id) => {
     MySwal.fire({
-      title: "คุณต้องการลบข้อมูลหรือไม่?",
+      title: "Do you want to delete this data?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await Axios.delete(
           `http://localhost:3333/delete/${id}}`
         );
+
         if (response.status === 200) {
-          console.log("ลบข้อมูลเรียบร้อยแล้ว");
           await getProblem();
-        } else {
-          console.log("เกิดข้อผิดพลาดในการลบข้อมูล");
         }
+
         MySwal.fire({
-          title: "ลบข้อมูลสำเร็จ",
+          title: "Delete Success",
           icon: "success",
-          confirmButtonText: "ตกลง",
         });
       }
     });
@@ -337,36 +336,31 @@ export default function DataTable() {
   const deleteProblem = async () => {
     if (selectedRows.length === 0) {
       MySwal.fire({
-        title: "กรุณาเลือกข้อมูลที่ต้องการลบ",
+        title: "Please select data to delete.",
         icon: "warning",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     MySwal.fire({
-      title: "คุณต้องการลบข้อมูลหรือไม่?",
+      title: "Do you want to delete this data?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "ตกลง",
-      cancelButtonText: "ยกเลิก",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const response = await Axios.delete(
           `http://localhost:3333/delete/${selectedRows.join(",")}`
         );
+
         if (response.status === 200) {
-          console.log("ลบข้อมูลเรียบร้อยแล้ว");
           await getProblem();
-        } else {
-          console.log("เกิดข้อผิดพลาดในการลบข้อมูล");
         }
 
         // เคลียร์การเลือก
         setSelectedRows([]);
 
         MySwal.fire({
-          title: "ลบข้อมูลสำเร็จ",
+          title: "Delete Success",
           icon: "success",
           confirmButtonText: "ตกลง",
         });
@@ -386,7 +380,7 @@ export default function DataTable() {
               mb: "1rem",
             }}
           >
-            <Typography style={{ color:"#071952"}} variant="h6">
+            <Typography style={{ color: "#071952" }} variant="h6">
               Preview
             </Typography>
             <IconButton
@@ -397,8 +391,12 @@ export default function DataTable() {
               }}
               onClick={handleClose}
             >
-              <Typography variant="srOnly"style={{ color:"#071952"}}>Close</Typography>
-              <span aria-hidden style={{ color:"#071952"}}>×</span>
+              <Typography variant="srOnly" style={{ color: "#071952" }}>
+                Close
+              </Typography>
+              <span aria-hidden style={{ color: "#071952" }}>
+                ×
+              </span>
             </IconButton>
           </Box>
           <img
@@ -416,7 +414,8 @@ export default function DataTable() {
       {/* <h1 className="mb-3 fw-semibold fs-2">Administator</h1> */}
       <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
         <div className="mb-3 d-flex justify-content-between align-items-end">
-          <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>
+          {/* <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2> */}
+          <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>
           <ExportReport />
         </div>
         <Input
@@ -456,19 +455,29 @@ export default function DataTable() {
             mt: "1rem",
           }}
         >
-          <Button variant="outlined" style={{ Color: "#071952", color: "#071952" }} onClick={deleteProblem}>
+          <Button
+            variant="outlined"
+            style={{ Color: "#071952", color: "#071952" }}
+            onClick={deleteProblem}
+          >
             Delete
           </Button>
-          <Button variant="contained"  style={{ backgroundColor: "#071952", color: "white" }} onClick={handleSubmit}>
+          <Button
+            variant="contained"
+            style={{ backgroundColor: "#071952", color: "white" }}
+            onClick={handleSubmit}
+          >
             Update Status
           </Button>
           <IconButton
             variant="contained"
-            style={{  color: "black" }}
-            onClick={getProblem} 
-            
+            style={{ color: "black" }}
+            onClick={() => {
+              toast.success("Refresh Success");
+              getProblem();
+            }}
           >
-            <RefreshIcon/>
+            <RefreshIcon />
           </IconButton>
         </Box>
       </Paper>

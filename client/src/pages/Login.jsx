@@ -1,5 +1,4 @@
 import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
@@ -37,9 +36,8 @@ export default function Login() {
       .then((data) => {
         if (data.status === "ok") {
           MySwal.fire({
-            title: "เข้าสู่ระบบสำเร็จ",
+            title: "Login Success",
             icon: "success",
-            confirmButtonText: "ตกลง",
           }).then(() => {
             localStorage.setItem("role", data.role); // บันทึกบทบาทใน localStorage
             localStorage.setItem("token", data.token);
@@ -51,9 +49,8 @@ export default function Login() {
           });
         } else {
           MySwal.fire({
-            title: "อีเมลล์หรือรหัสผ่านไม่ถูกต้อง",
+            title: "Login Failed",
             icon: "warning",
-            confirmButtonText: "ตกลง",
           });
         }
       })
@@ -75,104 +72,114 @@ export default function Login() {
   }, []);
 
   return (
-    <Container component="main" maxWidth="full">
-      {/* <Grid
-        sx={{
-          marginTop: 2,
-        }}
-      > */}
-        <Grid container>
-          {/* <CssBaseline /> */}
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              backgroundImage: "url(/word-cloud.png)",
+    <Container
+      sx={{
+        height: "100vh",
+      }}
+      className="p-0"
+      component="main"
+      maxWidth="full"
+    >
+      <Grid sx={{ height: "100%" }} container>
+        <Grid
+          item
+          xs={false}
+          sm={4}
+          md={7}
+          sx={{
+            backgroundImage: "url(/word-cloud.png)",
 
-              backgroundSize: "cover",
-              backgroundPosition: "center",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={2}>
+          <Box
+            sx={{
+              my: 25,
+              mx: 5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
             }}
-          />
-          <Grid item xs={12} sm={8} md={5} component={Paper} elevation={2}>
-            <Box
-              sx={{
-                my: 25,
-                mx: 5,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
+          >
+            <Typography
+              component="h1"
+              variant="h1"
+              style={{ color: "#071952" }}
             >
-              <Typography component="h1" variant="h1"style={{ color:"#071952"}}>
-                Sign in
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1 }}
+              Sign in
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={handleSubmit}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                name="email"
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                autoComplete="email"
+                autoFocus
+              />
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                label="Password"
+                type={passwordInputType}
+                id="password"
+                name="password"
+                autoComplete="current-password"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment
+                      onClick={() => {
+                        setPasswordInputType((prev) => {
+                          return prev === "password" ? "text" : "password";
+                        });
+                      }}
+                      sx={{ cursor: "pointer" }}
+                      position="end"
+                    >
+                      {passwordInputType === "password" ? (
+                        <VisibilityOffIcon />
+                      ) : (
+                        <VisibilityIcon />
+                      )}
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <p></p>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                style={{ backgroundColor: "#071952", color: "white" }}
+                sx={{ mt: 3, mb: 2 }}
               >
-                <TextField
-                  name="email"
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  label="Email Address"
-                  autoComplete="email"
-                  autoFocus
-                />
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  label="Password"
-                  type={passwordInputType}
-                  id="password"
-                  name="password"
-                  autoComplete="current-password"
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment
-                        onClick={() => {
-                          setPasswordInputType((prev) => {
-                            return prev === "password" ? "text" : "password";
-                          });
-                        }}
-                        sx={{ cursor: "pointer" }}
-                        position="end"
-                      >
-                        {passwordInputType === "password" ? (
-                          <VisibilityOffIcon />
-                        ) : (
-                          <VisibilityIcon />
-                        )}
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  style={{ backgroundColor:"#071952",color:"white"}}
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign In
-                </Button>
-                <Grid container>
-                  <Grid item>
-                    <Link href="/register" variant="body1"style={{ color:"#071952"}}>
-                      {"Don't have an account? Sign Up"}
-                    </Link>
-                  </Grid>
+                Sign In
+              </Button>
+              <Grid container>
+                <Grid item>
+                  <Link
+                    href="/register"
+                    variant="body1"
+                    style={{ color: "#071952" }}
+                  >
+                    {"Don't have an account? Sign Up"}
+                  </Link>
                 </Grid>
-              </Box>
+              </Grid>
             </Box>
-          </Grid>
+          </Box>
         </Grid>
+      </Grid>
       {/* </Grid> */}
     </Container>
   );
