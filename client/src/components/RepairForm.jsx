@@ -411,7 +411,7 @@ export default function DataTable() {
           />
         </Box>
       </Modal>
-      <h1 className="mb-3 fw-semibold fs-2">Admin</h1>
+      <h1 className="mb-3 fw-semibold fs-2">Administator</h1>
       <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
         <div className="mb-3 d-flex justify-content-between align-items-end">
           <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2>

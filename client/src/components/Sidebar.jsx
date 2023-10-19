@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 const listItems = [
   {
     listIcon: <Home />,
-    listText: "Admin",
+    listText: "Administator",
     value: "/Foradmin",
     isAdminOnly: true,
   },

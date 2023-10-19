@@ -24,10 +24,10 @@ const connection = mysql.createConnection({
 });
 
 app.post("/register", function (req, res, next) {
-  if (!req.body.email.endsWith("@onee.com")) {
+  if (!req.body.email.endsWith("@onee.one")) {
     return res.json({
       status: "error",
-      message: "อีเมลไม่ถูกต้อง ต้องลงท้ายด้วย @onee.com เท่านั้น",
+      message: "อีเมลไม่ถูกต้อง ต้องลงท้ายด้วย @onee.one เท่านั้น",
     });
   }
   const saltRounds = 10;

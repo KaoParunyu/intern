@@ -147,7 +147,7 @@ export default function SignUp() {
                     label="Email Address"
                     name="email"
                     autoComplete="email"
-                    helperText="อีเมลล์ต้องลงท้ายด้วย @onee.com เท่านั้น *"
+                    helperText="อีเมลล์ต้องลงท้ายด้วย @onee.one เท่านั้น *"
                     FormHelperTextProps={{
                       style: {
                         marginLeft: "auto",
@@ -179,7 +179,7 @@ export default function SignUp() {
                       id="role"
                     >
                       <MenuItem value="user">User</MenuItem>
-                      <MenuItem value="admin">Admin</MenuItem>
+                      <MenuItem value="admin">Administator</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
