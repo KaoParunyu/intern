@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "",
+  password: "12345678",
   database: "project",
 });
 
@@ -115,6 +115,16 @@ app.get("/repair_notifications", (req, res) => {
 
 app.get("/users", (req, res) => {
   connection.execute("SELECT * FROM users", (err, result) => {
+    if (err) {
+      console.log(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.get("/departments", (req, res) => {
+  connection.execute("SELECT * FROM departments", (err, result) => {
     if (err) {
       console.log(err);
     } else {

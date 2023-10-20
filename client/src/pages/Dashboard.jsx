@@ -30,6 +30,35 @@ ChartJS.register(
 const Dashboard = () => {
   const [data, setData] = useState({});
 
+  
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    fetch("http://localhost:3333/authen", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.status === "ok") {
+          if (data.decoded.role === "user") {
+            window.location = "/Foruser";
+          }
+        } else {
+          // alert("การยืนยันตัวตนแอดมินล้มเหลว");
+          alert("Authentication failed");
+          localStorage.removeItem("token");
+          localStorage.removeItem("role");
+          window.location = "/login";
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }, []);
+
   useEffect(() => {
     (async () => {
       const response = await Axios.get(`${baseUrl}/dashboard`);
@@ -75,7 +104,7 @@ const Dashboard = () => {
                       />
                     </Box>
                     <div className="col-8 p-3">
-                      <h2 style={{ fontSize: "1rem" }}>ทั้งหมด</h2>
+                      <h2 style={{ fontSize: "1rem" }}>Total</h2>
                       <p style={{ fontSize: "2rem" }}>
                         {data.totalRepairNotifications}
                       </p>
@@ -107,7 +136,7 @@ const Dashboard = () => {
                       />
                     </Box>
                     <div className="col-8 p-3">
-                      <h2 style={{ fontSize: "1rem" }}>รอดำเนินการ</h2>
+                      <h2 style={{ fontSize: "1rem" }}>New</h2>
                       <p style={{ fontSize: "2rem" }}>
                         {data.totalPendingRepairNotifications}
                       </p>
@@ -141,7 +170,7 @@ const Dashboard = () => {
                       />
                     </Box>
                     <div className="col-8 p-3">
-                      <h2 style={{ fontSize: "1rem" }}>กำลังดำเนินการ</h2>
+                      <h2 style={{ fontSize: "1rem" }}>Processing</h2>
                       <p style={{ fontSize: "2rem" }}>
                         {data.totalInProgrssRepairNotifications}
                       </p>
@@ -176,7 +205,7 @@ const Dashboard = () => {
                       />
                     </Box>
                     <div className="col-8 p-3">
-                      <h2 style={{ fontSize: "1rem" }}>เสร็จสมบูรณ์</h2>
+                      <h2 style={{ fontSize: "1rem" }}>Completed</h2>
                       <p style={{ fontSize: "2rem" }}>
                         {data.totalCompletedRepairNotifications}
                       </p>
@@ -189,7 +218,7 @@ const Dashboard = () => {
               <Doughnut
                 options={{ maintainAspectRatio: false }}
                 data={{
-                  labels: ["รอดำเนินการ", "กำลังดำเนินการ", "เสร็จสมบูรณ์"],
+                  labels: ["New", "Processing", "Completed"],
                   datasets: [
                     {
                       data: [

@@ -73,6 +73,12 @@ export default function DataTable() {
       );
       const users = usersResponse.data;
 
+      const departmentIds = data.map((val) => val.departmentId);
+      const departmentsResponse = await Axios.get(
+        `http://localhost:3333/departments?ids=${departmentIds.join(",")}`
+      );
+      const departments = departmentsResponse.data;
+
       const repairTypesResponse = await Axios.get(
         "http://localhost:3333/repair_types"
       );
@@ -111,9 +117,11 @@ export default function DataTable() {
         .map((val) => ({
           id: val.id,
           user_id: val.user_id, // เพิ่ม user_id ใน newRows
+          departmentId: val.departmentId,
           lastName: val.lname,
           firstName: val.fname,
           problem: val.title,
+          department: val.description,
           repair_type_id: val.repair_type_id,
           repair_type: repairTypesMap[val.repair_type_id] || "",
           status_id: val.status_id,
@@ -126,6 +134,15 @@ export default function DataTable() {
         if (user) {
           row.lastName = user.lname;
           row.firstName = user.fname;
+          row.department = user.departmentId;
+          
+        }
+        if (user.departmentId) {
+          // ค้นหา departmentInfo ที่ตรงกับ user.departmentId
+          const departmentInfo = departments.find((dept) => dept.id === user.departmentId);
+          if (departmentInfo) {
+            row.department = departmentInfo.description; // กำหนดค่า description จาก departmentInfo
+          }
         }
       });
       setRows(newRows);
@@ -150,11 +167,11 @@ export default function DataTable() {
   }, [searchText]);
 
   const columns = [
-    { field: "id", headerName: "Id", width: 50 },
+    { field: "id", headerName: "Id", width: 1 },
     {
       field: "delete",
       headerName: "Delete",
-      width: 70,
+      width: 60,
       renderCell: (params) => {
         return (
           <IconButton onClick={() => deleteOneProblem(params.row.id)}>
@@ -163,14 +180,15 @@ export default function DataTable() {
         );
       },
     },
-    { field: "firstName", headerName: "First Name" },
-    { field: "lastName", headerName: "Last Name" },
-    { field: "problem", headerName: "Problem", width: 180 },
-    { field: "repair_type", headerName: "Repair Type", width: 80 },
+    { field: "firstName", headerName: "First Name", width: 80 },
+    { field: "lastName", headerName: "Last Name", width: 80 },
+    { field: "department", headerName: "Department", width: 80 },
+    { field: "problem", headerName: "ServiceDetail", width: 290 , headerAlign:"center" },
+    { field: "repair_type", headerName: "ServiceType ", width: 80 },
     {
       field: "created_at",
-      headerName: "Created At",
-      width: 150,
+      headerName: "CreateDate",
+      width: 120,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
@@ -180,8 +198,8 @@ export default function DataTable() {
     },
     {
       field: "modified_date",
-      headerName: "Modified Date",
-      width: 150,
+      headerName: "ModifyDate",
+      width: 120,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
           .tz("Asia/Bangkok")
@@ -191,7 +209,7 @@ export default function DataTable() {
     },
     {
       field: "status_id",
-      width: 200,
+      width: 160,
       headerName: "Status",
       headerAlign: "center",
       renderCell: (params) => {
@@ -200,10 +218,11 @@ export default function DataTable() {
             fullWidth
             style={{
               height: "calc(100% - 10px * 2)",
+              alignItems: "center", // จัดให้ตัวเลือก Select อยู่ตรงกลาง
             }}
           >
             <Select
-              sx={{ height: "100%" }}
+              sx={{ height: "100%" , width: "120px" }}
               value={selectedStatus[params.row.id] || params.value}
               onChange={(e) => {
                 setSelectedStatus({

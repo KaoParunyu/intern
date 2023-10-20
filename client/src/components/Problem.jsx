@@ -291,7 +291,7 @@ const Form = () => {
     },
     {
       field: "created_at",
-      headerName: "Created At",
+      headerName: "Created Date",
       width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
@@ -302,7 +302,7 @@ const Form = () => {
     },
     {
       field: "modified_date",
-      headerName: "Modified Date At",
+      headerName: "Modified Date",
       width: 150,
       valueGetter: (params) => {
         const thaiTime = moment(params.value)
@@ -486,7 +486,7 @@ const Form = () => {
                     }}
                   >
                     <MenuItem value="" disabled>
-                      Select Repair Type
+                      Select ServiceType
                     </MenuItem>
                     {repairTypes.map((type) => (
                       <MenuItem key={type.id} value={type.id}>
