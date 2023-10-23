@@ -1,0 +1,15 @@
+{
+  "name": "55555",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dummy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "read-excel-file": "^5.7.1"
+  }
+}
