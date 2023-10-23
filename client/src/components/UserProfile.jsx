@@ -79,9 +79,9 @@ export default function UserProfile() {
           <p
             style={{
               color: "#0F81AB", // สีของฟอนต์ที่คุณต้องการ
-              fontSize:"150%",
-              fontFamily:"fantasy"
-            }}>
+              fontSize: "150%",
+            }}
+          >
             Hello, {user.fname} {user.lname}
           </p>
         </Box>

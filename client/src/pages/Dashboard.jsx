@@ -30,7 +30,17 @@ ChartJS.register(
 const Dashboard = () => {
   const [data, setData] = useState({});
 
-  
+  const colors = [
+    "#071952",
+    "#F3E55E",
+    "#088395",
+    "#36A2EB",
+    "#822E81",
+    "#AA6373",
+    "#CF1259",
+    "#B7C3F3",
+  ];
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     fetch("http://localhost:3333/authen", {
@@ -240,50 +250,123 @@ const Dashboard = () => {
             จำนวนรายการแจ้งซ่อมตามประเภท
           </h2>
           <div>
-            <Bar
-              height={400}
-              data={{
-                labels: data?.graph?.labels.map(
-                  (item) => item[0].toUpperCase() + item.slice(1)
-                ),
-                datasets: [
-                  {
-                    backgroundColor: "#071952",
-                    label: "Computer",
-                    data: data?.graph?.datas.computer,
+            {data?.graph && (
+              <Bar
+                height={400}
+                data={{
+                  labels: data?.graph?.labels.map(
+                    (item) => item[0].toUpperCase() + item.slice(1)
+                  ),
+                  datasets: Object.keys(data?.graph?.datas).map(
+                    (item, index) => ({
+                      label: item[0].toUpperCase() + item.slice(1),
+                      data: data?.graph?.datas[item],
+                      backgroundColor: colors[index],
+                    })
+                  ),
+                }}
+                options={{
+                  scale: {
+                    ticks: {
+                      precision: 0,
+                    },
                   },
-                  {
-                    backgroundColor: "#35A29F",
-                    label: "Printer",
-                    data: data?.graph?.datas.printer,
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    title: {
+                      display: true,
+                      text: "Chart.js Bar Chart",
+                    },
                   },
-                  {
-                    backgroundColor: "#F2F7A1",
-                    label: "Internet",
-                    data: data?.graph?.datas.internet,
-                  },
-                ],
-              }}
-              options={{
-                scale: {
-                  ticks: {
-                    precision: 0,
-                  },
-                },
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    position: "top",
-                  },
-                  title: {
-                    display: true,
-                    text: "Chart.js Bar Chart",
-                  },
-                },
-              }}
-            />
+                }}
+              />
+            )}
           </div>
+          <div style={{ maxWidth: "400px", marginInline: "auto" }}>
+            {data?.total && (
+              <Doughnut
+                data={{
+                  labels: Object.keys(data?.graph?.datas).map(
+                    (item) => item[0].toUpperCase() + item.slice(1)
+                  ),
+                  datasets: [
+                    {
+                      data: Object.values(data.total),
+                      hoverOffset: 4,
+                      backgroundColor: colors,
+                    },
+                  ],
+                }}
+              />
+            )}
+          </div>
+        </Paper>
+        <Paper
+          elevation={2}
+          sx={{ p: "1.25rem", borderRadius: "0.5rem", mt: "1.25rem" }}
+        >
+          <h2 className="mb-3 fs-4 fw-semibold">จำนวนรายการแจ้งซ่อมตามแผนก</h2>
+          <div>
+            {data?.graph2 && (
+              <Bar
+                height={400}
+                data={{
+                  labels: data?.graph2?.labels.map(
+                    (item) => item[0].toUpperCase() + item.slice(1)
+                  ),
+                  datasets: Object.keys(data?.graph2?.datas).map(
+                    (item, index) => ({
+                      label: item[0].toUpperCase() + item.slice(1),
+                      data: data?.graph2?.datas[item],
+                      backgroundColor: colors[index],
+                    })
+                  ),
+                }}
+                options={{
+                  scale: {
+                    ticks: {
+                      precision: 0,
+                    },
+                  },
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: {
+                      position: "top",
+                    },
+                    title: {
+                      display: true,
+                      text: "Chart.js Bar Chart",
+                    },
+                  },
+                }}
+              />
+            )}
+          </div>
+          {data?.graph2?.datas && (
+            <div style={{ maxWidth: "400px", marginInline: "auto" }}>
+              <Doughnut
+                data={{
+                  labels: Object.keys(data.graph2.datas).map(
+                    (item) => item[0].toUpperCase() + item.slice(1)
+                  ),
+                  datasets: [
+                    {
+                      data: Object.values(data.graph2.datas).map((item) =>
+                        item.reduce((a, b) => a + b, 0)
+                      ),
+                      hoverOffset: 4,
+                      backgroundColor: colors,
+                    },
+                  ],
+                }}
+              />
+            </div>
+          )}
         </Paper>
       </div>
     </div>

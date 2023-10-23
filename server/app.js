@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 const connection = mysql.createConnection({
   host: "localhost",
   user: "root",
-  password: "12345678",
+  password: "",
   database: "project",
 });
 
@@ -287,68 +287,95 @@ app.post("/images", (req, res) => {
 });
 
 app.get("/dashboard", (req, res) => {
-  connection.execute(`SELECT * FROM repair_notifications`, (err, results) => {
-    if (err) {
-      console.log(err);
-    } else {
-      const months = [
-        "january",
-        "february",
-        "march",
-        "april",
-        "may",
-        "june",
-        "july",
-        "august",
-        "september",
-        "octobor",
-        "november",
-        "december",
-      ];
-
-      const result = {
-        totalRepairNotifications: results.length,
-        totalPendingRepairNotifications: results.filter(
-          (item) => item.status_id === 1
-        ).length,
-        totalInProgrssRepairNotifications: results.filter(
-          (item) => item.status_id === 2
-        ).length,
-        totalCompletedRepairNotifications: results.filter(
-          (item) => item.status_id === 3
-        ).length,
-        graph: {
-          labels: months,
-          datas: {
-            computer: [],
-            printer: [],
-            internet: [],
+  connection.execute(
+    `SELECT * FROM repair_notifications LEFT JOIN users ON users.id = repair_notifications.user_id`,
+    (err, results) => {
+      if (err) {
+        console.log(err);
+      } else {
+        const months = [
+          "january",
+          "february",
+          "march",
+          "april",
+          "may",
+          "june",
+          "july",
+          "august",
+          "september",
+          "octobor",
+          "november",
+          "december",
+        ];
+        const result = {
+          total: {},
+          totalRepairNotifications: results.length,
+          totalPendingRepairNotifications: results.filter(
+            (item) => item.status_id === 1
+          ).length,
+          totalInProgrssRepairNotifications: results.filter(
+            (item) => item.status_id === 2
+          ).length,
+          totalCompletedRepairNotifications: results.filter(
+            (item) => item.status_id === 3
+          ).length,
+          graph: {
+            labels: months,
+            datas: {},
           },
-        },
-      };
-      months.forEach((month, index) => {
-        const computerAmount = results.filter(
-          (item) =>
-            item.repair_type_id === 1 &&
-            new Date(item.created_at).getMonth() === index
-        ).length;
-        const printerAmount = results.filter(
-          (item) =>
-            item.repair_type_id === 2 &&
-            new Date(item.created_at).getMonth() === index
-        ).length;
-        const internetAmount = results.filter(
-          (item) =>
-            item.repair_type_id === 3 &&
-            new Date(item.created_at).getMonth() === index
-        ).length;
-        result["graph"]["datas"]["computer"].push(computerAmount);
-        result["graph"]["datas"]["printer"].push(printerAmount);
-        result["graph"]["datas"]["internet"].push(internetAmount);
-      });
-      res.send(result);
+          graph2: {
+            labels: months,
+            datas: {},
+          },
+        };
+        connection.execute(`SELECT * FROM repair_types`, (err, repairTypes) => {
+          repairTypes.forEach((repairType) => {
+            result.total[repairType.name.toLowerCase()] = results.filter(
+              (item) => item.repair_type_id === repairType.id
+            ).length;
+            const lowerRepairTypeName = repairType.name.toLowerCase();
+            result.graph.datas[lowerRepairTypeName] = [];
+          });
+          months.forEach((month, index) => {
+            repairTypes.forEach((repairType) => {
+              const lowerRepairTypeName = repairType.name.toLowerCase();
+              result.graph.datas[lowerRepairTypeName].push(
+                results.filter(
+                  (item) =>
+                    new Date(item.created_at).getMonth() === index &&
+                    item.repair_type_id === repairType.id
+                ).length
+              );
+            });
+          });
+          connection.execute(
+            `SELECT * FROM departments`,
+            (err, departments) => {
+              departments.forEach((department) => {
+                const lowerDepartmentDescription =
+                  department.description.toLowerCase();
+                result.graph2.datas[lowerDepartmentDescription] = [];
+              });
+              months.forEach((month, index) => {
+                departments.forEach((department) => {
+                  const lowerDepartmentDescription =
+                    department.description.toLowerCase();
+                  result.graph2.datas[lowerDepartmentDescription].push(
+                    results.filter(
+                      (item) =>
+                        new Date(item.created_at).getMonth() === index &&
+                        item.departmentId === department.id
+                    ).length
+                  );
+                });
+              });
+              res.json(result);
+            }
+          );
+        });
+      }
     }
-  });
+  );
 });
 
 app.get("/departments", (req, res) => {
