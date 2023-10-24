@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
   //   background: "#511",
   // },
   listItem: {
-    color: "#169EAB",
+    color: "#0082E0",
   },
 }));
 
@@ -88,7 +88,7 @@ export default function App() {
       }}
     >
       <UserProfile />
-      <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)" }} />
+      <Divider sx={{ borderColor: "#AFD238" }} />
       <List>
         {listItems.map((listItem, index) => (
           <>
@@ -123,7 +123,7 @@ export default function App() {
       <Divider sx={{ borderColor: "rgba(0, 0, 0, 0.5)", mb: "1rem" }} />
       <Button
         variant="contained"
-        style={{ backgroundColor: "#071952", color: "white" }}
+        style={{ backgroundColor: "#0082E0", color: "white" }}
         onClick={handleLogout}
       >
         Logout

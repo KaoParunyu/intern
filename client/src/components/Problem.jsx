@@ -382,8 +382,7 @@ const Form = () => {
       </Modal>
       {/* <h1 className="mb-3 fw-semibold fs-2">User</h1> */}
       <Paper
-        elevation={2}
-        sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
+        elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}
       >
         <h2 className="mb-3 fs-4 fw-semibold">SERVICE REQUEST</h2>
         <form onSubmit={postProblem} className="form">
@@ -541,7 +540,7 @@ const Form = () => {
                 size="small"
                 component="label"
                 variant="contained"
-                style={{ backgroundColor: "#088395", color: "white" }}
+                style={{ backgroundColor: "#00C0D1", color: "white" }}
                 startIcon={<CloudUploadIcon />}
               >
                 Upload Image
@@ -571,7 +570,7 @@ const Form = () => {
             <Button
               type="submit"
               variant="contained"
-              style={{ backgroundColor: "#071952", color: "white" }}
+              style={{ backgroundColor: "#0082E0", color: "white" }}
             >
               Submit
             </Button>
@@ -579,8 +578,7 @@ const Form = () => {
         </form>
       </Paper>
       <Paper
-        elevation={2}
-        sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1rem" }}
+         elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}
       >
         <div className="mb-3 d-flex justify-content-between align-items-end">
           <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>

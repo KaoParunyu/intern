@@ -3,7 +3,7 @@ body {
   font-family: "Prompt", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #e6efea !important;
+  background-color: #E6EFEA !important;
 }
 
 .form {
@@ -66,7 +66,7 @@ input[type="file"] {
   padding: 0 0 1.25em;
   border: none;
   border-radius: 5px;
-  background: #f4f8e1;
+  background: #E6EFEA;
   color: #545454;
   font-family: inherit;
   font-size: 1rem;
@@ -74,9 +74,9 @@ input[type="file"] {
 
 .swal2-styled.swal2-cancel {
   border: 0;
-  border-radius: 0.25em;
+  border-radius: 1.25em;
   background: initial;
-  background-color: #35a29f;
+  background-color: #00C0D1;
   color: #fff;
   font-size: 1em;
 }
@@ -84,7 +84,7 @@ input[type="file"] {
   border: 0;
   border-radius: 0.25em;
   background: initial;
-  background-color: #071952;
+  background-color: #0082E0;
   color: #fff;
   font-size: 1em;
 }
@@ -120,4 +120,38 @@ input[type="file"] {
   MuiDataGrid-checkboxInput
   css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
   color: #010407;
+}
+.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.Mui-checked, .css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
+  color: #AFD238 !important;
+}
+/* .css-1y205r-MuiDataGrid-root .MuiDataGrid-columnHeader:focus .css-1y205r-MuiDataGrid-root .MuiDataGrid-cell:focus {
+  outline: solid #AFD238 1px !important; 
+  background-color: #AFD238 !important;
+
+} */
+.css-1nxt660-MuiDataGrid-root .MuiDataGrid-columnHeader:focus, .css-1y205r-MuiDataGrid-root, .MuiDataGrid-row:not(.MuiDataGrid-row--dynamicHeight)>.MuiDataGrid-cell:focus {
+
+  outline-color: #AFD238 !important;
+  background-color: #AFD238 !important;
+ }
+.css-1y205r-MuiDataGrid-root .MuiDataGrid-menuIcon {
+
+  background-color: #AFD238 !important;
+}
+.css-1y205r-MuiDataGrid-root .MuiDataGrid-sortIcon, .css-1y205r-MuiDataGrid-root .MuiDataGrid-filterIcon {
+  color: #0082E0 !important;
+}
+.css-ptiqhd-MuiSvgIcon-root {
+
+  color: #0082E0 !important;
+}
+
+/* 
+.css-1nxt660-MuiDataGrid-root .MuiDataGrid-columnHeader { 
+  background-color: #E6EFEA !important;
+} */
+
+.css-1qdw29x-MuiDataGrid-root .MuiDataGrid-columnHeader:focus  {
+
+  background-color: #AFD238;
 }

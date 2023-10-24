@@ -87,6 +87,7 @@ export default function Login() {
           sm={4}
           md={7}
           sx={{
+            height: "100%",
             backgroundImage: "url(/word-cloud.png)",
 
             backgroundSize: "cover",
@@ -106,7 +107,8 @@ export default function Login() {
             <Typography
               component="h1"
               variant="h1"
-              style={{ color: "#071952" }}
+              style={{ color: "#0082E0", fontWeight: "bold" }}
+              sx={{ mb: 4 ,  }}
             >
               Sign in
             </Typography>
@@ -114,7 +116,7 @@ export default function Login() {
               component="form"
               noValidate
               onSubmit={handleSubmit}
-              sx={{ mt: 1 }}
+              sx={{ mt: 4 }}
             >
               <TextField
                 name="email"
@@ -160,7 +162,7 @@ export default function Login() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                style={{ backgroundColor: "#071952", color: "white" }}
+                style={{ backgroundColor: "#0082E0", color: "white" }}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign In
@@ -170,7 +172,7 @@ export default function Login() {
                   <Link
                     href="/register"
                     variant="body1"
-                    style={{ color: "#071952" }}
+                    style={{ color: "#0082E0" }}
                   >
                     {"Don't have an account? Sign Up"}
                   </Link>

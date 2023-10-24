@@ -82,10 +82,10 @@ const Dashboard = () => {
       <div className="container py-4">
         {/* <h1 className="fw-semibold fs-2 mb-3">Dashboard</h1> */}
         <Paper
-          elevation={2}
-          sx={{ p: "1.25rem", borderRadius: "0.5rem", mb: "1.25rem" }}
+          elevation={20}
+          sx={{ p: "80px", borderRadius: "1.5rem", mb: "1.5rem" }}
         >
-          <h2 className="mb-3 fs-4 fw-semibold">Summary</h2>
+          <div style={{  marginBottom:"50px"}}><h3 className="fs-4 fw-semibold mb-0">Summary</h3></div>
           <div className="row">
             <div className="col-xl-8">
               <div className="d-flex gap-3">
@@ -100,7 +100,7 @@ const Dashboard = () => {
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#36A2EB", borderRadius: "0.5rem" }}
+                      sx={{ bgcolor: "#0082E0", borderRadius: "0.5rem" }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <CampaignIcon
@@ -114,7 +114,7 @@ const Dashboard = () => {
                       />
                     </Box>
                     <div className="col-8 p-3">
-                      <h2 style={{ fontSize: "1rem" }}>Total</h2>
+                      <h3 style={{ fontSize: "1rem" }}>Total</h3>
                       <p style={{ fontSize: "2rem" }}>
                         {data.totalRepairNotifications}
                       </p>
@@ -132,7 +132,7 @@ const Dashboard = () => {
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#071952", borderRadius: "0.5rem" }}
+                      sx={{ bgcolor: "#00C0D1", borderRadius: "0.5rem" }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <PendingIcon
@@ -166,7 +166,7 @@ const Dashboard = () => {
                 >
                   <div className="row h-100 bg-white">
                     <Box
-                      sx={{ bgcolor: "#F3E55E", borderRadius: "0.5rem" }}
+                      sx={{ bgcolor: "#8AE7D4", borderRadius: "0.5rem" }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
                     >
                       <MemoryIcon
@@ -199,7 +199,7 @@ const Dashboard = () => {
                   <div className="row h-100 bg-white">
                     <Box
                       sx={{
-                        bgcolor: "#088395",
+                        bgcolor: "#AFD238",
                         borderRadius: "0.5rem",
                       }}
                       className="col-4 d-flex h-100 justify-content-center align-items-center"
@@ -236,7 +236,7 @@ const Dashboard = () => {
                         data.totalInProgrssRepairNotifications,
                         data.totalCompletedRepairNotifications,
                       ],
-                      backgroundColor: ["#071952", "#F3E55E", "#088395"],
+                      backgroundColor: ["#00C0D1", "#8AE7D4", "#AFD238"],
                       hoverOffset: 4,
                     },
                   ],
@@ -245,10 +245,10 @@ const Dashboard = () => {
             </div>
           </div>
         </Paper>
-        <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
-          <h2 className="mb-3 fs-4 fw-semibold">
-            จำนวนรายการแจ้งซ่อมตามประเภท
-          </h2>
+        <Paper elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}>
+         <div style={{  marginBottom:"50px"}}> <h3 className="fs-4 fw-semibold mb-0" >
+          Service Requests by type
+          </h3></div>
           <div>
             {data?.graph && (
               <Bar
@@ -288,29 +288,41 @@ const Dashboard = () => {
           </div>
           <div style={{ maxWidth: "400px", marginInline: "auto" }}>
             {data?.total && (
-              <Doughnut
-                data={{
-                  labels: Object.keys(data?.graph?.datas).map(
-                    (item) => item[0].toUpperCase() + item.slice(1)
-                  ),
-                  datasets: [
-                    {
-                      data: Object.values(data.total),
-                      hoverOffset: 4,
-                      backgroundColor: colors,
-                    },
-                  ],
-                }}
-              />
+              <Doughnut  style={{"margin-bottom": "50px"}}
+  data={{ 
+    labels: Object.keys(data?.graph?.datas).map(
+      (item) => item[0].toUpperCase() + item.slice(1)
+    ),
+    datasets: [
+      {
+        data: Object.values(data.total),
+        hoverOffset: 30,
+        backgroundColor: colors,
+      },
+    ],
+  }}
+  options={{
+    plugins: {
+      legend: {
+        display: true, // แสดง labels
+        position: 'left', // ระบุตำแหน่งของ labels ที่คุณต้องการ
+        labels: {
+          padding: 20 ,// เพิ่มระยะห่างระหว่าง labels และ datasets
+          margin: 150
+      },
+    },
+  },
+  }}
+/>
             )}
           </div>
         </Paper>
         <Paper
-          elevation={2}
-          sx={{ p: "1.25rem", borderRadius: "0.5rem", mt: "1.25rem" }}
+          elevation={20}
+          sx={{  p: "80px", borderRadius: "1.5rem" , mt: "1.25rem" }}
         >
-          <h2 className="mb-3 fs-4 fw-semibold">จำนวนรายการแจ้งซ่อมตามแผนก</h2>
-          <div>
+         <div style={{  marginBottom:"50px"}}> <h2 className="mb-3 fs-4 fw-semibold">Service Requests by department</h2></div>
+          <div >
             {data?.graph2 && (
               <Bar
                 height={400}
@@ -349,7 +361,7 @@ const Dashboard = () => {
           </div>
           {data?.graph2?.datas && (
             <div style={{ maxWidth: "400px", marginInline: "auto" }}>
-              <Doughnut
+              <Doughnut style={{"margin-top": "50px","margin-bottom": "50px"}}
                 data={{
                   labels: Object.keys(data.graph2.datas).map(
                     (item) => item[0].toUpperCase() + item.slice(1)
@@ -359,10 +371,22 @@ const Dashboard = () => {
                       data: Object.values(data.graph2.datas).map((item) =>
                         item.reduce((a, b) => a + b, 0)
                       ),
-                      hoverOffset: 4,
+                      hoverOffset: 30,
                       backgroundColor: colors,
                     },
                   ],
+                }}
+                options={{
+                  plugins: {
+                    legend: {
+                      display: true, // แสดง labels
+                      position: 'left', // ระบุตำแหน่งของ labels ที่คุณต้องการ
+                      labels: {
+                        padding: 20 ,// เพิ่มระยะห่างระหว่าง labels และ datasets
+                        margin: 150
+                    },
+                  },
+                },
                 }}
               />
             </div>

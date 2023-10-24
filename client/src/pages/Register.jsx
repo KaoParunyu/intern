@@ -101,11 +101,7 @@ export default function SignUp() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="sm">
         <Paper
-          elevation={2}
-          sx={{
-            p: "1.25rem",
-            borderRadius: "0.5rem",
-            mt: "2rem",
+     elevation={20} sx={{ p: "50px", borderRadius: "1.5rem" ,mt: "1.25rem"
           }}
         >
           <Box
@@ -116,13 +112,13 @@ export default function SignUp() {
               alignItems: "center",
             }}
           >
-            <Avatar sx={{ m: 1, bgcolor: "#071952" }}>
+            <Avatar sx={{ m: 1, bgcolor: "#0082E0" }}>
               <LockOutlinedIcon />
             </Avatar>
             <Typography
               component="h1"
               variant="h3"
-              style={{ color: "#071952" }}
+              style={{ color: "#0082E0", fontWeight: "bold" }}
             >
               Sign up
             </Typography>
@@ -269,7 +265,7 @@ export default function SignUp() {
                 type="submit"
                 fullWidth
                 variant="contained"
-                style={{ backgroundColor: "#071952", color: "white" }}
+                style={{ backgroundColor: "#0082E0", color: "white" }}
                 sx={{ mt: 3, mb: 2 }}
               >
                 Sign Up
@@ -279,7 +275,7 @@ export default function SignUp() {
                   <Link
                     href="/login"
                     variant="body2"
-                    style={{ color: "#071952" }}
+                    style={{ color: "#0082E0" }}
                   >
                     Already have an account? Sign in
                   </Link>

@@ -26,9 +26,10 @@ export default function UserProfile() {
   }
 
   function stringAvatar(name) {
+    const fixedColor = "#0082E0";
     return {
       sx: {
-        bgcolor: stringToColor(name),
+        bgcolor: fixedColor,
         width: 100,
         height: 100,
         marginBottom: "0.5rem",
@@ -78,8 +79,10 @@ export default function UserProfile() {
           <Avatar {...stringAvatar(`${user.fname} ${user.lname}`)} />
           <p
             style={{
-              color: "#0F81AB", // สีของฟอนต์ที่คุณต้องการ
+              color: "#0082E0", // สีของฟอนต์ที่คุณต้องการ
               fontSize: "150%",
+              marginBottom: "30px",
+              marginTop:"20px"
             }}
           >
             Hello, {user.fname} {user.lname}

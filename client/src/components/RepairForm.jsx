@@ -175,7 +175,7 @@ export default function DataTable() {
       renderCell: (params) => {
         return (
           <IconButton onClick={() => deleteOneProblem(params.row.id)}>
-            <DeleteIcon style={{ color: "#071952" }} />
+            <DeleteIcon style={{ color: "#0082E0" }} />
           </IconButton>
         );
       },
@@ -431,7 +431,7 @@ export default function DataTable() {
         </Box>
       </Modal>
       {/* <h1 className="mb-3 fw-semibold fs-2">Administator</h1> */}
-      <Paper elevation={2} sx={{ p: "1.25rem", borderRadius: "0.5rem" }}>
+      <Paper Paper elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}>
         <div className="mb-3 d-flex justify-content-between align-items-end">
           {/* <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2> */}
           <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>
@@ -452,7 +452,7 @@ export default function DataTable() {
           }}
           sx={{
             "& .MuiDataGrid-checkboxInput": {
-              color: "#071952", // เปลี่ยนสีของ checkbox
+              color: "#0082E0", // เปลี่ยนสีของ checkbox
             },
             "& p": {
               mb: 0,
@@ -476,21 +476,21 @@ export default function DataTable() {
         >
           <Button
             variant="outlined"
-            style={{ Color: "#071952", color: "#071952" }}
+            style={{ Color: "#8AE7D4", color: "#0082E0" }}
             onClick={deleteProblem}
           >
             Delete
           </Button>
           <Button
             variant="contained"
-            style={{ backgroundColor: "#071952", color: "white" }}
+            style={{ backgroundColor: "#0082E0", color: "white" }}
             onClick={handleSubmit}
           >
             Update Status
           </Button>
           <IconButton
             variant="contained"
-            style={{ color: "black" }}
+            style={{ color: "#0082E0" }}
             onClick={() => {
               toast.success("Refresh Success");
               getProblem();
