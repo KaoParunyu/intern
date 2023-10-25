@@ -9,17 +9,18 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import Axios from "axios";
-import Swal from "sweetalert2";
-import moment from "moment-timezone";
+import { toast } from "sonner";
 import ExportReport from "./ExportReport";
 import Button from "@mui/material/Button";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useEffect, useState } from "react";
 import DeleteIcon from "@mui/icons-material/Delete";
-import withReactContent from "sweetalert2-react-content";
-import { toast } from "sonner";
+import RefreshIcon from "@mui/icons-material/Refresh";
+
+import { baseUrl } from "../constants/api";
+import { formatDateThaiStyle } from "../common/date-formatter";
+import MySwal from "./MySwal";
 
 const style = {
   position: "absolute",
@@ -32,8 +33,6 @@ const style = {
   p: 2,
   borderRadius: "0.5rem",
 };
-
-const MySwal = withReactContent(Swal);
 
 export default function DataTable() {
   const [rows, setRows] = useState([]);
@@ -62,26 +61,22 @@ export default function DataTable() {
 
   const getProblem = async () => {
     try {
-      const response = await Axios.get(
-        "http://localhost:3333/repair_notifications"
-      );
+      const response = await Axios.get(`${baseUrl}/repair_notifications`);
       const data = response.data;
 
       const userIds = data.map((val) => val.user_id);
       const usersResponse = await Axios.get(
-        `http://localhost:3333/users?ids=${userIds.join(",")}`
+        `${baseUrl}/users?ids=${userIds.join(",")}`
       );
       const users = usersResponse.data;
 
       const departmentIds = data.map((val) => val.departmentId);
       const departmentsResponse = await Axios.get(
-        `http://localhost:3333/departments?ids=${departmentIds.join(",")}`
+        `${baseUrl}/departments?ids=${departmentIds.join(",")}`
       );
       const departments = departmentsResponse.data;
 
-      const repairTypesResponse = await Axios.get(
-        "http://localhost:3333/repair_types"
-      );
+      const repairTypesResponse = await Axios.get(`${baseUrl}/repair_types`);
       const repairTypesData = repairTypesResponse.data;
       const repairTypesMap = {};
       const statusOptionsMap = {};
@@ -135,11 +130,12 @@ export default function DataTable() {
           row.lastName = user.lname;
           row.firstName = user.fname;
           row.department = user.departmentId;
-          
         }
         if (user.departmentId) {
           // ค้นหา departmentInfo ที่ตรงกับ user.departmentId
-          const departmentInfo = departments.find((dept) => dept.id === user.departmentId);
+          const departmentInfo = departments.find(
+            (dept) => dept.id === user.departmentId
+          );
           if (departmentInfo) {
             row.department = departmentInfo.description; // กำหนดค่า description จาก departmentInfo
           }
@@ -153,18 +149,13 @@ export default function DataTable() {
 
   const getStatusOptions = async () => {
     try {
-      const response = await Axios.get("http://localhost:3333/status");
+      const response = await Axios.get(`${baseUrl}/status`);
       const data = response.data;
       setStatusOptions(data);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
-  useEffect(() => {
-    getProblem();
-    getStatusOptions();
-  }, [searchText]);
 
   const columns = [
     { field: "id", headerName: "Id", width: 1 },
@@ -183,29 +174,24 @@ export default function DataTable() {
     { field: "firstName", headerName: "First Name", width: 80 },
     { field: "lastName", headerName: "Last Name", width: 80 },
     { field: "department", headerName: "Department", width: 80 },
-    { field: "problem", headerName: "ServiceDetail", width: 290 , headerAlign:"center" },
+    {
+      field: "problem",
+      headerName: "ServiceDetail",
+      width: 290,
+      headerAlign: "center",
+    },
     { field: "repair_type", headerName: "ServiceType ", width: 80 },
     {
       field: "created_at",
       headerName: "CreateDate",
       width: 120,
-      valueGetter: (params) => {
-        const thaiTime = moment(params.value)
-          .tz("Asia/Bangkok")
-          .format("DD/MM/YYYY - HH:mm");
-        return thaiTime;
-      },
+      valueGetter: (params) => formatDateThaiStyle(params.value),
     },
     {
       field: "modified_date",
       headerName: "ModifyDate",
       width: 120,
-      valueGetter: (params) => {
-        const thaiTime = moment(params.value)
-          .tz("Asia/Bangkok")
-          .format("DD/MM/YYYY - HH:mm");
-        return thaiTime;
-      },
+      valueGetter: (params) => formatDateThaiStyle(params.value),
     },
     {
       field: "status_id",
@@ -222,7 +208,7 @@ export default function DataTable() {
             }}
           >
             <Select
-              sx={{ height: "100%" , width: "120px" }}
+              sx={{ height: "100%", width: "120px" }}
               value={selectedStatus[params.row.id] || params.value}
               onChange={(e) => {
                 setSelectedStatus({
@@ -252,7 +238,7 @@ export default function DataTable() {
         }
         return (
           <Button
-            onClick={() => handleOpen(`http://localhost:3333${params.value}`)}
+            onClick={() => handleOpen(`${baseUrl}${params.value}`)}
             style={{ display: "block", width: "100%", height: "100%" }}
           >
             <img
@@ -262,7 +248,7 @@ export default function DataTable() {
                 objectFit: "contain",
                 borderRadius: "0.5rem",
               }}
-              src={`http://localhost:3333${params.value}`}
+              src={`${baseUrl}${params.value}`}
               alt="preview"
             />
           </Button>
@@ -273,119 +259,114 @@ export default function DataTable() {
 
   const handleSubmit = async () => {
     if (selectedRows.length === 0) {
-      MySwal.fire({
+      await MySwal.fire({
         // title: "กรุณาเลือกข้อมูลที่ต้องการอัปเดตสถานะ",
         title: "Please select data to update status.",
         icon: "warning",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     try {
-      MySwal.fire({
+      const result = await MySwal.fire({
         // title: "คุณต้องการอัปเดตสถานะหรือไม่?",
         title: "Do you want to update this status?",
         icon: "warning",
         showCancelButton: true,
-      }).then(async (result) => {
-        if (result.isConfirmed) {
-          // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
-          const updatedStatus = [];
-          for (const selectedRow of selectedRows) {
-            if (selectedRow in selectedStatus) {
-              const newStatusId = selectedStatus[selectedRow];
-              updatedStatus.push({
-                id: selectedRow,
-                status_id: newStatusId,
-              });
-            }
+      });
+
+      if (result.isConfirmed) {
+        // สร้างอาร์เรย์ของสถานะที่มีการเปลี่ยนแปลง
+        const updatedStatus = [];
+        for (const selectedRow of selectedRows) {
+          if (selectedRow in selectedStatus) {
+            const newStatusId = selectedStatus[selectedRow];
+            updatedStatus.push({
+              id: selectedRow,
+              status_id: newStatusId,
+            });
           }
+        }
 
-          // ส่งข้อมูลการอัปเดตไปยัง API หรือฐานข้อมูล
-          for (const statusData of updatedStatus) {
-            await Axios.put(
-              `http://localhost:3333/repair_notifications/${statusData.id}`,
-              {
-                status_id: statusData.status_id,
-              }
-            );
-          }
-
-          // ดึงข้อมูลใหม่
-          await getProblem();
-
-          setSelectedRows([]);
-
-          MySwal.fire({
-            title: "Update Status Success",
-            icon: "success",
-            confirmButtonText: "ตกลง",
+        // ส่งข้อมูลการอัปเดตไปยัง API หรือฐานข้อมูล
+        for (const statusData of updatedStatus) {
+          await Axios.put(`${baseUrl}/repair_notifications/${statusData.id}`, {
+            status_id: statusData.status_id,
           });
         }
-      });
+
+        // ดึงข้อมูลใหม่
+        await getProblem();
+
+        setSelectedRows([]);
+
+        await MySwal.fire({
+          title: "Update Status Success",
+          icon: "success",
+        });
+      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   const deleteOneProblem = async (id) => {
-    MySwal.fire({
+    const result = await MySwal.fire({
       title: "Do you want to delete this data?",
       icon: "warning",
       showCancelButton: true,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const response = await Axios.delete(
-          `http://localhost:3333/delete/${id}}`
-        );
-
-        if (response.status === 200) {
-          await getProblem();
-        }
-
-        MySwal.fire({
-          title: "Delete Success",
-          icon: "success",
-        });
-      }
     });
+    if (result.isConfirmed) {
+      const response = await Axios.delete(`${baseUrl}/delete/${id}}`);
+
+      if (response.status === 200) {
+        await getProblem();
+      }
+
+      await MySwal.fire({
+        title: "Delete Success",
+        icon: "success",
+      });
+    }
   };
 
   const deleteProblem = async () => {
     if (selectedRows.length === 0) {
-      MySwal.fire({
+      await MySwal.fire({
         title: "Please select data to delete.",
         icon: "warning",
       });
       return;
     }
 
-    MySwal.fire({
+    const result = await MySwal.fire({
       title: "Do you want to delete this data?",
       icon: "warning",
       showCancelButton: true,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        const response = await Axios.delete(
-          `http://localhost:3333/delete/${selectedRows.join(",")}`
-        );
-
-        if (response.status === 200) {
-          await getProblem();
-        }
-
-        // เคลียร์การเลือก
-        setSelectedRows([]);
-
-        MySwal.fire({
-          title: "Delete Success",
-          icon: "success",
-          confirmButtonText: "ตกลง",
-        });
-      }
     });
+    if (result.isConfirmed) {
+      const response = await Axios.delete(
+        `${baseUrl}/delete/${selectedRows.join(",")}`
+      );
+
+      if (response.status === 200) {
+        await getProblem();
+      }
+
+      // เคลียร์การเลือก
+      setSelectedRows([]);
+
+      await MySwal.fire({
+        title: "Delete Success",
+        icon: "success",
+      });
+    }
   };
+
+  useEffect(() => {
+    getProblem();
+    getStatusOptions();
+  }, [searchText]);
 
   return (
     <div className="container py-4">
@@ -431,7 +412,11 @@ export default function DataTable() {
         </Box>
       </Modal>
       {/* <h1 className="mb-3 fw-semibold fs-2">Administator</h1> */}
-      <Paper Paper elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}>
+      <Paper
+        Paper
+        elevation={20}
+        sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
+      >
         <div className="mb-3 d-flex justify-content-between align-items-end">
           {/* <h2 className="fs-4 fw-semibold mb-0">ตารางแจ้งซ่อม</h2> */}
           <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>

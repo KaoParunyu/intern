@@ -11,20 +11,18 @@ import {
   Typography,
 } from "@mui/material";
 import Axios from "axios";
-import Swal from "sweetalert2";
 import { toast } from "sonner";
 import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
-import withReactContent from "sweetalert2-react-content";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { baseUrl } from "../constants/api";
 
+import MySwal from "./MySwal";
 import ExportReport from "./ExportReport";
-
-const MySwal = withReactContent(Swal);
+import { baseUrl } from "../constants/api";
+import { formatDateThaiStyle } from "../common/date-formatter";
 
 const style = {
   position: "absolute",
@@ -156,27 +154,25 @@ const Form = () => {
     e.preventDefault();
 
     if (!title && !repair_type) {
-      MySwal.fire({
+      await MySwal.fire({
         // title: "กรุณากรอก Title และเลือก Repair Type",
         title: "Please enter Title and select Repair Type",
         icon: "error",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     if (!title) {
-      MySwal.fire({
+      await MySwal.fire({
         // title: "กรุณากรอก Title",
         title: "Please enter Title",
         icon: "error",
-        confirmButtonText: "ตกลง",
       });
       return;
     }
 
     if (!repair_type) {
-      MySwal.fire({
+      await MySwal.fire({
         // title: "กรุณาเลือก Repair Type",
         title: "Please select Repair Type",
         icon: "error",
@@ -184,69 +180,67 @@ const Form = () => {
       return;
     }
 
-    MySwal.fire({
+    const result = await MySwal.fire({
       // title: "คุณต้องการแจ้งปัญหาหรือไม่?",
       title: "Do you want to report a problem?",
       icon: "warning",
       showCancelButton: true,
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        let imagePath = "";
-
-        if (file) {
-          const formData = new FormData();
-          formData.append("image", file);
-          const response = await Axios.post(`${baseUrl}/images`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          });
-
-          imagePath = response.data;
-        }
-
-        try {
-          await Axios.post(
-            `${baseUrl}/postproblem`,
-            {
-              title: title,
-              repair_type_id: repair_type,
-              image_url: imagePath,
-            },
-            {
-              headers: {
-                Authorization: "Bearer " + localStorage.getItem("token"),
-              },
-            }
-          );
-          // toast.success("แจ้งปัญหาสำเร็จ");
-          toast.success("Report a problem successfully");
-          getProblem();
-          setTitle("");
-          setRepair_type("");
-          setFile(null);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      }
     });
+    if (result.isConfirmed) {
+      let imagePath = "";
+
+      if (file) {
+        const formData = new FormData();
+        formData.append("image", file);
+        const response = await Axios.post(`${baseUrl}/images`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        imagePath = response.data;
+      }
+
+      try {
+        await Axios.post(
+          `${baseUrl}/postproblem`,
+          {
+            title: title,
+            repair_type_id: repair_type,
+            image_url: imagePath,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          }
+        );
+        // toast.success("แจ้งปัญหาสำเร็จ");
+        toast.success("Report a problem successfully");
+        getProblem();
+        setTitle("");
+        setRepair_type("");
+        setFile(null);
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    }
   };
 
-  const handleResetForm = () => {
-    MySwal.fire({
+  const handleResetForm = async () => {
+    const result = await MySwal.fire({
       // title: "คุณต้องการรีเซ็ตฟอร์มหรือไม่?",
       title: "Do you want to reset the form?",
       icon: "warning",
       showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setTitle("");
-        setRepair_type("");
-        setFile(null);
-        // toast.success("รีเซ็ตฟอร์มสำเร็จ");
-        toast.success("Reset form successfully");
-      }
     });
+    if (result.isConfirmed) {
+      setTitle("");
+      setRepair_type("");
+      setFile(null);
+      // toast.success("รีเซ็ตฟอร์มสำเร็จ");
+      toast.success("Reset form successfully");
+    }
   };
 
   useEffect(() => {
@@ -263,8 +257,6 @@ const Form = () => {
       align: "center",
       headerAlign: "center",
     },
-    // { field: "fname", headerName: "First Name", width: 150 },
-    // { field: "lname", headerName: "Last Name", width: 150 },
     {
       field: "title",
       headerName: "Service Detail",
@@ -277,7 +269,7 @@ const Form = () => {
       width: 100,
       valueGetter: (params) => {
         const repairType = repairTypes.find((type) => type.id === params.value);
-        return repairType ? repairType.name : "";
+        return repairType?.name || "";
       },
     },
     {
@@ -286,30 +278,20 @@ const Form = () => {
       width: 100,
       valueGetter: (params) => {
         const statusType = statusTypes.find((type) => type.id === params.value);
-        return statusType ? statusType.name : "";
+        return statusType?.name || "";
       },
     },
     {
       field: "created_at",
       headerName: "Created Date",
       width: 150,
-      valueGetter: (params) => {
-        const thaiTime = moment(params.value)
-          .tz("Asia/Bangkok")
-          .format("DD/MM/YYYY - HH:mm");
-        return thaiTime;
-      },
+      valueGetter: (params) => formatDateThaiStyle(params.value),
     },
     {
       field: "modified_date",
       headerName: "Modified Date",
       width: 150,
-      valueGetter: (params) => {
-        const thaiTime = moment(params.value)
-          .tz("Asia/Bangkok")
-          .format("DD/MM/YYYY - HH:mm");
-        return thaiTime;
-      },
+      valueGetter: (params) => formatDateThaiStyle(params.value),
     },
     {
       field: "image_url",
@@ -317,10 +299,9 @@ const Form = () => {
       headerAlign: "center",
       align: "center",
       renderCell: (params) => {
-        if (!params.value) {
-          return <span style={{ textAlign: "center" }}>-</span>;
-        }
-        return (
+        return !params.value ? (
+          <span style={{ textAlign: "center" }}>-</span>
+        ) : (
           <Button
             onClick={() => handleOpen(`${baseUrl}${params.value}`)}
             style={{ display: "block", width: "100%", height: "100%" }}
@@ -382,7 +363,8 @@ const Form = () => {
       </Modal>
       {/* <h1 className="mb-3 fw-semibold fs-2">User</h1> */}
       <Paper
-        elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}
+        elevation={20}
+        sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
       >
         <h2 className="mb-3 fs-4 fw-semibold">SERVICE REQUEST</h2>
         <form onSubmit={postProblem} className="form">
@@ -578,7 +560,8 @@ const Form = () => {
         </form>
       </Paper>
       <Paper
-         elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}
+        elevation={20}
+        sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
       >
         <div className="mb-3 d-flex justify-content-between align-items-end">
           <h2 className="fs-4 fw-semibold mb-0">Service Info</h2>

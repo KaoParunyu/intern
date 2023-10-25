@@ -1,22 +1,25 @@
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
+import Axios from "axios";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import Button from "@mui/material/Button";
+import { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Container, InputAdornment } from "@mui/material";
-import { useEffect, useState } from "react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-const MySwal = withReactContent(Swal);
+
+import MySwal from "../components/MySwal";
+import { baseUrl } from "../constants/api";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [passwordInputType, setPasswordInputType] = useState("password");
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
@@ -25,38 +28,30 @@ export default function Login() {
       password: data.get("password"),
     };
 
-    fetch("http://localhost:3333/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(jsonData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "ok") {
-          MySwal.fire({
-            title: "Login Success",
-            icon: "success",
-          }).then(() => {
-            localStorage.setItem("role", data.role); // บันทึกบทบาทใน localStorage
-            localStorage.setItem("token", data.token);
-            if (data.role === "user") {
-              window.location = "/Foruser";
-            } else if (data.role === "admin") {
-              window.location = "/Foradmin";
-            }
-          });
-        } else {
-          MySwal.fire({
-            title: "Login Failed",
-            icon: "warning",
-          });
+    try {
+      const response = await Axios.post(`${baseUrl}/login`, jsonData);
+      const { data } = response;
+      if (data.status === "ok") {
+        await MySwal.fire({
+          title: "Login Success",
+          icon: "success",
+        });
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role); // บันทึกบทบาทใน localStorage
+        if (data.role === "user") {
+          navigate("/Foruser");
+        } else if (data.role === "admin") {
+          navigate("/Foradmin");
         }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+      } else {
+        await MySwal.fire({
+          title: "Login Failed",
+          icon: "warning",
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -64,9 +59,9 @@ export default function Login() {
     if (token) {
       const role = localStorage.getItem("role");
       if (role === "user") {
-        window.location = "/Foruser";
+        navigate("/Foruser");
       } else if (role === "admin") {
-        window.location = "/Foradmin";
+        navigate("/Foradmin");
       }
     }
   }, []);
@@ -108,7 +103,7 @@ export default function Login() {
               component="h1"
               variant="h1"
               style={{ color: "#0082E0", fontWeight: "bold" }}
-              sx={{ mb: 4 ,  }}
+              sx={{ mb: 4 }}
             >
               Sign in
             </Typography>

@@ -1,7 +1,3 @@
-import Swal from "sweetalert2";
-import React, { useEffect, useState } from "react";
-import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
 import {
   AppBar,
   Toolbar,
@@ -15,14 +11,15 @@ import {
   CssBaseline,
   Drawer,
 } from "@material-ui/core";
-import withReactContent from "sweetalert2-react-content";
+import { useState } from "react";
+import { Divider } from "@mui/material";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import { Menu, AssignmentInd, Home, Dashboard } from "@material-ui/icons";
 
+import MySwal from "./MySwal";
 import UserProfile from "./UserProfile";
-import { Divider } from "@mui/material";
-
-const MySwal = withReactContent(Swal);
 
 const theme = createTheme({
   palette: {
@@ -32,10 +29,7 @@ const theme = createTheme({
   },
 });
 
-const useStyles = makeStyles((theme) => ({
-  // menuSliderContainer: {
-  //   background: "#511",
-  // },
+const useStyles = makeStyles(() => ({
   listItem: {
     color: "#0082E0",
   },
@@ -64,8 +58,8 @@ const listItems = [
 ];
 
 export default function App() {
-  const navigate = useNavigate();
   const classes = useStyles();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
   const handleMenuClick = (value) => {
@@ -131,20 +125,19 @@ export default function App() {
     </Box>
   );
 
-  const handleLogout = (event) => {
+  const handleLogout = async (event) => {
     event.preventDefault();
     setOpen(false);
-    MySwal.fire({
+    const result = await MySwal.fire({
       // title: "คุณต้องการออกจากระบบใช่หรือไม่?",
       title: "Do you want to logout?",
       icon: "warning",
       showCancelButton: true,
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.removeItem("token");
-        window.location = "/login";
-      }
     });
+    if (result.isConfirmed) {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   const isAdminRole = localStorage.getItem("role") === "admin";
@@ -170,7 +163,6 @@ export default function App() {
               srcSet=""
               style={{ display: "block", margin: "0 auto" }}
             />
-
             <Drawer open={open} anchor="over" onClose={toggleSlider}>
               {sideList()}
             </Drawer>

@@ -12,6 +12,7 @@ import { Box, Paper } from "@mui/material";
 import { baseUrl } from "../constants/api";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { useNavigate } from "react-router-dom";
 import { Bar, Doughnut } from "react-chartjs-2";
 import CheckIcon from "@mui/icons-material/Check";
 import MemoryIcon from "@mui/icons-material/Memory";
@@ -28,6 +29,7 @@ ChartJS.register(
 );
 
 const Dashboard = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState({});
 
   const colors = [
@@ -43,25 +45,22 @@ const Dashboard = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3333/authen", {
-      method: "POST",
+    Axios.post(`${baseUrl}/authen`, null, {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "ok") {
-          if (data.decoded.role === "user") {
-            window.location = "/Foruser";
+      .then((response) => {
+        if (response.data.status === "ok") {
+          if (response.data.decoded.role === "user") {
+            navigate("/Foruser");
           }
         } else {
           // alert("การยืนยันตัวตนแอดมินล้มเหลว");
           alert("Authentication failed");
           localStorage.removeItem("token");
           localStorage.removeItem("role");
-          window.location = "/login";
+          navigate("/login");
         }
       })
       .catch((error) => {
@@ -70,10 +69,9 @@ const Dashboard = () => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      const response = await Axios.get(`${baseUrl}/dashboard`);
+    Axios.get(`${baseUrl}/dashboard`).then((response) => {
       setData(response.data);
-    })();
+    });
   }, []);
 
   return (
@@ -85,7 +83,9 @@ const Dashboard = () => {
           elevation={20}
           sx={{ p: "80px", borderRadius: "1.5rem", mb: "1.5rem" }}
         >
-          <div style={{  marginBottom:"50px"}}><h3 className="fs-4 fw-semibold mb-0">Summary</h3></div>
+          <div style={{ marginBottom: "50px" }}>
+            <h3 className="fs-4 fw-semibold mb-0">Summary</h3>
+          </div>
           <div className="row">
             <div className="col-xl-8">
               <div className="d-flex gap-3">
@@ -245,10 +245,14 @@ const Dashboard = () => {
             </div>
           </div>
         </Paper>
-        <Paper elevation={20} sx={{ p: "80px", borderRadius: "1.5rem" ,mt: "1.25rem" }}>
-         <div style={{  marginBottom:"50px"}}> <h3 className="fs-4 fw-semibold mb-0" >
-          Service Requests by type
-          </h3></div>
+        <Paper
+          elevation={20}
+          sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
+        >
+          <div style={{ marginBottom: "50px" }}>
+            {" "}
+            <h3 className="fs-4 fw-semibold mb-0">Service Requests by type</h3>
+          </div>
           <div>
             {data?.graph && (
               <Bar
@@ -288,41 +292,47 @@ const Dashboard = () => {
           </div>
           <div style={{ maxWidth: "400px", marginInline: "auto" }}>
             {data?.total && (
-              <Doughnut  style={{"margin-bottom": "50px"}}
-  data={{ 
-    labels: Object.keys(data?.graph?.datas).map(
-      (item) => item[0].toUpperCase() + item.slice(1)
-    ),
-    datasets: [
-      {
-        data: Object.values(data.total),
-        hoverOffset: 30,
-        backgroundColor: colors,
-      },
-    ],
-  }}
-  options={{
-    plugins: {
-      legend: {
-        display: true, // แสดง labels
-        position: 'left', // ระบุตำแหน่งของ labels ที่คุณต้องการ
-        labels: {
-          padding: 20 ,// เพิ่มระยะห่างระหว่าง labels และ datasets
-          margin: 150
-      },
-    },
-  },
-  }}
-/>
+              <Doughnut
+                style={{ "margin-bottom": "50px" }}
+                data={{
+                  labels: Object.keys(data?.graph?.datas).map(
+                    (item) => item[0].toUpperCase() + item.slice(1)
+                  ),
+                  datasets: [
+                    {
+                      data: Object.values(data.total),
+                      hoverOffset: 30,
+                      backgroundColor: colors,
+                    },
+                  ],
+                }}
+                options={{
+                  plugins: {
+                    legend: {
+                      display: true, // แสดง labels
+                      position: "left", // ระบุตำแหน่งของ labels ที่คุณต้องการ
+                      labels: {
+                        padding: 20, // เพิ่มระยะห่างระหว่าง labels และ datasets
+                        margin: 150,
+                      },
+                    },
+                  },
+                }}
+              />
             )}
           </div>
         </Paper>
         <Paper
           elevation={20}
-          sx={{  p: "80px", borderRadius: "1.5rem" , mt: "1.25rem" }}
+          sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
         >
-         <div style={{  marginBottom:"50px"}}> <h2 className="mb-3 fs-4 fw-semibold">Service Requests by department</h2></div>
-          <div >
+          <div style={{ marginBottom: "50px" }}>
+            {" "}
+            <h2 className="mb-3 fs-4 fw-semibold">
+              Service Requests by department
+            </h2>
+          </div>
+          <div>
             {data?.graph2 && (
               <Bar
                 height={400}
@@ -361,7 +371,8 @@ const Dashboard = () => {
           </div>
           {data?.graph2?.datas && (
             <div style={{ maxWidth: "400px", marginInline: "auto" }}>
-              <Doughnut style={{"margin-top": "50px","margin-bottom": "50px"}}
+              <Doughnut
+                style={{ "margin-top": "50px", "margin-bottom": "50px" }}
                 data={{
                   labels: Object.keys(data.graph2.datas).map(
                     (item) => item[0].toUpperCase() + item.slice(1)
@@ -380,13 +391,13 @@ const Dashboard = () => {
                   plugins: {
                     legend: {
                       display: true, // แสดง labels
-                      position: 'left', // ระบุตำแหน่งของ labels ที่คุณต้องการ
+                      position: "left", // ระบุตำแหน่งของ labels ที่คุณต้องการ
                       labels: {
-                        padding: 20 ,// เพิ่มระยะห่างระหว่าง labels และ datasets
-                        margin: 150
+                        padding: 20, // เพิ่มระยะห่างระหว่าง labels และ datasets
+                        margin: 150,
+                      },
                     },
                   },
-                },
                 }}
               />
             </div>

@@ -1,29 +1,32 @@
-import Sidebar from "../components/Sidebar";
+import Axios from "axios";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { baseUrl } from "../constants/api";
+import Sidebar from "../components/Sidebar";
 import RepairForm from "../components/RepairForm";
 
 function ForAdmin() {
+  const navigate = useNavigate();
+
   useEffect(() => {
     const token = localStorage.getItem("token");
-    fetch("http://localhost:3333/authen", {
-      method: "POST",
+    Axios.post(`${baseUrl}/authen`, null, {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + token,
+        Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.status === "ok") {
-          if (data.decoded.role === "user") {
-            window.location = "/Foruser";
+      .then((response) => {
+        if (response.data.status === "ok") {
+          if (response.data.decoded.role === "user") {
+            navigate("/Foruser");
           }
         } else {
           // alert("การยืนยันตัวตนแอดมินล้มเหลว");
           alert("Authentication failed");
           localStorage.removeItem("token");
           localStorage.removeItem("role");
-          window.location = "/login";
+          navigate("/login");
         }
       })
       .catch((error) => {
