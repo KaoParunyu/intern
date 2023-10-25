@@ -4,7 +4,6 @@ const mysql = require("mysql2");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const jwt = require("jsonwebtoken");
-const bodyParser = require("body-parser");
 const fileUpload = require("express-fileupload");
 
 const app = express();
@@ -13,7 +12,7 @@ const secret = "fullstack";
 
 app.use(cors());
 app.use(fileUpload());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use("/upload", express.static(path.join(__dirname, "upload")));
 
 const connection = mysql.createConnection({
