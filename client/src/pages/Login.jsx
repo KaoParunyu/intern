@@ -64,7 +64,7 @@ export default function Login() {
         navigate("/Foradmin");
       }
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <Container

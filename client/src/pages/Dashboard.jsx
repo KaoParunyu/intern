@@ -66,7 +66,7 @@ const Dashboard = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     Axios.get(`${baseUrl}/dashboard`).then((response) => {
@@ -75,7 +75,7 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div>
+    <>
       <Sidebar />
       <div className="container py-4">
         {/* <h1 className="fw-semibold fs-2 mb-3">Dashboard</h1> */}
@@ -404,7 +404,7 @@ const Dashboard = () => {
           )}
         </Paper>
       </div>
-    </div>
+    </>
   );
 };
 

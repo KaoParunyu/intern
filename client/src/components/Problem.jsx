@@ -13,10 +13,10 @@ import {
 import Axios from "axios";
 import { toast } from "sonner";
 import Button from "@mui/material/Button";
-import { useState, useEffect } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { styled } from "@mui/material/styles";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useState, useEffect, useCallback } from "react";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 import MySwal from "./MySwal";
@@ -49,6 +49,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 const Form = () => {
+  const [userId, setUserId] = useState(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [role, setRole] = useState("");
@@ -61,7 +62,6 @@ const Form = () => {
   const [file, setFile] = useState();
   const [open, setOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
-  const [loggedInUser, setLoggedInUser] = useState({ fname: "", lname: "" });
 
   const handleOpen = (image) => {
     setPreviewImage(image);
@@ -72,43 +72,25 @@ const Form = () => {
     setOpen(false);
   };
 
-  const moment = require("moment-timezone");
-
-  const sortedProblemList = [...problemList].sort((a, b) => {
-    const timeA = new Date(a.created_at).getTime();
-    const timeB = new Date(b.created_at).getTime();
-    return timeB - timeA;
-  });
-  const filteredAndSortedRows = sortedProblemList.filter(
-    (row) =>
-      row.fname === loggedInUser.fname && row.lname === loggedInUser.lname
-  );
-
   const getMe = async () => {
     try {
-      const response = await Axios.get(`${baseUrl}/me`, {
+      const { data } = await Axios.get(`${baseUrl}/me`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
       });
-      const data = response.data;
-      console.log(data);
+      setUserId(data.id);
       setFirstName(data.fname);
       setLastName(data.lname);
       setRole(data.role);
-      setDepartment(data.description);
-      setLoggedInUser(data);
+      setDepartment(data.department);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const getProblem = async () => {
+  const getProblem = useCallback(async () => {
     try {
-      const response = await Axios.get(`${baseUrl}/repair_notifications`);
-      const data = response.data;
-      setProblemlist(data);
-
       const repairTypesResponse = await Axios.get(`${baseUrl}/repair_types`);
       const repairTypesData = repairTypesResponse.data;
       setRepairTypes(repairTypesData);
@@ -117,25 +99,15 @@ const Form = () => {
       const statusTypesData = statusTypesResponse.data;
       setStatusTypes(statusTypesData);
 
-      const updatedData = data.map((problem) => {
-        const thaiTime = moment(problem.created_at).tz("Asia/Bangkok").format();
-        return {
-          ...problem,
-          created_at: thaiTime,
-        };
-      });
-
-      setProblemlist(updatedData);
-
+      const response = await Axios.get(`${baseUrl}/repair_notifications`);
       // เรียกข้อมูล user จาก API ตามค่า user_id ในแต่ละรายการ
-      const userIds = data.map((val) => val.user_id);
+      const userIds = response.data.map((val) => val.user_id);
       const usersResponse = await Axios.get(
         `${baseUrl}/users?ids=${userIds.join(",")}`
       );
       const users = usersResponse.data;
-
       // รวมข้อมูล fname และ lname เข้ากับแต่ละแถวของ problemList
-      const updatedProblemList = data.map((problem) => {
+      const updatedProblemList = response.data.map((problem) => {
         const user = users.find((user) => user.id === problem.user_id);
         return {
           ...problem,
@@ -143,12 +115,20 @@ const Form = () => {
           lname: user ? user.lname : "",
         };
       });
-
-      setProblemlist(updatedProblemList);
+      const sortedProblemList = [...updatedProblemList];
+      updatedProblemList.sort((a, b) => {
+        const timeA = new Date(a.created_at).getTime();
+        const timeB = new Date(b.created_at).getTime();
+        return timeB - timeA;
+      });
+      const filteredAndSortedRows = sortedProblemList.filter(
+        (row) => row.user_id === userId
+      );
+      setProblemlist(filteredAndSortedRows);
     } catch (error) {
       console.error("Error:", error);
     }
-  };
+  }, [userId]);
 
   const postProblem = async (e) => {
     e.preventDefault();
@@ -244,10 +224,8 @@ const Form = () => {
   };
 
   useEffect(() => {
-    // เรียกใช้ getProblem เมื่อคอมโพแนนต์ถูกโหลดครั้งแรก
-    getMe();
-    getProblem();
-  }, []);
+    getMe().then(() => getProblem());
+  }, [getProblem]);
 
   const columns = [
     {
@@ -582,7 +560,7 @@ const Form = () => {
                 mb: 0,
               },
             }}
-            rows={filteredAndSortedRows}
+            rows={problemList}
             columns={columns}
             initialState={{
               pagination: {

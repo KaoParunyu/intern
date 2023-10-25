@@ -32,7 +32,7 @@ function ForAdmin() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, []);
+  }, [navigate]);
 
   return (
     <>

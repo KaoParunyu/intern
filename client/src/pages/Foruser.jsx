@@ -32,13 +32,13 @@ function ForUser() {
       .catch((error) => {
         console.error("Error:", error);
       });
-  }, []);
+  }, [navigate]);
 
   return (
-    <div>
+    <>
       <Sidebar />
       <Problem />
-    </div>
+    </>
   );
 }
 
