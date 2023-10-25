@@ -357,17 +357,17 @@ app.post("/postproblem", (req, res) => {
 app.post("/images", (req, res) => {
   const { image } = req.files;
 
-  if (!image) return res.jsonStatus(400);
+  if (!image) return res.status(400);
 
-  const imageExtension = image.name.split(".").pop();
+  const imageExtension = path.extname(image.name);
 
-  const imageName = Date.now() + "." + imageExtension;
+  const imageName = Date.now() + imageExtension;
 
-  const path = "/upload/" + imageName;
+  const imagePath = "/upload/" + imageName;
 
-  image.mv(__dirname + path);
+  image.mv(__dirname + imagePath);
 
-  res.json(path).status(200);
+  res.json(imagePath).status(200);
 });
 
 app.delete("/delete/:id", (req, res) => {
