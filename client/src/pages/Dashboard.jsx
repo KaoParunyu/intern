@@ -42,13 +42,13 @@ const Dashboard = () => {
   const [data, setData] = useState({});
 
   const colors = [
-    "#071952",
-    "#F3E55E",
-    "#088395",
-    "#36A2EB",
-    "#822E81",
+    "#0090C0",
+    "#FFC000",
+    "#0082E0",
+    "#AFD238",
+    "#00C0D1",
     "#AA6373",
-    "#CF1259",
+    "#8AE7D4",
     "#B7C3F3",
   ];
 
@@ -262,37 +262,43 @@ const Dashboard = () => {
             <h3 className="fs-4 fw-semibold mb-0">Service Requests by type</h3>
           </div>
           <TableContainer component={Paper} sx={{ mb: "1rem" }}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell width={150}>Service Type Desc</TableCell>
-                  {data?.table?.serviceRequestsByType?.headers.map((header) => (
-                    <TableCell key={header}>{header}</TableCell>
-                  ))}
-                  <TableCell>Grand Total</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell>Month</TableCell>
-                  <TableCell colSpan="100%">Ticket ID (Count All)</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {data?.table?.serviceRequestsByType?.dataRows.map(
-                  (dataRow, index) => (
-                    <TableRow
-                      key={JSON.stringify(dataRow) + index}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
-                      {dataRow.map((row, index) => (
-                        <TableCell key={row + index}>{row}</TableCell>
-                      ))}
-                    </TableRow>
-                  )
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <div>
+  <Table sx={{borderCollapse: 'separate', border: '1px solid #BCBCBC' ,borderRadius:"10px" }}>
+    <TableHead>
+      <TableRow>
+        <TableCell width={150} sx={{ background: "#8AE7D4", fontWeight: "bold", borderTopLeftRadius: '10px' }}>Service Type Desc</TableCell>
+        {data?.table?.serviceRequestsByType?.headers.map((header) => (
+          <TableCell key={header} sx={{ background: "#D9F4FF", fontWeight: "bold", borderBottom: "1px solid #e0e0e0" }}>{header}</TableCell>
+        ))}
+        <TableCell sx={{ background: "#AFD238", fontWeight: "bold", borderTopRightRadius: '10px' }}>Grand Total</TableCell>
+      </TableRow>
+      <TableRow sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+        <TableCell sx={{ background: "#D9F4FF", fontWeight: "bold" }}>Month</TableCell>
+        <TableCell colSpan="100" sx={{ background: "#D9F4FF", fontWeight: "bold" }}></TableCell>
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {data?.table?.serviceRequestsByType?.dataRows.map(
+        (dataRow, index) => (
+          <TableRow
+            key={JSON.stringify(dataRow) + index}
+            sx={{ "&:last-child td, &:last-child th": { border: 0, background: "#AFD238" } }}
+          >
+            {dataRow.map((row, index) => (
+              <TableCell key={row + index} sx={{
+                borderBottom: "1px solid #e0e0e0",
+                fontWeight: row === "Grand Total" ? "bold" : "normal",
+                background: (index === dataRow.length - 1) ? "#AFD238" : "normal"&(index === dataRow.length ===0) ? "#D9F4FF" : "normal"
+              }}>{row}</TableCell>
+            ))}
+          </TableRow>
+        )
+      )}
+    </TableBody>
+  </Table>
+</TableContainer>
+
+
+          <div style={{ marginTop: "50px" }}>
             {data?.graph && (
               <Bar
                 height={400}
@@ -371,44 +377,46 @@ const Dashboard = () => {
               Service Requests by department
             </h2>
           </div>
-          <div>
-            <TableContainer component={Paper} sx={{ mb: "1rem" }}>
-              <Table>
-                <TableHead>
-                  <TableRow>
-                    <TableCell width={150}>Department</TableCell>
-                    {data?.table?.serviceRequestsByDepartment?.headers.map(
-                      (header) => (
-                        <TableCell>{header}</TableCell>
-                      )
-                    )}
-                    <TableCell>Grand Total</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Month</TableCell>
-                    <TableCell colSpan="100%">Ticket ID (Count All)</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data?.table?.serviceRequestsByDepartment?.dataRows.map(
-                    (dataRow, index) => (
-                      <TableRow
-                        key={JSON.stringify(dataRow) + index}
-                        sx={{
-                          "&:last-child td, &:last-child th": { border: 0 },
-                        }}
-                      >
-                        {dataRow.map((row) => (
-                          <TableCell>{row}</TableCell>
-                        ))}
-                      </TableRow>
-                    )
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </div>
-          <div>
+          <div style={{ marginBottom: "50px" }}>
+  <TableContainer component={Paper} sx={{ mb: "50px" }}>
+    <Table sx={{ borderCollapse: 'separate', borderSpacing: '1 10px', borderRadius: '10px', overflow: 'auto', border: '1px solid #BCBCBC' }}>
+      <TableHead>
+        <TableRow>
+          <TableCell width={150} sx={{ background: "#8AE7D4", fontWeight: "bold", borderTopLeftRadius: '10px' }}>Department</TableCell>
+          {data?.table?.serviceRequestsByDepartment?.headers.map(
+            (header) => (
+              <TableCell sx={{ background: "#f5f5f5", fontWeight: "bold" }}>{header}</TableCell>
+            )
+          )}
+          <TableCell sx={{ background: "#f5f5f5", fontWeight: "bold", borderTopRightRadius: '10px' }}>Grand Total</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell sx={{ background: "#f5f5f5", fontWeight: "bold" }}>Month</TableCell>
+          <TableCell colSpan="100" sx={{ background: "#f5f5f5", fontWeight: "bold" }}></TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {data?.table?.serviceRequestsByDepartment?.dataRows.map(
+          (dataRow, index) => (
+            <TableRow
+              key={JSON.stringify(dataRow) + index}
+              sx={{
+                "&:last-child td, &:last-child th": { border: 0 },
+              }}
+            >
+              {dataRow.map((row, rowIndex) => (
+                <TableCell sx={{ borderBottom: "1px solid #e0e0e0", fontWeight: row === "Grand Total" ? "bold" : "normal", verticalAlign: 'middle' }}>{row}</TableCell>
+              ))}
+            </TableRow>
+          )
+        )}
+      </TableBody>
+    </Table>
+  </TableContainer>
+</div>
+
+
+          <div style={{ marginTop: "50px" }}>
             {data?.graph2 && (
               <Bar
                 height={400}
