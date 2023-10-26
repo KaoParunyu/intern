@@ -29,7 +29,7 @@ export default function Login() {
     };
 
     try {
-      const response = await Axios.post(`${baseUrl}/login`, jsonData);
+      const response = await Axios.post(`${baseUrl}/auth/login`, jsonData);
       const { data } = response;
       if (data.status === "ok") {
         await MySwal.fire({

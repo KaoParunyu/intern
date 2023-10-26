@@ -152,11 +152,8 @@ export default function App() {
         >
           <Toolbar>
             <IconButton onClick={toggleSlider}>
-              <Menu />
+              <Menu className="text-white" />
             </IconButton>
-            {/* <Typography style={{ marginLeft: "40rem", fontSize: "2.25rem",fontFamily:"Helvetica", }}>
-              Repair Notifications
-            </Typography> */}
             <img
               src="/aa.png"
               alt=""
