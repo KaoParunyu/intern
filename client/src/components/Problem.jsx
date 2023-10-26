@@ -115,7 +115,7 @@ const Form = () => {
         };
       });
       const sortedProblemList = [...updatedProblemList];
-      updatedProblemList.sort((a, b) => {
+      sortedProblemList.sort((a, b) => {
         const timeA = new Date(a.created_at).getTime();
         const timeB = new Date(b.created_at).getTime();
         return timeB - timeA;
