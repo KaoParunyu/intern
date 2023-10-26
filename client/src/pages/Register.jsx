@@ -21,6 +21,8 @@ import MySwal from "../components/MySwal";
 import { baseUrl } from "../constants/api";
 
 export default function SignUp() {
+  const [role, setRole] = useState("");
+  const [department, setDepartment] = useState("");
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [departments, setDepartments] = useState([]);
@@ -46,7 +48,7 @@ export default function SignUp() {
       return;
     }
 
-    const response = await Axios.post(`${baseUrl}/register`, jsonData);
+    const response = await Axios.post(`${baseUrl}/auth/register`, jsonData);
     if (response.data.status === "ok") {
       await MySwal.fire({
         title: "Register Success",
@@ -200,6 +202,21 @@ export default function SignUp() {
                 <FormControl fullWidth>
                   <InputLabel htmlFor="role">Role</InputLabel>
                   <Select
+                    value={role}
+                    onChange={(e) => {
+                      setRole(e.target.value);
+                      const itDepartment = departments.find(
+                        (department) =>
+                          department.description.toLowerCase() === "it"
+                      );
+                      if (e.target.value === "admin") {
+                        setDepartment(itDepartment.id);
+                      } else {
+                        if (department === itDepartment.id) {
+                          setDepartment("");
+                        }
+                      }
+                    }}
                     required
                     fullWidth
                     name="role"
@@ -215,6 +232,19 @@ export default function SignUp() {
                 <FormControl fullWidth>
                   <InputLabel htmlFor="department">Department</InputLabel>
                   <Select
+                    value={department}
+                    onChange={(e) => {
+                      const itDepartment = departments.find(
+                        (department) =>
+                          department.description.toLowerCase() === "it"
+                      );
+                      if (e.target.value === itDepartment.id) {
+                        setRole("admin");
+                      } else {
+                        setRole("user");
+                      }
+                      setDepartment(e.target.value);
+                    }}
                     required
                     fullWidth
                     name="department"
@@ -222,7 +252,7 @@ export default function SignUp() {
                     id="department"
                   >
                     {departments.map((department) => (
-                      <MenuItem value={department.id}>
+                      <MenuItem key={department.id} value={department.id}>
                         {department.description}
                       </MenuItem>
                     ))}
