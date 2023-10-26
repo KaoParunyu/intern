@@ -1,16 +1,16 @@
-import "./index.css";
 import React from "react";
 import { Toaster } from "sonner";
 import ReactDOM from "react-dom/client";
+import { ThemeProvider } from "@emotion/react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createTheme, responsiveFontSizes } from "@mui/material";
 
+import "./index.css";
 import Login from "./pages/Login";
 import Foruser from "./pages/Foruser";
 import Register from "./pages/Register";
 import Foradmin from "./pages/Foradmin";
 import Dashboard from "./pages/Dashboard";
-import { ThemeProvider } from "@emotion/react";
-import { createTheme, responsiveFontSizes } from "@mui/material";
 
 const theme = createTheme({
   typography: {

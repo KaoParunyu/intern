@@ -18,7 +18,6 @@ app.use(cors());
 app.use(fileUpload());
 app.use(express.json());
 app.use("/upload", express.static(path.join(__dirname, "upload")));
-
 app.use("/auth", authRouter);
 app.use("/users", usersRouter);
 app.use("/images", imagesRouter);
