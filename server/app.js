@@ -75,96 +75,175 @@ app.get("/repair_types", (req, res) => {
   });
 });
 
-app.get("/dashboard", (req, res) => {
-  connection.execute(
-    `SELECT * FROM repair_notifications LEFT JOIN users ON users.id = repair_notifications.user_id`,
-    (err, results) => {
-      if (err) {
-        console.log(err);
-      } else {
-        const months = [
-          "january",
-          "february",
-          "march",
-          "april",
-          "may",
-          "june",
-          "july",
-          "august",
-          "september",
-          "octobor",
-          "november",
-          "december",
-        ];
-        const result = {
-          total: {},
-          totalRepairNotifications: results.length,
-          totalPendingRepairNotifications: results.filter(
-            (item) => item.status_id === 1
-          ).length,
-          totalInProgrssRepairNotifications: results.filter(
-            (item) => item.status_id === 2
-          ).length,
-          totalCompletedRepairNotifications: results.filter(
-            (item) => item.status_id === 3
-          ).length,
-          graph: {
-            labels: months,
-            datas: {},
-          },
-          graph2: {
-            labels: months,
-            datas: {},
-          },
-        };
-        connection.execute(`SELECT * FROM repair_types`, (err, repairTypes) => {
-          repairTypes.forEach((repairType) => {
-            result.total[repairType.name.toLowerCase()] = results.filter(
-              (item) => item.repair_type_id === repairType.id
-            ).length;
-            const lowerRepairTypeName = repairType.name.toLowerCase();
-            result.graph.datas[lowerRepairTypeName] = [];
-          });
-          months.forEach((month, index) => {
-            repairTypes.forEach((repairType) => {
-              const lowerRepairTypeName = repairType.name.toLowerCase();
-              result.graph.datas[lowerRepairTypeName].push(
-                results.filter(
-                  (item) =>
-                    new Date(item.created_at).getMonth() === index &&
-                    item.repair_type_id === repairType.id
-                ).length
-              );
-            });
-          });
-          connection.execute(
-            `SELECT * FROM departments`,
-            (err, departments) => {
-              departments.forEach((department) => {
-                const lowerDepartmentDescription =
-                  department.description.toLowerCase();
-                result.graph2.datas[lowerDepartmentDescription] = [];
-              });
-              months.forEach((month, index) => {
-                departments.forEach((department) => {
-                  const lowerDepartmentDescription =
-                    department.description.toLowerCase();
-                  result.graph2.datas[lowerDepartmentDescription].push(
-                    results.filter(
-                      (item) =>
-                        new Date(item.created_at).getMonth() === index &&
-                        item.departmentId === department.id
-                    ).length
-                  );
-                });
-              });
-              res.json(result);
-            }
-          );
-        });
+app.get("/dashboard", async (req, res) => {
+  try {
+    const months = [
+      "january",
+      "february",
+      "march",
+      "april",
+      "may",
+      "june",
+      "july",
+      "august",
+      "september",
+      "octobor",
+      "november",
+      "december",
+    ];
+
+    const data = {
+      total: {},
+      totalRepairNotifications: 0,
+      totalPendingRepairNotifications: 0,
+      totalInProgrssRepairNotifications: 0,
+      totalCompletedRepairNotifications: 0,
+      graph: {
+        labels: months,
+        datas: {},
+      },
+      graph2: {
+        labels: months,
+        datas: {},
+      },
+      table: {
+        serviceRequestsByType: {
+          headers: [],
+          dataRows: [],
+        },
+        serviceRequestsByDepartment: {
+          headers: [],
+          dataRows: [],
+        },
+      },
+    };
+
+    const [repairNotificationsRows] = await connection
+      .promise()
+      .execute(
+        "SELECT * FROM repair_notifications LEFT JOIN users ON users.id = repair_notifications.user_id"
+      );
+
+    repairNotificationsRows.forEach((repairNotification) => {
+      data.totalRepairNotifications += 1;
+      switch (repairNotification.status_id) {
+        case 1:
+          data.totalPendingRepairNotifications += 1;
+          break;
+        case 2:
+          data.totalInProgrssRepairNotifications += 1;
+          break;
+        case 3:
+          data.totalCompletedRepairNotifications += 1;
+          break;
+        default:
+          break;
       }
+    });
+
+    const [repairTypeRows] = await connection
+      .promise()
+      .execute("SELECT * FROM repair_types");
+
+    repairTypeRows.forEach((repairTypeRow) => {
+      data.table.serviceRequestsByType.headers.push(repairTypeRow.name);
+      const lowerCaseRepairTypeRowName = repairTypeRow.name.toLowerCase();
+      data.graph.datas[lowerCaseRepairTypeRowName] = [];
+      data.total[lowerCaseRepairTypeRowName] = repairNotificationsRows.filter(
+        (item) => item.repair_type_id === repairTypeRow.id
+      ).length;
+    });
+
+    for (let i = 0; i < months.length; i++) {
+      const month = i + 1;
+      const dataRow = [month];
+      let grandTotal = 0;
+      repairTypeRows.forEach((repairTypeRow) => {
+        const lowerRepairTypeRowName = repairTypeRow.name.toLowerCase();
+        const filteredRows = repairNotificationsRows.filter(
+          (item) =>
+            new Date(item.created_at).getMonth() === i &&
+            item.repair_type_id === repairTypeRow.id
+        );
+        const repairCount = filteredRows.length;
+        grandTotal += repairCount;
+        dataRow.push(repairCount);
+        data.graph.datas[lowerRepairTypeRowName].push(repairCount);
+      });
+      dataRow.push(grandTotal);
+      data.table.serviceRequestsByType.dataRows.push(dataRow);
     }
-  );
+    const grandTotalRow = ["Grand Total"];
+    let totalSum = 0;
+    for (let i = 1; i <= repairTypeRows.length; i++) {
+      let sum = 0;
+      for (let j = 0; j < months.length; j++) {
+        sum += data.table.serviceRequestsByType.dataRows[j][i];
+      }
+      totalSum += sum;
+      grandTotalRow.push(sum);
+    }
+    grandTotalRow.push(totalSum);
+    data.table.serviceRequestsByType.dataRows.push(grandTotalRow);
+
+    const [departmentRows] = await connection
+      .promise()
+      .execute("SELECT * FROM departments");
+
+    departmentRows.forEach((departmentRow) => {
+      data.table.serviceRequestsByDepartment.headers.push(
+        departmentRow.description
+      );
+      const lowerCaseDepartmentDescription =
+        departmentRow.description.toLowerCase();
+      data.graph2.datas[lowerCaseDepartmentDescription] = [];
+    });
+
+    for (let i = 0; i < months.length; i++) {
+      const month = i + 1;
+      const dataRow = [month];
+      let grandTotal = 0;
+      departmentRows.forEach((departmentRow) => {
+        const lowerCaseDepartmentDescription =
+          departmentRow.description.toLowerCase();
+        const filteredRows = repairNotificationsRows.filter(
+          (item) =>
+            new Date(item.created_at).getMonth() === i &&
+            item.departmentId === departmentRow.id
+        );
+        const repairCount = filteredRows.length;
+        grandTotal += repairCount;
+        dataRow.push(repairCount);
+        data.graph2.datas[lowerCaseDepartmentDescription].push(
+          repairNotificationsRows.filter((item) => {
+            return (
+              new Date(item.created_at).getMonth() === i &&
+              item.departmentId === departmentRow.id
+            );
+          }).length
+        );
+      });
+      dataRow.push(grandTotal);
+      data.table.serviceRequestsByDepartment.dataRows.push(dataRow);
+    }
+
+    const grandTotalRow2 = ["Grand Total"];
+    let totalSum2 = 0;
+    for (let i = 1; i <= departmentRows.length; i++) {
+      let sum = 0;
+      for (let j = 0; j < months.length; j++) {
+        sum += data.table.serviceRequestsByDepartment.dataRows[j][i];
+      }
+      totalSum2 += sum;
+      grandTotalRow2.push(sum);
+    }
+    grandTotalRow2.push(totalSum2);
+    data.table.serviceRequestsByDepartment.dataRows.push(grandTotalRow2);
+
+    res.json(data);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 app.get("/departments", (req, res) => {

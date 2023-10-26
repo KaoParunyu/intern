@@ -8,7 +8,16 @@ import {
   BarElement,
 } from "chart.js";
 import Axios from "axios";
-import { Box, Paper } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import { baseUrl } from "../constants/api";
 import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
@@ -250,9 +259,39 @@ const Dashboard = () => {
           sx={{ p: "80px", borderRadius: "1.5rem", mt: "1.25rem" }}
         >
           <div style={{ marginBottom: "50px" }}>
-            {" "}
             <h3 className="fs-4 fw-semibold mb-0">Service Requests by type</h3>
           </div>
+          <TableContainer component={Paper} sx={{ mb: "1rem" }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell width={150}>Service Type Desc</TableCell>
+                  {data?.table?.serviceRequestsByType?.headers.map((header) => (
+                    <TableCell key={header}>{header}</TableCell>
+                  ))}
+                  <TableCell>Grand Total</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell>Month</TableCell>
+                  <TableCell colSpan="100%">Ticket ID (Count All)</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data?.table?.serviceRequestsByType?.dataRows.map(
+                  (dataRow, index) => (
+                    <TableRow
+                      key={JSON.stringify(dataRow) + index}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      {dataRow.map((row, index) => (
+                        <TableCell key={row + index}>{row}</TableCell>
+                      ))}
+                    </TableRow>
+                  )
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
           <div>
             {data?.graph && (
               <Bar
@@ -331,6 +370,43 @@ const Dashboard = () => {
             <h2 className="mb-3 fs-4 fw-semibold">
               Service Requests by department
             </h2>
+          </div>
+          <div>
+            <TableContainer component={Paper} sx={{ mb: "1rem" }}>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell width={150}>Department</TableCell>
+                    {data?.table?.serviceRequestsByDepartment?.headers.map(
+                      (header) => (
+                        <TableCell>{header}</TableCell>
+                      )
+                    )}
+                    <TableCell>Grand Total</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Month</TableCell>
+                    <TableCell colSpan="100%">Ticket ID (Count All)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {data?.table?.serviceRequestsByDepartment?.dataRows.map(
+                    (dataRow, index) => (
+                      <TableRow
+                        key={JSON.stringify(dataRow) + index}
+                        sx={{
+                          "&:last-child td, &:last-child th": { border: 0 },
+                        }}
+                      >
+                        {dataRow.map((row) => (
+                          <TableCell>{row}</TableCell>
+                        ))}
+                      </TableRow>
+                    )
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </div>
           <div>
             {data?.graph2 && (
