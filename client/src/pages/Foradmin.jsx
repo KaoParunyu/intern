@@ -11,7 +11,7 @@ function ForAdmin() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    Axios.post(`${baseUrl}/authen`, null, {
+    Axios.post(`${baseUrl}/auth/verify-token`, null, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

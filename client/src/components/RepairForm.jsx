@@ -64,19 +64,17 @@ export default function DataTable() {
       const response = await Axios.get(`${baseUrl}/repair_notifications`);
       const data = response.data;
 
-      const userIds = data.map((val) => val.user_id);
-      const usersResponse = await Axios.get(
-        `${baseUrl}/users?ids=${userIds.join(",")}`
-      );
+      const usersResponse = await Axios.get(`${baseUrl}/users`);
       const users = usersResponse.data;
 
-      const departmentIds = data.map((val) => val.departmentId);
       const departmentsResponse = await Axios.get(
-        `${baseUrl}/departments?ids=${departmentIds.join(",")}`
+        `${baseUrl}/common/departments`
       );
       const departments = departmentsResponse.data;
 
-      const repairTypesResponse = await Axios.get(`${baseUrl}/repair_types`);
+      const repairTypesResponse = await Axios.get(
+        `${baseUrl}/common/repair_types`
+      );
       const repairTypesData = repairTypesResponse.data;
       const repairTypesMap = {};
       const statusOptionsMap = {};
@@ -149,7 +147,7 @@ export default function DataTable() {
 
   const getStatusOptions = async () => {
     try {
-      const response = await Axios.get(`${baseUrl}/status`);
+      const response = await Axios.get(`${baseUrl}/common/statuses`);
       const data = response.data;
       setStatusOptions(data);
     } catch (error) {
@@ -311,13 +309,16 @@ export default function DataTable() {
   };
 
   const deleteOneProblem = async (id) => {
+    console.log(id);
     const result = await MySwal.fire({
       title: "Do you want to delete this data?",
       icon: "warning",
       showCancelButton: true,
     });
     if (result.isConfirmed) {
-      const response = await Axios.delete(`${baseUrl}/delete/${id}}`);
+      const response = await Axios.delete(
+        `${baseUrl}/repair_notifications/${id}`
+      );
 
       if (response.status === 200) {
         await getProblem();
@@ -346,7 +347,7 @@ export default function DataTable() {
     });
     if (result.isConfirmed) {
       const response = await Axios.delete(
-        `${baseUrl}/delete/${selectedRows.join(",")}`
+        `${baseUrl}/repair_notifications/${selectedRows.join(",")}`
       );
 
       if (response.status === 200) {

@@ -47,7 +47,7 @@ export default function UserProfile() {
     // ตรวจสอบว่ามี token หรือไม่
     if (token) {
       // ดึงข้อมูลผู้ใช้จากเซิร์ฟเวอร์ของคุณโดยใช้ token
-      Axios.get(`${baseUrl}/me`, {
+      Axios.get(`${baseUrl}/users/me`, {
         headers: {
           Authorization: "Bearer " + token,
         },

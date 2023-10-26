@@ -74,7 +74,7 @@ const Form = () => {
 
   const getMe = async () => {
     try {
-      const { data } = await Axios.get(`${baseUrl}/me`, {
+      const { data } = await Axios.get(`${baseUrl}/users/me`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("token"),
         },
@@ -91,20 +91,19 @@ const Form = () => {
 
   const getProblem = useCallback(async () => {
     try {
-      const repairTypesResponse = await Axios.get(`${baseUrl}/repair_types`);
+      const repairTypesResponse = await Axios.get(
+        `${baseUrl}/common/repair_types`
+      );
       const repairTypesData = repairTypesResponse.data;
       setRepairTypes(repairTypesData);
 
-      const statusTypesResponse = await Axios.get(`${baseUrl}/status`);
+      const statusTypesResponse = await Axios.get(`${baseUrl}/common/statuses`);
       const statusTypesData = statusTypesResponse.data;
       setStatusTypes(statusTypesData);
 
       const response = await Axios.get(`${baseUrl}/repair_notifications`);
       // เรียกข้อมูล user จาก API ตามค่า user_id ในแต่ละรายการ
-      const userIds = response.data.map((val) => val.user_id);
-      const usersResponse = await Axios.get(
-        `${baseUrl}/users?ids=${userIds.join(",")}`
-      );
+      const usersResponse = await Axios.get(`${baseUrl}/users`);
       const users = usersResponse.data;
       // รวมข้อมูล fname และ lname เข้ากับแต่ละแถวของ problemList
       const updatedProblemList = response.data.map((problem) => {
@@ -183,7 +182,7 @@ const Form = () => {
 
       try {
         await Axios.post(
-          `${baseUrl}/postproblem`,
+          `${baseUrl}/repair_notifications`,
           {
             title: title,
             repair_type_id: repair_type,

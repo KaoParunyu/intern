@@ -54,7 +54,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    Axios.post(`${baseUrl}/authen`, null, {
+    Axios.post(`${baseUrl}/auth/verify-token`, null, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -265,7 +265,7 @@ const Dashboard = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell width={150}>Service Type Desc</TableCell>
+                  <TableCell width={180}>Service Type Desc</TableCell>
                   {data?.table?.serviceRequestsByType?.headers.map((header) => (
                     <TableCell key={header}>{header}</TableCell>
                   ))}
@@ -376,7 +376,7 @@ const Dashboard = () => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell width={150}>Department</TableCell>
+                    <TableCell width={180}>Department</TableCell>
                     {data?.table?.serviceRequestsByDepartment?.headers.map(
                       (header) => (
                         <TableCell>{header}</TableCell>

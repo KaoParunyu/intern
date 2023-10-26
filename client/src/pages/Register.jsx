@@ -62,7 +62,7 @@ export default function SignUp() {
   };
 
   useEffect(() => {
-    Axios.get(`${baseUrl}/departments`).then((response) => {
+    Axios.get(`${baseUrl}/common/departments`).then((response) => {
       setDepartments(response.data);
     });
   }, []);
