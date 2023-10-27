@@ -146,10 +146,14 @@ input[type="file"] {
   color: #0082E0 !important;
 }
 
-/* 
+
 .css-1nxt660-MuiDataGrid-root .MuiDataGrid-columnHeader { 
   background-color: #E6EFEA !important;
-} */
+}
+
+.css-1qdw29x-MuiDataGrid-root .MuiDataGrid-columnHeader { 
+  background-color: #E6EFEA !important;
+}
 
 .css-1qdw29x-MuiDataGrid-root .MuiDataGrid-columnHeader:focus  {
 
