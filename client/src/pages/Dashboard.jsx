@@ -300,7 +300,7 @@ const Dashboard = () => {
                   datasets: [
                     {
                       data: Object.values(data.total),
-                      hoverOffset: 30,
+                      hoverOffset: 10,
                       backgroundColor: colors,
                     },
                   ],
@@ -381,7 +381,7 @@ const Dashboard = () => {
                       data: Object.values(data.graph2.datas).map((item) =>
                         item.reduce((a, b) => a + b, 0)
                       ),
-                      hoverOffset: 30,
+                      hoverOffset: 10,
                       backgroundColor: colors,
                     },
                   ],
